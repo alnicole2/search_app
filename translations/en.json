@@ -242,11 +242,11 @@
   },
   "brand_filter": {
     "brand": {
-      "title": "title for dropdown: https://zendesk.box.com/s/hk3w166kbriae4jcj0zulc7l09kt98qs",
+      "title": "title for dropdown in screenshot",
       "value": "Brand:"
     },
     "all_brands": {
-      "title": "value inside the dropdown: https://zendesk.box.com/s/hk3w166kbriae4jcj0zulc7l09kt98qs",
+      "title": "value inside the dropdown in screenshot",
       "value": "All brands"
     }
   }
