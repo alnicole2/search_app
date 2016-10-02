@@ -215,29 +215,39 @@
     },
     "value": {
       "new": {
-        "title": "Dropdown option",
+        "title": "Dropdown option for ticket status (1 ticket)",
         "value": "New"
       },
       "open": {
-        "title": "Dropdown option",
+        "title": "Dropdown option for ticket status (1 ticket)",
         "value": "Open"
       },
       "pending": {
-        "title": "Dropdown option",
+        "title": "Dropdown option for ticket status (1 ticket)",
         "value": "Pending"
       },
       "onhold": {
-        "title": "Dropdown option",
+        "title": "Dropdown option for ticket status (1 ticket)",
         "value": "On-hold"
       },
       "solved": {
-        "title": "Dropdown option",
+        "title": "Dropdown option for ticket status (1 ticket)",
         "value": "Solved"
       },
       "closed": {
-        "title": "Dropdown option",
+        "title": "Dropdown option for ticket status (1 ticket)",
         "value": "Closed"
       }
+    }
+  },
+  "brand_filter": {
+    "brand": {
+      "title": "title for dropdown in screenshot",
+      "value": "Brand:"
+    },
+    "all_brands": {
+      "title": "value inside the dropdown in screenshot",
+      "value": "All brands"
     }
   }
 }
