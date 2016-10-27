@@ -82,5 +82,9 @@
       "solved": "Ratkaistu",
       "closed": "Suljettu"
     }
+  },
+  "brand_filter": {
+    "brand": "Brändi:",
+    "all_brands": "Kaikki brändit"
   }
 }

@@ -19,7 +19,7 @@
       "invalid": "无效的搜索：无效的日期格式。",
       "unavailable": "抱歉，我们无法完成您的搜索查询。请重试。"
     },
-    "loading": "正在初始化 app……",
+    "loading": "正在初始化应用……",
     "searching": "正在搜索……",
     "no_results": "没有发现结果。"
   },
@@ -82,5 +82,9 @@
       "solved": "已解决",
       "closed": "已关闭"
     }
+  },
+  "brand_filter": {
+    "brand": "品牌：",
+    "all_brands": "所有品牌"
   }
 }

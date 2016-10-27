@@ -82,5 +82,9 @@
       "solved": "Çözüldü",
       "closed": "Kapalı"
     }
+  },
+  "brand_filter": {
+    "brand": "Marka:",
+    "all_brands": "Tüm markalar"
   }
 }

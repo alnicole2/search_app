@@ -42,7 +42,7 @@
       "basic": "Standard"
     },
     "user": {
-      "loading": "Laden",
+      "loading": "Wird geladen",
       "assignee": "Mitarbeiter:"
     },
     "type": {
@@ -82,5 +82,9 @@
       "solved": "Gelöst",
       "closed": "Geschlossen"
     }
+  },
+  "brand_filter": {
+    "brand": "Marke:",
+    "all_brands": "Alle Marken"
   }
 }

@@ -82,5 +82,9 @@
       "solved": "Выполнен",
       "closed": "Закрыт"
     }
+  },
+  "brand_filter": {
+    "brand": "Бренд:",
+    "all_brands": "Все бренды"
   }
 }

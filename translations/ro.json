@@ -38,7 +38,7 @@
     "suggestions": "Sugestii:",
     "keywords": "Tastaţi câteva cuvinte-cheie...",
     "options": {
-      "advanced": "Advanced",
+      "advanced": "Optiuni Avansate",
       "basic": "Basic"
     },
     "user": {
@@ -82,5 +82,9 @@
       "solved": "Rezolvat",
       "closed": "Închis"
     }
+  },
+  "brand_filter": {
+    "brand": "Marcă:",
+    "all_brands": "Toate mărcile"
   }
 }

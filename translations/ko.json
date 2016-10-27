@@ -82,5 +82,9 @@
       "solved": "해결",
       "closed": "종료"
     }
+  },
+  "brand_filter": {
+    "brand": "브랜드:",
+    "all_brands": "모든 브랜드"
   }
 }

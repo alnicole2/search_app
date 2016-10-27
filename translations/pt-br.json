@@ -21,7 +21,7 @@
     },
     "loading": "Inicializando o aplicativo...",
     "searching": "Pesquisando...",
-    "no_results": "Nenhum resultado encontrado"
+    "no_results": "Nenhum resultado encontrado."
   },
   "ticket": {
     "id": "ID",
@@ -82,5 +82,9 @@
       "solved": "Resolvido",
       "closed": "Fechado"
     }
+  },
+  "brand_filter": {
+    "brand": "Marca:",
+    "all_brands": "Todas as marcas"
   }
 }

@@ -82,5 +82,9 @@
       "solved": "已解決",
       "closed": "已關閉"
     }
+  },
+  "brand_filter": {
+    "brand": "品牌：",
+    "all_brands": "所有品牌"
   }
 }

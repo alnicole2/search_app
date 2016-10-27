@@ -82,5 +82,9 @@
       "solved": "Résolu",
       "closed": "Clos"
     }
+  },
+  "brand_filter": {
+    "brand": "Marque :",
+    "all_brands": "Toutes les marques"
   }
 }

@@ -76,11 +76,15 @@
     },
     "value": {
       "new": "Nuovo",
-      "open": "Aperta",
+      "open": "Aperto",
       "pending": "In attesa",
       "onhold": "In sospeso",
       "solved": "Risolto",
       "closed": "Chiuso"
     }
+  },
+  "brand_filter": {
+    "brand": "Brand:",
+    "all_brands": "Tutti i brand"
   }
 }

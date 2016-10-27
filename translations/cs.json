@@ -32,7 +32,7 @@
   },
   "search": {
     "search": "Hledat:",
-    "results": "{{count}} výsledků:",
+    "results": "Výsledky: {{count}}",
     "previous": "předchozí",
     "next": "další ",
     "suggestions": "Návrhy:",
@@ -82,5 +82,9 @@
       "solved": "Vyřešený",
       "closed": "Uzavřený"
     }
+  },
+  "brand_filter": {
+    "brand": "Značka:",
+    "all_brands": "Všechny značky"
   }
 }

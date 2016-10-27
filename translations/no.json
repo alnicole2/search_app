@@ -82,5 +82,9 @@
       "solved": "Løst",
       "closed": "Avsluttet"
     }
+  },
+  "brand_filter": {
+    "brand": "Merke:",
+    "all_brands": "Alle merkevarer"
   }
 }
