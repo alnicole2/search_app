@@ -146,7 +146,7 @@
 
         var brand = this.ticket().brand();
         // Set advanced search drop-down value to this current ticket's brand
-        this.$('.brand-filter').zdSelectMenu('setValue', brand && brand.id());
+        this.$('.brand-filter').zdSelectMenu('setValue', brand && brand.id() || '*');
       }
     },
 
@@ -195,9 +195,7 @@
         if (this.hasMultipleBrands) {
           var brand = $search.find('.brand-filter').zdSelectMenu('value');
 
-          if (brand) {
-            params.push( helpers.fmt('brand_id:"%@"', brand) );
-          }
+          params.push( helpers.fmt('brand_id:"%@"', brand) );
         }
       }
 
