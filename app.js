@@ -195,7 +195,7 @@
         if (this.hasMultipleBrands) {
           var brand = $search.find('.brand-filter').zdSelectMenu('value');
 
-          if (brand)
+          if (brand) {
             params.push( helpers.fmt('brand_id:"%@"', brand) );
           }
         }
