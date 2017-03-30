@@ -67,8 +67,8 @@
       }
 
       _.defer((function() {
-        this.trigger('requiredProperties.ready');
         this.switchTo('search');
+        this.trigger('requiredProperties.ready');
       }).bind(this));
     },
 
