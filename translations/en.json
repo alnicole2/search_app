@@ -10,7 +10,7 @@
     },
     "long_description": {
       "title": "Long Description for App: Sidebar Search",
-      "value": "The Search app allows you to search your Zendesk Support for tickets, comments, users, organizations and topics.\n\nIt offers both basic and advanced search functionality so that agents are able to quickly find information to help solve tickets more efficiently. Agents can filter their search by status conditions, assignee and also by 'create' and 'update' date ranges. In addition, the Search application offers search suggestions based on the ticket's subject and custom ticket fields.\n\nBy enabling this app, You agree to the [Built by Zendesk Terms of Use](https://www.zendesk.com/company/built-by-zendesk-agmt/)."
+      "value": "The Search app allows you to search your Zendesk Support for tickets, comments, users, organizations and topics.\n\nIt offers both basic and advanced search functionality so that agents are able to quickly find information to help solve tickets more efficiently. Agents can filter their search by status conditions, assignee and also by 'create' and 'update' date ranges. In addition, the Search application offers search suggestions based on the ticket's subject and custom ticket fields.\n\nBy enabling this app, you agree to the [Built by Zendesk Terms of Use](https://www.zendesk.com/company/built-by-zendesk-agmt/)."
     },
     "installation_instructions": {
       "title": "Installation Instructions for App: Sidebar Search",
