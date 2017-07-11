@@ -26,7 +26,7 @@ By enabling this app, you agree to the [Built by Zendesk Terms of Use](https://w
   - translation:
       key: "txt.apps.search_app.app.installation_instructions"
       title: "Installation Instructions for App: Sidebar Search"
-      value: "Sign in to your Zendesk Support account, then click the Admin icon in the sidebar. Select Apps > Marketplace, then find the Sidebar Search app and click the tile. On the Sidebar Search app page, click Install app in the upper-right corner. Configure the following app settings, then click Install:
+      value: "Configure the following app settings, then click Install:
 
 
 * Title: Name for the application.

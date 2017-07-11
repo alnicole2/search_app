@@ -14,7 +14,7 @@
     },
     "installation_instructions": {
       "title": "Installation Instructions for App: Sidebar Search",
-      "value": "Sign in to your Zendesk Support account, then click the Admin icon in the sidebar. Select Apps > Marketplace, then find the Sidebar Search app and click the tile. On the Sidebar Search app page, click Install app in the upper-right corner. Configure the following app settings, then click Install:\n\n* Title: Name for the application.\n* Custom Field IDs: If you would like the Sidebar Search app to suggest the value of custom ticket fields, specify their IDs here, separated by commas.\n* Show keywords from subject as search suggestion:  Select this box if you want the Sidebar Search app to suggest keywords based on the ticket's subject.\n\nRefresh your page for the changes to take effect and your Sidebar Search application is ready to go."
+      "value": "Configure the following app settings, then click Install:\n\n* Title: Name for the application.\n* Custom Field IDs: If you would like the Sidebar Search app to suggest the value of custom ticket fields, specify their IDs here, separated by commas.\n* Show keywords from subject as search suggestion:  Select this box if you want the Sidebar Search app to suggest keywords based on the ticket's subject.\n\nRefresh your page for the changes to take effect and your Sidebar Search application is ready to go."
     },
     "title": {
       "title": "Name of the App",
