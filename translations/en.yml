@@ -6,9 +6,37 @@ packages:
 
 parts:
   - translation:
-      key: "txt.apps.search_app.app.description"
-      title: "Description of the app"
+      key: "txt.apps.search_app.app.name"
+      title: "Name for App: Sidebar Search"
+      value: "Sidebar Search"
+  - translation:
+      key: "txt.apps.search_app.app.short_description"
+      title: "Description for App: Sidebar Search"
       value: "Search"
+  - translation:
+      key: "txt.apps.search_app.app.long_description"
+      title: "Long Description for App: Sidebar Search"
+      value: "The Search app allows you to search your Zendesk Support for tickets, comments, users, organizations and topics.
+
+
+It offers both basic and advanced search functionality so that agents are able to quickly find information to help solve tickets more efficiently. Agents can filter their search by status conditions, assignee and also by 'create' and 'update' date ranges. In addition, the Search application offers search suggestions based on the ticket's subject and custom ticket fields.
+
+
+By enabling this app, you agree to the [Built by Zendesk Terms of Use](https://www.zendesk.com/company/built-by-zendesk-agmt/)."
+  - translation:
+      key: "txt.apps.search_app.app.installation_instructions"
+      title: "Installation Instructions for App: Sidebar Search"
+      value: "Configure the following app settings, then click Install:
+
+
+* Title: Name for the application.
+
+* Custom Field IDs: If you would like the Sidebar Search app to suggest the value of custom ticket fields, specify their IDs here, separated by commas.
+
+* Show keywords from subject as search suggestion:  Select this box if you want the Sidebar Search app to suggest keywords based on the ticket's subject.
+
+
+Refresh your page for the changes to take effect and your Sidebar Search application is ready to go."
   - translation:
       key: "txt.apps.search_app.app.title"
       title: "Name of the App"
