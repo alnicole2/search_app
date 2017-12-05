@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Suchen",
+    "name": "Seitenleistensuche",
+    "short_description": "Suchen",
+    "long_description": "Mit der App „Seitenleistensuche“ können Sie Ihre Zendesk Support-Instanz nach Tickets, Kommentaren, Benutzern, Organisationen und Themen durchsuchen.\n\nDie App bietet einfache und erweiterte Suchfunktionen, damit Agenten schnell die Informationen finden, die sie brauchen, um Tickets effizienter zu lösen. Die Suche kann nach Statusbedingungen, nach Mitarbeiter und nach Erstellungs- und Aktualisierungsdatum gefiltert werden. Die App „Seitenleistensuche“ zeigt außerdem Suchvorschläge an, die auf dem Betreff des Tickets und auf angepassten Ticketfeldern basieren.\n\nDurch Aktivierung dieser App akzeptieren Sie die [Allgemeinen Geschäftsbedingungen für von Zendesk erstellte Apps](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Konfigurieren Sie die folgenden Einstellungen für die App und klicken Sie dann auf **Installieren**:\\\\* Titel: Name der Anwendung.\n* Angepasste Feld-IDs: Wenn die App „Seitenleistensuche“ Werte aus angepassten Ticketfeldern vorschlagen soll, geben Sie hier die entsprechenden IDs durch Kommas getrennt ein.\n* Schlüsselwörter aus Betreff als Suchvorschläge anzeigen: Markieren Sie dieses Kästchen, wenn die App „Seitenleistensuche“ Schlüsselwörter ausgehend vom Betreff des Tickets vorschlagen soll.\n\nAktualisieren Sie die Seite, damit die Änderungen in Kraft treten und die App „Seitenleistensuche“ korrekt funktioniert.",
     "title": "Suchen",
     "parameters": {
       "custom_fields": {

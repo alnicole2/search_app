@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Søk",
+    "name": "Sidefeltsøk",
+    "short_description": "Søk",
+    "long_description": "Med Sidefeltsøk-appen kan du søke gjennom Zendesk Support etter saker, kommentarer, brukere, organisasjoner og emner.\n\nAppen håndterer både enkle og avanserte søk, og det blir dermed mulig for kundekonsulentene å finne raskt fram til den informasjonen de trenger for å kunne løse saker på en mer effektiv måte. Kundekonsulentene kan velge å filtrere søket basert på status eller saksansvarlig, og basert på gitte datointervaller for «opprett» og «oppdater». Sidefeltsøk-appen kan dessuten foreslå søk basert på sakens emne og egendefinerte saksfelt.\n\nVed å aktivere denne appen godtar du [Laget av Zendesk-brukervilkårene](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Konfigurer følgende innstillinger for appen og velg Installer:\n* Tittel: Navnet på programmet.\n* Tilpassede felt-IDer: Hvis du vil at Sidefeltsøk-appen skal foreslå verdien for egendefinerte saksfelt, angir du IDene deres her, adskilt med komma.\n* Vis nøkkelord fra emne som forslag til søk: Merk av i denne ruten hvis du vil at appen Sidefeltsøk skal foreslå nøkkelord for søket basert på saksemnet.\n\nOppdater siden for å få endringene til å tre i kraft, og Sidefeltsøk-appen er klar til bruk.",
     "title": "Søk",
     "parameters": {
       "custom_fields": {

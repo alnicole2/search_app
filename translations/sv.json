@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Sök",
+    "name": "Sidopanelsökning",
+    "short_description": "Sök",
+    "long_description": "Appen Sidopanelsökning ger dig möjlighet att söka efter ärenden, kommentarer, användare, organisationer och ämnen i Zendesk Support.\n\nDen erbjuder både enkla och avancerade sökfunktioner, så att agenter snabbt kan hitta information som kan hjälpa dem att lösa ärenden mer effektivt. Agenter kan filtrera sina sökningar via statusvillkor, handläggare och datumintervall för ”skapat” och ”uppdaterat”. Appen Sidopanelsökning erbjuder dessutom sökförslag baserat på ärendets ämne och egna ärendefält.\n\nNär du aktiverar denna app innebär det att du samtycker till [användningsvillkoren för Built by Zendesk](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Konfigurera appens inställningar och klicka sedan på Installera:\n\n* Titel: Programmets namn.\n* Egna fält-ID:n: Om du vill att appen Sidopanelsökning ska föreslå värdet i egna ärendefält ska du specificera deras ID:n här, åtskilda med kommatecken.\n* Vill du visa nyckelord från ämnet som förslag till sökningen: Markera denna ruta om du vill att appen Sidopanelsökning ska föreslå nyckelord baserat på ärendets ämne.\n\nUppdatera sidan så att ändringarna träder i kraft. Sedan är Sidopanelsökning-appen klar att användas.",
     "title": "Sök",
     "parameters": {
       "custom_fields": {
@@ -75,8 +78,8 @@
       "less": "&lt;"
     },
     "value": {
-      "new": "Nytt",
-      "open": "Öppet",
+      "new": "Ny",
+      "open": "Öppen",
       "pending": "Väntar",
       "onhold": "Parkerat",
       "solved": "Löst",

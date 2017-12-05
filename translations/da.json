@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Søg",
+    "name": "Søg fra sidepanel",
+    "short_description": "Søg",
+    "long_description": "Med appen Søg fra sidepanel kan du søge i Zendesk Support efter tickets, kommentarer, brugere, organisationer og emner.\n\nDer er mulighed for både grundlæggende og avancerede søgefunktioner, således at agenter hurtigt kan finde oplysninger, der vil hjælpe med at løse tickets mere effektivt. Agenter kan filtrere deres søgning efter statustilstande, den ansvarlige og desuden efter datointervaller for 'oprettelse' og 'opdatering'. Applikationen Søg fra sidepanel giver desuden søgeforslag baseret på ticket-emnet og brugerdefinerede ticket-felter.\n\nVed at aktivere denne app accepterer du [Brugsbetingelser for Bygget af Zendesk](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Konfigurer følgende app-indstillinger, og klik derefter på Installer:\n\n* Titel: Navn på applikationen.\n* Brugerdefinerede felt-id'er: Hvis du ønsker, at appen Søg fra sidepanel skal foreslå værdien i de brugerdefinerede ticket-felter, skal du angive deres id'er her, adskilt af kommaer.\n* Vis nøgleord fra emnet som søgeforslag: Vælg dette felt, hvis du ønsker, at appen Søg fra sidepanel skal foreslå nøgleord baseret på ticket-emnet.\n\nOpdater din side for at ændringerne kan træde i kraft, og applikationen Søg fra sidepanel er nu klar.",
     "title": "Søg",
     "parameters": {
       "custom_fields": {

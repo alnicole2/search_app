@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Recherche",
+    "name": "Recherche dans la barre latérale",
+    "short_description": "Recherche",
+    "long_description": "L’application Recherche dans la barre latérale vous permet de rechercher des tickets, des commentaires, des utilisateurs, des organisations et des sujets dans Zendesk.\n\nElle offre des fonctions de recherche élémentaires et avancées pour permettre aux agents de rapidement trouver des informations et ainsi de résoudre les tickets plus efficacement. Les agents peuvent filtrer leurs recherches par condition de statut, par assigné ainsi que par plage de dates de création et de mise à jour. En outre, l’application Recherche dans la barre latérale offre des suggestions de recherche d’après le sujet du ticket et les champs de tickets personnalisés.\n\nEn activant cette application, vous acceptez les [conditions d’utilisation Créées par Zendesk](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Configurez les paramètres de l’application suivants, puis cliquez sur **Installer** :\n\n* Titre : le nom de l’application.\n* ID de champs personnalisés : si vous voulez que l’application Recherche dans la barre latérale suggère la valeur des champs de tickets personnalisés, spécifiez leurs ID ici, séparés par des virgules.\n\nAfficher les mots-clés du sujet comme suggestion de recherche : cochez cette case si vous voulez que l’application Recherche dans la barre latérale suggère des mots-clés d’après le sujet du ticket.\n\nActualisez votre page pour que les modifications soient appliquées et votre application est prête.",
     "title": "Recherche",
     "parameters": {
       "custom_fields": {

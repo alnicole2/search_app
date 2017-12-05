@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Zoeken",
+    "name": "Zoeken vanaf de zijbalk",
+    "short_description": "Zoeken",
+    "long_description": "Met de app Zoeken vanaf de zijbalk kunt u in Zendesk Support zoeken naar tickets, opmerkingen, gebruikers, organisaties en onderwerpen.\n\nDe app biedt zowel een basiszoekfunctie als een geavanceerde zoekfunctie zodat agenten snel informatie kunnen vinden om tickets efficiënter op te lossen. Agenten kunnen zoekresultaten filteren op status, medewerker en ook op datumbereiken voor 'gemaakt' en 'bijgewerkt'. Verder biedt de app Zoeken vanaf de zijbalk zoeksuggesties op basis van het onderwerp van het ticket en aangepaste ticketvelden.\n\nDoor deze app in te schakelen, gaat u akkoord met de [Gebruiksvoorwaarden van Gemaakt door Zendesk](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Configureer de volgende app-instellingen en klik op Installeren:\n\n* Titel: Naam voor de toepassing.\n* Id’s van aangepaste velden: Als u wilt dat de app Zoeken vanaf de zijbalk de waarde van aangepaste ticketvelden voorstelt, geef dan hier hun id’s op, gescheiden van elkaar door een komma.\n* Geef trefwoorden van het onderwerp als zoeksuggestie weer: Schakel dit vakje in als u wilt dat de app Zoeken vanaf de zijbalk trefwoorden voorstelt op basis van het ticketonderwerp.\n\nVervers de weergave van de pagina, zodat de wijzigingen van kracht worden en de app Zoeken vanaf de zijbalk klaar is voor gebruik.",
     "title": "Zoeken",
     "parameters": {
       "custom_fields": {

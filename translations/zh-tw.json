@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "搜尋",
+    "name": "側欄搜尋",
+    "short_description": "搜尋",
+    "long_description": "「側欄搜尋」app 使您能在 Zendesk Support 中搜尋工單、評論、使用者、組織和主題。\n\n可提供基本和進階搜尋功能，使代理能快速尋找資訊助其更有效地解決工單。代理可依據狀態條件、受託人，以及「建立」和「更新」日期範圍來篩選搜尋。此外，「側欄搜尋」應用程式可依據工單標題和自訂工單欄位提供搜尋建議。\n\n啟用此 app 即表示您同意 [Zendesk 自建使用條款](https://www.zendesk.com/company/built-by-zendesk-agmt/)。",
+    "installation_instructions": "設定以下 app 設定值，再按一下「安裝」：\n\n* 標題：應用程式名稱。\n* 自訂欄位 ID：若您要「側欄搜尋」app 提供自訂工單欄位值的建議，在這裡指定其 ID，用逗號隔開。\n* 顯示標題關鍵字做為搜尋建議：若您要「側欄搜尋」app 依據工單標題提供關鍵字建議，請核取此方塊。\n\n重新整理頁面使變更生效，您的「側欄搜尋」應用程式即準備就緒。",
     "title": "搜尋",
     "parameters": {
       "custom_fields": {
@@ -34,7 +37,7 @@
     "search": "搜尋：",
     "results": "{{count}} 個結果：",
     "previous": "上頁",
-    "next": "下頁",
+    "next": "下一頁",
     "suggestions": "建議：",
     "keywords": "輸入一些關鍵字……",
     "options": {

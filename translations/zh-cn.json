@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "搜索",
+    "name": "侧栏搜索",
+    "short_description": "搜索",
+    "long_description": "“侧栏搜索”应用使您能在您的 Zendesk Support 中搜索工单、评论、用户、组织和主题。\n\n可提供基本和高级搜索功能，使专员能快速查找信息助其更有效地解决工单。专员可根据状态条件、受托人，以及“创建”和“更新”日期范围来筛选搜索。此外，“侧栏搜索”应用程序可根据工单标题和自定义工单字段提供搜索建议。\n\n启用此应用即表示您同意 [Zendesk 自建使用条款](https://www.zendesk.com/company/built-by-zendesk-agmt/)。",
+    "installation_instructions": "配置以下应用设置，然后单击“安装”：\n\n* 标题：应用程序的名称。\n* 自定义字段 ID：如果您希望“侧栏搜索”应用提供自定义工单字段值的建议，在这里指定其 ID，用逗号分隔。\n* 显示标题关键字作为搜索建议：如果您希望“侧栏搜索”应用根据工单标题提供关键字建议，请勾选此复选框。\n\n刷新页面使更改生效，您的“侧栏搜索”应用程序即准备就绪。",
     "title": "搜索",
     "parameters": {
       "custom_fields": {

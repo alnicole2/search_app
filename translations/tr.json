@@ -1,13 +1,16 @@
 {
   "app": {
-    "description": "Arama",
+    "name": "Yan Çubuk Arama",
+    "short_description": "Arama",
+    "long_description": "Yan Çubuk Arama uygulaması Zendesk Support'unuzda kayıt, yorum, kullanıcı, organizasyon birimi ve konu aramanıza olanak sağlar.\n\nSunduğu temel ve gelişmiş arama işlevleri sayesinde temsilciler bilgileri hızla bularak kayıtların daha etkili bir şekilde çözülmesine yardımcı olabilirler. Temsilciler aramalarını duruma, koşullara veya atanan kişiye göre ve ayrıca tarih aralıkları \"oluşturarak/güncelleyerek\" filtreleyebilirler. Yan Çubuk Arama uygulaması ayrıca kaydın konusuna ve özel kayıt alanlarına göre arama önerilerinde bulunur.\n\nBu uygulamayı etkinleştirerek, [Built by Zendesk Kullanım Koşulları](https://www.zendesk.com/company/built-by-zendesk-agmt/)'nı kabul edersiniz.",
+    "installation_instructions": "Aşağıdaki uygulama ayarlarını yapılandırıp Kur'a tıklayın:\n\n* Başlık: Uygulamanın adı.\n* Özel Alan Numaraları: Yan Çubuk Arama uygulamasının özel kayıt alanları için değer önermesini isterseniz, bu alanların numaralarını burada virgülle ayırarak belirtin.\n* Arama önerisi olarak konudan anahtar kelimeler gösterin: Yan Çubuk Arama uygulamasının kayıt konusuna göre anahtar kelimeler önermesini isterseniz bu kutuyu işaretleyin.\n\nDeğişikliklerin uygulanması ve Yan Çubuk Arama uygulamasının kullanıma hazır hale gelmesi için sayfanızı yenileyin.",
     "title": "Arama",
     "parameters": {
       "custom_fields": {
         "label": "Özel alan kimlikleri"
       },
       "related_tickets": {
-        "label": "Arama önerisi olarak konudan anahtar sözcükler gösterilsin mi?"
+        "label": "Arama önerisi olarak konudan anahtar kelimeler gösterilsin mi?"
       }
     }
   },
@@ -36,7 +39,7 @@
     "previous": "önceki",
     "next": "sonraki",
     "suggestions": "Öneriler:",
-    "keywords": "Birkaç anahtar sözcük yazın...",
+    "keywords": "Birkaç anahtar kelime yazın...",
     "options": {
       "advanced": "Gelişmiş",
       "basic": "Temel "
