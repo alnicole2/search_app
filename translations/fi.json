@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Haku",
+    "name": "Sivupalkin haku",
+    "short_description": "Haku",
+    "long_description": "Sivupalkin haku -sovelluksella voit hakea Zendesk Supportista tikettejä, kommentteja, käyttäjiä, organisaatioita ja aiheita.\n\nSiinä on sekä perus- että lisähakutoiminnot, jotta tukihenkilöt voivat hakea tietoa nopeasti ratkaistakseen tikettejä tehokkaammin. Tukihenkilöt voivat suodattaa hakutulokset tila-ehtojen, käsittelijän ja luonti- tai päivityspäivämäärien perusteella. Lisäksi Sivupalkin haku -sovellus tarjoaa hakuehdotuksia tiketin aiheen ja mukautettujen tikettikenttien perusteella.\n\nOttamalla tämän sovelluksen käyttöön hyväksyt [Zendeskin kehittämä -käyttöehdot](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Määritä sovelluksen asetukset ja napsauta sitten Asenna:\n\n* Otsikko: Sovelluksen nimi.\n* Mukautetun kentän tunnukset: Jos haluat Sivupalkin haku -sovelluksen ehdottavan arvoja mukautettuja tikettikentän tunnuksia varten, määritä tunnukset tässä pilkulla erotettuina.\n* Näytä avainsanat aiheesta hakuehdotuksina: Valitse tämä ruutu, jos haluat Sivupalkin haku -sovelluksen ehdottavan avainsanoja tiketin aiheen perusteella.\n\nVirkistä sivu, jotta muutokset astuvat voimaan. Sivupalkin haku -sovellus on valmis käyttöä varten.",
     "title": "Haku",
     "parameters": {
       "custom_fields": {

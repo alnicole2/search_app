@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Pesquisar",
+    "name": "Pesquisar na barra lateral",
+    "short_description": "Pesquisar",
+    "long_description": "O aplicativo Pesquisar na barra lateral permite que você pesquise por tickets, comentários, usuários, organizações e tópicos no seu Zendesk Support.\n\nEle oferece recursos básicos e avançados de pesquisa para que os agentes possam encontrar rapidamente as informações necessárias para resolver os tickets de maneira mais eficiente. Os agentes podem filtrar sua pesquisa por status, condições, atribuído e também intervalos de datas de criação (“create”) e atualização (“update”). Além disso, o aplicativo Pesquisar na barra lateral oferece sugestões de pesquisa com base no assunto do ticket e em campos de ticket personalizados.\n\nAtivando esse aplicativo, você concorda com os [Termos de uso do Built by Zendesk](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Defina as configurações do aplicativo a seguir e clique em Instalar:\n\n* *Título: Nome do aplicativo.\n* IDs de campo personalizado: Se você quiser que o aplicativo Pesquisar na barra lateral sugira o valor dos campos de ticket personalizados, especifique essas IDs aqui, separadas por vírgulas.\n* Mostrar palavras-chave do assunto como sugestão de pesquisa: Marque essa caixa se você quiser que o aplicativo Pesquisar na barra lateral sugira palavras-chave com base no assunto do ticket.\n\nAtualize sua página para que as alterações entrem em vigor. Assim, seu aplicativo Pesquisar na barra lateral estará pronto para o uso.",
     "title": "Pesquisar",
     "parameters": {
       "custom_fields": {

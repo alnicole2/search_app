@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Cerca",
+    "name": "Ricerca nella barra laterale",
+    "short_description": "Cerca",
+    "long_description": "L’app Ricerca nella barra laterale consente di cercare ticket, commenti, utenti, organizzazioni e argomenti in Zendesk Support.\n\nOffre funzionalità di ricerca sia di base che avanzate per consentire agli agenti di trovare rapidamente le informazioni necessarie e risolvere i ticket in maniera più efficiente. Gli agenti possono limitare l’ambito della ricerca in base allo stato, all’assegnatario e anche all’intervallo di date di creazione e aggiornamento. Inoltre, l’app Ricerca nella barra laterale offre suggerimenti per la ricerca in base all’oggetto del ticket e ai campi personalizzati in esso contenuti.\n\nAttivando l’app, accetti i [Termini di utilizzo per le app create da Zendesk](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Configura le seguenti impostazioni dell’app, quindi fai clic su Installa.\n\n* Titolo: il nome dell’app.\n* ID campi personalizzati: se vuoi che l’app Ricerca nella barra laterale suggerisca dei valori per i campi personalizzati dei ticket, specificane qui gli ID, separati da virgole.\n* Mostra parole chiave dall’oggetto come suggerimenti per la ricerca: seleziona questa casella per far sì che l’app Ricerca nella barra laterale suggerisca parole chiave in base all’oggetto del ticket.\n\nCarica nuovamente la pagina per implementare le modifiche. A questo punto l’app Ricerca nella barra laterale è pronta per l’uso.",
     "title": "Cerca",
     "parameters": {
       "custom_fields": {

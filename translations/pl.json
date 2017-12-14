@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Szukaj",
+    "name": "Szybkie wyszukiwanie",
+    "short_description": "Szukaj",
+    "long_description": "Aplikacja Szybkie wyszukiwanie umożliwia wyszukiwanie zgłoszeń, komentarzy, użytkowników, organizacji i tematów na koncie Zendesk Support.\n\nOferuje ona zarówno podstawowe, jak i zaawansowane funkcje wyszukiwania, dzięki czemu agenci mogą szybko znajdować informacje i sprawniej załatwiać zgłoszenia. Agenci mogą filtrować wyniki wyszukiwania na podstawie warunków statusów, opiekunów oraz zakresów dat utworzenia i aktualizacji. Aplikacja Szybkie wyszukiwanie oferuje ponadto sugestie na podstawie tematu i niestandardowych pól zgłoszenia.\n\nWłączając tę aplikację, wyrażasz zgodę na [Warunki użytkowania dotyczące aplikacji opracowanej przez Zendesk](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Skonfiguruj następujące ustawienia aplikacji, a następnie kliknij przycisk Zainstaluj:\n\n* Tytuł — nazwa aplikacji.\n* Identyfikatory pól niestandardowych — jeśli chcesz, aby aplikacja Szybkie wyszukiwanie sugerowała wartości niestandardowych pól zgłoszeń, wprowadź tutaj ich identyfikatory rozdzielone przecinkami.\n* Wyświetlać słowa kluczowe z tematu jako sugestię wyszukiwania? — zaznacz to pole wyboru, jeżeli chcesz, aby aplikacja Szybkie wyszukiwanie sugerowała słowa kluczowe na podstawie tematu zgłoszenia.\n\nOdśwież stronę, aby zastosować zmiany. Aplikacja Szybkie wyszukiwanie będzie gotowa do użytku.",
     "title": "Szukaj",
     "parameters": {
       "custom_fields": {

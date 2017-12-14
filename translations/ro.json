@@ -1,25 +1,28 @@
 {
   "app": {
-    "description": "Căutare",
+    "name": "Căutare din bara laterală",
+    "short_description": "Căutare",
+    "long_description": "Aplicația Căutare din bara laterală vă permite să căutați în contul dumneavoastră Zendesk Support tichete, comentarii, utilizatori, organizații și subiecte.\n\nAceasta oferă funcționalități de căutare de bază și avansată, astfel încât agenții să poată găsi rapid informațiile care să-i ajute să rezolve tichetele mai eficient. Agenții pot filtra căutarea după condițiile de stare, responsabilul desemnat, precum și după intervalul de date „creat” și „actualizat”. În plus, aplicația Căutare din bara laterală oferă sugestii de căutare bazate pe subiectul tichetului și câmpurile personalizate pentru tichet.\n\nActivând această aplicație, sunteți de acord cu [Termenii de utilizare pentru produsele desemnate prin „Conceput de Zendesk”] (https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Configurați următoarele setări ale aplicației, apoi faceți clic pe Instalare:\n\n* Titlu: Numele aplicației.\n* Identificatori câmp personalizat: Dacă ați dori ca aplicația Căutare în bara laterală să sugereze valoarea câmpurilor personalizate pentru tichete, specificați aici identificatorii acestora, separați prin virgulă.\n* Afișați cuvinte-cheie din subiect drept sugestii de căutare: Selectați această casetă dacă doriți ca aplicația Căutare în bara laterală să sugereze cuvinte-cheie pe baza subiectului tichetului.\n\nReîmprospătați-vă pagina pentru ca modificările să se aplice și aplicația Căutare în bara laterală să fie gata de utilizare.",
     "title": "Căutare",
     "parameters": {
       "custom_fields": {
         "label": "Identificatori câmp personalizat"
       },
       "related_tickets": {
-        "label": "Afişaţi cuvintele-cheie din subiect drept sugestie de căutare?"
+        "label": "Afișați cuvintele-cheie din subiect drept sugestie de căutare?"
       }
     }
   },
   "global": {
     "error": {
       "title": "A apărut o eroare.",
-      "message": "Vă rugăm să repetaţi acţiunea anterioară.",
+      "message": "Vă rugăm să repetați acțiunea anterioară.",
       "data": "Datele nu au putut fi citite.",
       "invalid": "Căutare nevalidă: Format de dată nevalid.",
-      "unavailable": "Ne pare rău, dar nu am putut finaliza interogarea dumneavoastră de căutare. Vă rugăm să încercaţi din nou."
+      "unavailable": "Ne pare rău, dar nu am putut finaliza interogarea dumneavoastră de căutare. Vă rugăm să încercați din nou."
     },
-    "loading": "Se iniţializează aplicaţia...",
+    "loading": "Se inițializează aplicația...",
     "searching": "Se caută...",
     "no_results": "Nu s-au găsit rezultate."
   },
@@ -36,7 +39,7 @@
     "previous": "anteriorul",
     "next": "înainte",
     "suggestions": "Sugestii:",
-    "keywords": "Tastaţi câteva cuvinte-cheie...",
+    "keywords": "Tastați câteva cuvinte-cheie...",
     "options": {
       "advanced": "Optiuni Avansate",
       "basic": "Basic"
@@ -51,7 +54,7 @@
       "articles": "articole",
       "comments": "comentarii",
       "people": "persoane",
-      "organizations": "organizaţii",
+      "organizations": "organizații",
       "groups": "grupuri",
       "topics": "subiecte"
     },
@@ -60,7 +63,7 @@
       "article": "Articol",
       "comment": "Comentariu",
       "user": "Utilizator",
-      "organization": "Organizaţie",
+      "organization": "Organizație",
       "group": "Grup",
       "topic": "Subiect"
     },
@@ -77,7 +80,7 @@
     "value": {
       "new": "Nou",
       "open": "Deschis",
-      "pending": "În aşteptare",
+      "pending": "În așteptare",
       "onhold": "În pauză",
       "solved": "Rezolvat",
       "closed": "Închis"

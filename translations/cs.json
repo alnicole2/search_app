@@ -1,6 +1,9 @@
 {
   "app": {
-    "description": "Hledat",
+    "name": "Postranní panel hledání",
+    "short_description": "Hledat",
+    "long_description": "Aplikace Postranní panel hledání umožňuje v Zendesk Supportu vyhledávat tikety, komentáře, uživatele, organizace a témata.\n\nNabízí základní i pokročilé funkce hledání, umožňující agentům rychle najít informace, které jim pomohou efektivněji řešit tikety. Agenti mohou filtrovat své hledání podle stavových podmínek, pověřeného agenta a také podle časového rozsahu data vytvoření a aktualizace. Kromě toho aplikace Postranní panel hledání nabízí návrhy hledání vycházející z předmětu tiketu a vlastních polí tiketu.\n\nTím, že zapnete tuto aplikaci, souhlasíte s [Podmínkami používání služby Vytvořeno společností Zendesk](https://www.zendesk.com/company/built-by-zendesk-agmt/).",
+    "installation_instructions": "Nakonfigurujte následující nastavení aplikace a pak klikněte na Nainstalovat:\n\n* Titul: Název aplikace.\n* ID vlastních polí: Pokud chcete, aby aplikace Postranní panel hledání navrhovala hodnotu vlastních polí tiketu, zadejte jejich ID oddělená čárkami.\n*Zobrazovat klíčová slova z předmětu jako návrhy hledání: Zaškrtněte toto políčko, pokud chcete, aby aplikace Postranní panel hledání navrhovala klíčová slova vycházející z předmětu tiketu.\n\nAktualizujte stránku, aby se projevily změny, a aplikace Postranní panel hledání je připravena k činnosti.",
     "title": "Hledat",
     "parameters": {
       "custom_fields": {
