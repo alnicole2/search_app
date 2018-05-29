@@ -1,7 +1,7 @@
 import Search from '../modules/search';
 // ticket sidebar specific configs
 const configs = {
-  requiredProperties: ['ticket.id', 'ticket.subject']
+  // requiredProperties: ['ticket.id', 'ticket.subject']
 };
 
 export default class extends Search {

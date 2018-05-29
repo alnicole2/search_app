@@ -3,23 +3,17 @@
  **/
 
 import Storage from '../lib/storage';
-// import React from 'react';
-// import ReactDOM from 'react-dom';
-// import Select from '@zendeskgarden/react-select';
-// import {Buttons} from '@zendeskgarden/react-buttons';
-// import TextField from '@zendeskgarden/react-textfields/TextField';
-// import Toggles from '@zendeskgarden/react-toggles';
-// import Tags from '@zendeskgarden/react-tags';
-// import Pagination from '@zendeskgarden/react-pagination';
+import I18n from '../lib/i18n';
+import getBrandFilterTemplate from '../../templates/brand-filter';
+import getErrorTemplate from '../../templates/error';
+import getLoadingTemplate from '../../templates/loading';
+import getResultsTemplate from '../../templates/results';
+import getSearchTemplate from '../../templates/search';
+import getSuggestionsTemplate from '../../templates/suggestions';
 
-// ReactDOM.render(
-//   <h1>Hello, world!</h1>,
-//   document.getElementById('root')
-// );
-
-const PER_PAGE = 10,
-      MAX_ATTEMPTS = 20;
-// const agentOptions = [];
+const PER_PAGE = 2,
+      MAX_ATTEMPTS = 20,
+      MAX_HEIGHT = 1000;
 
 class Search{
   constructor(client, appData, config) {
@@ -27,186 +21,82 @@ class Search{
     this._client = client;
     this._appData = appData;
     this._config = config;
-    this.requiredProperties = this._config.requiredProperties || []; // ???
+    this.agentOptions = [];
     // this._storage = new Storage(this._metadata.installationId, true);
     this._api_endpoints = {
       brands: `${this._client._origin}/api/v2/brands.json`,
-      users: '/api/v2/group_memberships/assignable.json?include=users&page=1',
-      search: '/api/v2/search.json?per_page=PER_PAGE&query='
+      users: `${this._client._origin}/api/v2/group_memberships/assignable.json?include=users&page=1`,
+      search: `${this._client._origin}/api/v2/search.json?per_page=${PER_PAGE}&query=`
     }
-    this._events = {
-      'app.created': 'init',
-      '*.changed': 'handleChanged',
-      'searchDesk.done': 'handleResults',
-      'searchDesk.fail': 'handleFail',
-      'getUsers.done': 'handleUsers',
-      'click .options a': 'toggleAdvanced',
-      'click .suggestion': 'suggestionClicked',
-      'click #search-submit': 'doTheSearch',
-      'click .page-link': 'fetchPage',
-      'keydown .search-box': 'handleKeydown'
-    };
-    this.hasActivated = true;
-    this.currAttempt = 0;
-    this.customFieldIDs = this._appData.metadata.settings.custom_fields 
+    this._showAdvancedOptions = false;
+    this._customFieldIDs = this._appData.metadata.settings.custom_fields
                           ? 
                           this._appData.metadata.settings.custom_fields.match(/\d+/g)
                           :
                           [];
+    this.container = document.querySelector('[data-main]');
     this.init();
   }
 
   async init(){
+    this.currentUser = (await this._client.get('currentUser')).currentUser;
+    I18n.loadTranslations(this.currentUser.locale);
+
+    this.ticket = (await this._client.get('ticket')).ticket;
+    this.container.innerHTML = getSearchTemplate();
+    await this.getBrands();
+    await this.loadSearchSuggestions();
+    const newHeight = Math.min(document.body.clientHeight, MAX_HEIGHT);
+    this._client.invoke('resize', { height: newHeight });
+    document.querySelector('#search-submit').addEventListener('click', this.doTheSearch.bind(this));
+    document.querySelector('.options a').addEventListener('click', this.toggleAdvanced.bind(this));
+    document.querySelector('.suggestions').addEventListener('click', this.suggestionClicked.bind(this));
+    document.querySelector('.search-box').addEventListener('keydown', this.handleKeydown.bind(this));
+    document.querySelector('.results').addEventListener('click', this.fetchPage.bind(this));
+  }
+
+  async getBrands() {
     this.brands = (await this._client.request({
       url: this._api_endpoints.brands,
       cors: true
     })).brands;
-    this.ticket = (await this._client.get('ticket')).ticket;
-
-    await this.getBrandsDone();
-    // this.switchTo('search');
-    await this.loadSearchSuggestions();
-  }
-
-  async getBrandsDone() {
-    // If has multiple brands
     if (this.brands.length > 1) {
+
       var options = this.brands.map(function(brand) {
         return { value: brand.id, label: brand.name };
       });
-
-      // this.$('.advanced-options')
-      //     .append(this.renderTemplate('brand-filter', { options: options }))
-      //     .find('.brand-filter')
-      //     .zdSelectMenu();
-      
-      var brand = this.ticket.brand;
-      // this.$('.brand-filter').zdSelectMenu('setValue', brand && brand.id());
+      let brand = this.ticket.brand;
+      let fragment = document.createRange().createContextualFragment(getBrandFilterTemplate({options: options}));
+      document.querySelector('.advanced-options').appendChild(fragment);
     }
   }
 
   async loadSearchSuggestions() {
-    var searchSuggestions = await this.loadCustomFieldSuggestions(),
-        ticketSubject = (await this._client.get('ticket.subject'))['ticket.subject'],
-        suggestionsTemplate = "",
-        keywords = "";
+    let searchSuggestions = [],
+        isRelatedTicketsConfigOn = this._appData.metadata.settings.related_tickets;
 
-    if (this._appData.metadata.settings.related_tickets && ticketSubject) {
-      keywords = this.extractKeywords(ticketSubject);
-      searchSuggestions.push.apply( searchSuggestions, keywords );
+    if (this._customFieldIDs.length) {
+      await this._customFieldIDs.reduce((p, id) => {
+        let customFieldName = `ticket.customField:custom_field_${id}`;
+        return p.then(() => {
+          return this._client.get(customFieldName).then((value) => {
+            if(value[customFieldName]){
+              searchSuggestions.push(value[customFieldName]);
+            }
+          });
+        })
+      }, Promise.resolve())
     }
 
-    suggestionsTemplate = this.renderTemplate('suggestions', { searchSuggestions: searchSuggestions });
-    this.$('.suggestions').html(suggestionsTemplate);
-  }
-
-  async loadCustomFieldSuggestions() {
-    var customFieldSuggestions = [];
-
-    if (this.customFieldIDs.length) {
-      let promises = this.customFieldIDs.map((id) => {
-        let customFieldName = 'custom_field_' + customFieldID;
-        return this._client.get(`ticket.customField:${customFieldName}`);
-      })
-      Promise.all(promises).then((values) => {
-        customFieldSuggestions = values.filter((val) => {
-          return val !== '';
-        });
-      })
-    }
-    return customFieldSuggestions;
-  }
-  
-  doTheSearch() {
-    this.$('.results').empty();
-    this.$('.searching').show();
-
-    // encodeURIComponent is used here to force IE to encode all characters
-    this.ajax('searchDesk', { query: encodeURIComponent(this.searchParams()) });
-  }
-
-  searchParams() {
-    var $search = this.$('.search');
-    var params = [];
-    var searchType = $search.find('#type').val();
-    var searchTerm = $search.find('.search-box').val();
-
-    if (searchType !== "all") {
-      params.push( helpers.fmt('type:%@', searchType) );
+    let ticketSubject = (await this._client.get('ticket.subject'))['ticket.subject'];
+    if (isRelatedTicketsConfigOn && ticketSubject) {
+      let keywords = this.extractKeywords(ticketSubject);
+      searchSuggestions.push(...keywords);
     }
 
-    if (this.$('.advanced-options').is(':visible')) {
-
-      // Status
-      var filter = $search.find('#filter').val();
-      var condition = $search.find('#condition').val();
-      var value = $search.find('#value').val();
-
-      if (filter && condition && value) {
-        params.push([filter, condition, value].join(''));
-      }
-
-      // Created
-      var range = $search.find('#range').val();
-      var from = $search.find('#from').val();
-      var to = $search.find('#to').val();
-
-      if (range && (from || to)) {
-        if (from) {
-          params.push( helpers.fmt('%@>%@', range, from) );
-        }
-        if (to) {
-          params.push( helpers.fmt('%@<%@', range, to) );
-        }
-      }
-
-      // Assignee
-      var assignee = $search.find('#assignee').val();
-
-      if (assignee) {
-        params.push( helpers.fmt('assignee:"%@"', assignee) );
-      }
-
-      if (this.hasMultipleBrands) {
-        var brand = $search.find('.brand-filter').zdSelectMenu('value');
-
-        if (brand) {
-          params.push( helpers.fmt('brand_id:"%@"', brand) );
-        }
-      }
-    }
-
-    return helpers.fmt('%@ %@', searchTerm, params.join(" "));
-  }
-  
-  toggleAdvanced(e){
-    e.preventDefault();
-    var $advancedOptions = this.$('.advanced-options-wrapper');
-    if($advancedOptions.is(':hidden')){
-      this.$('.options .basic').show();
-      this.$('.options .advanced').hide();
-
-      // Load users when advanced is clicked
-      this.populateAssignees();
-
-      $advancedOptions.slideDown();
-      $advancedOptions.addClass('visible');
-    } else {
-      $advancedOptions.slideUp();
-
-      this.$('.options .advanced').show();
-      this.$('.options .basic').hide();
-      $advancedOptions.removeClass('visible');
-    }
-  }
-
-  populateAssignees() {
-    if (!this.agentOptions.length) {
-      this.ajax('getUsers');
-    } else if (this.$('#assignee option').length === 1) {
-      // used cached agentOptions
-      this._populateSelectBox('#assignee', this.agentOptions);
-    }
+    let suggestionsTemplate = getSuggestionsTemplate({searchSuggestions: searchSuggestions});
+    let fragment = document.createRange().createContextualFragment(suggestionsTemplate);
+    document.querySelector('.suggestions').appendChild(fragment);
   }
 
   extractKeywords(text) {
@@ -215,80 +105,81 @@ class Search{
 
     // split by spaces
     var words = text.split(" "),
-        exclusions = this.I18n.t('stopwords.exclusions').split(","),
-        keywords = _.difference(words, exclusions);
-
+        exclusions = I18n.t('stopwords.exclusions').split(","),
+        keywords = words.filter((w) => {
+          return !exclusions.includes(w);
+        })
     return keywords;
   }
 
-  suggestionClicked(e) {
-    var $searchBox = this.$('.search-box');
-    $searchBox.val( $searchBox.val() + ' ' + this.$(e.target).text() );
-    this.doTheSearch();
-    return false;
+  doTheSearch(url = '') {
+    document.querySelector('.results').innerHTML = '';
+    // this.$('.searching').show();
+    let searchParams = this.getSearchParams();
+    // encodeURIComponent is used here to force IE to encode all characters
+    this._client.request({
+      url: url ? url : this._api_endpoints.search + encodeURIComponent(this.getSearchParams()),
+      cors: true
+    }).then(
+      this.handleResults.bind(this),
+      this.handleFail.bind(this)
+    )
   }
 
-  handleKeydown(e) {
-    if (e.which === 13) {
-      this.doTheSearch();
-      return false;
+  getSearchParams() {
+    var $search = document.querySelector('.search');
+    var params = [];
+    var searchType = $search.querySelector('#type').value;
+    var searchTerm = $search.querySelector('.search-box').value;
+    if (searchType !== "all") {
+      params.push(`type:${searchType}`);
     }
-  }
 
-  // handleChanged: _.debounce(function(property) {
-  //   // test if change event fired before app.activated
-  //   if (!this.hasActivated) {
-  //     return;
-  //   }
+    if (this._showAdvancedOptions) {
 
-  //   var ticketField = property.propertyName,
-  //       ticketFieldsChanged = false;
+      // Status
+      var filter = $search.querySelector('#filter').value;
+      var condition = $search.querySelector('#condition').value;
+      var value = $search.querySelector('#value').value;
 
-  //   if (ticketField.match(/custom_field/) && this.customFieldIDs.length) {
-  //     ticketFieldsChanged = !!_.find(this.customFieldIDs, function(id) {
-  //       return ticketField === helpers.fmt("ticket.custom_field_%@", id);
-  //     });
-  //   } else if (ticketField === 'ticket.subject') {
-  //     ticketFieldsChanged = true;
-  //   }
-
-  //   if (ticketFieldsChanged) {
-  //     this.loadSearchSuggestions();
-  //   }
-  // }, 500),
-
-  fetchPage(e) {
-    e.preventDefault();
-    this.$('.results').empty();
-    this.$('.searching').show();
-    var pageUrl = this.$(e.currentTarget).data('url');
-    this.ajax('searchDesk', { pageUrl: pageUrl });
-  }
-
-  handleUsers(data) {
-    // populate the assignee drop down, excluding duplicates
-    _.each(data.users, function(agent) {
-      if (!_.contains(this.agentOptions, agent.name)) {
-        this.agentOptions.push(agent.name);
+      if (filter && condition && value) {
+        params.push([filter, condition, value].join(''));
       }
-    }, this);
 
-    if (data.next_page) {
-      this.ajax('getUsers', data.next_page);
-    } else {
-      // we have all assignable users, sort and add to select box
-      this.agentOptions.sort(function (a, b) {
-        return a.toLowerCase().localeCompare(b.toLowerCase());
-      });
+      // Created
+      var range = $search.querySelector('#range').value;
+      var from = $search.querySelector('#from').value;
+      var to = $search.querySelector('#to').value;
 
-      this._populateSelectBox('#assignee', this.agentOptions);
+      if (range && (from || to)) {
+        if (from) {
+          params.push(`${range}>${from}`);
+        }
+        if (to) {
+          params.push(`${range}<${to}`);
+        }
+      }
+
+      // Assignee
+      var assignee = $search.querySelector('#assignee').value;
+      if (assignee) {
+        params.push(`assignee:"${assignee}"`);
+      }
+
+      if (this.brands.length > 1) {
+        var brand = $search.querySelector('.brand-filter').value;
+        if (brand) {
+          params.push(`brand_id:"${brand}"`);
+        }
+      }
     }
+
+    return `${searchTerm}${params.length ? ` ${params.join(" ")}` : ''}`;
   }
 
   handleResults(data) {
-    var ticketId = this.ticket().id();
-
-    data.results = _.filter(data.results, function(result, index) {
+    var ticketId = this.ticket.id;
+    data.results = data.results.filter(function(result, index) {
       result["is_" + result.result_type] = true;
 
       // format descriptions
@@ -300,18 +191,17 @@ class Search{
       } else {
         return result;
       }
-
     });
-
     this.paginate(data);
-    data.count = this.I18n.t('search.results', { count: data.count });
-    var resultsTemplate = this.renderTemplate('results', data);
-    this.$('.searching').hide();
-    this.$('.results').html(resultsTemplate);
+    data.count = I18n.t('search.results', { count: data.count });
+    // this.$('.searching').hide();
+    document.querySelector('.results').innerHTML = getResultsTemplate(data);
+    const newHeight = Math.min(document.body.clientHeight, MAX_HEIGHT);
+    this._client.invoke('resize', { height: newHeight });
   }
 
   paginate(data) {
-    data.page_count = Math.ceil(data.count / this.PER_PAGE);
+    data.page_count = Math.ceil(data.count / PER_PAGE);
     data.is_paged = (data.page_count > 1) ? true : false;
 
     // determine current page number
@@ -346,52 +236,107 @@ class Search{
     var message = "";
 
     if (response.error) {
-      message = this.I18n.t("global.error.%@".fmt(response.error));
+      message = I18n.t(`global.error.${response.error}`);
     } else if (response.description) {
       message = response.description;
     } else {
-      message = this.I18n.t('global.error.message');
+      message = I18n.t('global.error.message');
     }
 
     var error = {
-      title: this.I18n.t('global.error.title'),
+      title: I18n.t('global.error.title'),
       message: message
     };
 
-    var errorTemplate = this.renderTemplate('error', error);
-
-    this.$('.searching').hide();
-    this.$('.results').html(errorTemplate);
+    // this.$('.searching').hide();
+    document.querySelector('.results').innerHTML = getErrorTemplate(error);
+    const newHeight = Math.min(document.body.clientHeight, MAX_HEIGHT);
+    this._client.invoke('resize', { height: newHeight });
   }
 
-  // showError: function(title, msg) {
-  //   this.switchTo('error', {
-  //     title: title || this.I18n.t('global.error.title'),
-  //     message: msg || this.I18n.t('global.error.message')
-  //   });
-  // },
+  toggleAdvanced(e){
+    e.preventDefault();
+    this._showAdvancedOptions = !this._showAdvancedOptions;
+    var $advancedOptions = document.querySelector('.advanced-options-wrapper');
+    if(this._showAdvancedOptions){
+      // Load users when advanced is clicked
+      this.populateAssignees();
+      $advancedOptions.classList.add('visible');
+    } else {
+      $advancedOptions.classList.remove('visible');
+    }
+  }
+
+  populateAssignees() {
+    if (!this.agentOptions.length) {
+      this._client.request({
+        url: this._api_endpoints.users,
+        cors: true
+      }).then(
+        this.handleUsers.bind(this),
+        this.handleFail.bind(this)
+      )
+    } else if (document.querySelectorAll('#assignee option').length === 1) {
+      // used cached agentOptions
+      this._populateSelectBox('#assignee', this.agentOptions);
+    }
+  }
+
+  handleUsers(data) {
+    // populate the assignee drop down, excluding duplicates
+    data.users.forEach(function(agent) {
+      if (!this.agentOptions.includes(agent.name)) {
+        this.agentOptions.push(agent.name);
+      }
+    }, this);
+    if (data.next_page) {
+      this._client.request({
+        url: data.next_page,
+        cors: true
+      }).then(
+        this.handleUsers.bind(this),
+        this.handleFail.bind(this)
+      )
+    } else {
+      // we have all assignable users, sort and add to select box
+      this.agentOptions.sort(function (a, b) {
+        return a.toLowerCase().localeCompare(b.toLowerCase());
+      });
+      this._populateSelectBox('#assignee', this.agentOptions);
+    }
+  }
 
   _populateSelectBox(selector, values) {
-    var htmlOptions = _.reduce(values, function(options, value) {
-      return options + helpers.fmt('<option value="%@1">%@1</option>', value);
+    var htmlOptions = values.reduce(function(options, value) {
+      return `${options}<option value="${value}">${value}</option>`;
     }, '<option value="">-</option>');
-
-    this.$(selector).html(htmlOptions);
+    document.querySelector(selector).innerHTML = htmlOptions;
   }
 
-  // _safeGetPath: function(propertyPath) {
-  //   return _.inject( propertyPath.split('.'), function(context, segment) {
-  //     if (context == null) { return context; }
-  //     var obj = context[segment];
-  //     if (_.isFunction(obj)) { obj = obj.call(context); }
-  //     return obj;
-  //   }, this);
-  // },
+  suggestionClicked(e) {
+    e.preventDefault();
+    if(e.target.classList.contains('suggestion')){
+      var $searchBox = document.querySelector('.search-box');
+      $searchBox.setAttribute('value', `${$searchBox.value} ${e.target.textContent}`.trim());
+      this.doTheSearch();
+    }
+  }
 
-  // _validateRequiredProperty: function(propertyPath) {
-  //   var value = this._safeGetPath(propertyPath);
-  //   return value != null && value !== '' && value !== 'no';
-  // },
+  handleKeydown(e) {
+    if (e.which === 13) {
+      this.doTheSearch();
+      return false;
+    }
+  }
+
+  fetchPage(e) {
+    e.preventDefault();
+    if(e.target.classList.contains('page-link')){
+      document.querySelector('.results').innerHTML = '';
+      // this.$('.searching').show();
+      this.doTheSearch(e.target.dataset.url);
+    }
+  }
 }
 
 export default Search;
