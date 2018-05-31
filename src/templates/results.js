@@ -2,9 +2,14 @@ import I18n from '../javascript/lib/i18n.js'
 let getTicketMarkup = (o) => {
   return (
     `
-    <tr class="_tooltip" data-title="${o.description}">
-      <td><a href="#/tickets/${o.id}"><b>#${o.id}</b> ${o.subject}</a></td>
-      <td class="type">${I18n.t("search.result_type.ticket")}</td>
+    <tr class="c-table__row">
+      <td class="c-table__row__cell">
+        <div class=" u-position-relative">
+          <a href class="ticket-link" data-id="${o.id}"><b>#${o.id}</b> ${o.subject}</a>
+          <div class="c-tooltip c-tooltip--large c-arrow c-arrow--t"><small>${o.description}</small></div>
+        </div>
+      </td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.ticket")}</td>
     </tr>
     `
   )        
@@ -13,9 +18,9 @@ let getTicketMarkup = (o) => {
 let getArticleMarkup = (o) => {
   return (
     `
-    <tr>
-      <td><a href="${o.html_url}" target="_blank">${o.name}</a></td>
-      <td class="type">${I18n.t("search.result_type.article")}</td>
+    <tr class="c-table__row">
+      <td class="c-table__row__cell"><a href="${o.html_url}" target="_blank">${o.name}</a></td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.article")}</td>
     </tr>
     `
   )        
@@ -25,9 +30,9 @@ let getArticleMarkup = (o) => {
 let getUserMarkup = (o) => {
   return (
     `
-    <tr>
-      <td><a href="#/users/${o.id}">${o.name}</a></td>
-      <td class="type">${I18n.t("search.result_type.user")}</td>
+    <tr class="c-table__row">
+      <td class="c-table__row__cell"><a href="#/users/${o.id}">${o.name}</a></td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.user")}</td>
     </tr>
     `
   )        
@@ -36,9 +41,9 @@ let getUserMarkup = (o) => {
 let getOrganizationMarkup = (o) => {
   return (
     `
-    <tr>
-      <td><a href="#/organizations/${o.id}/tickets">${o.name}</a></td>
-      <td class="type">${I18n.t("search.result_type.organization")}</td>
+    <tr class="c-table__row">
+      <td class="c-table__row__cell"><a href="#/organizations/${o.id}/tickets">${o.name}</a></td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.organization")}</td>
     </tr>
     `
   )  
@@ -47,9 +52,9 @@ let getOrganizationMarkup = (o) => {
 let getGroupMarkup = (o) => {
   return (
     `
-    <tr>
-      <td><a href="#/admin/people">${o.name}</a></td>
-      <td class="type">${I18n.t("search.result_type.group")}</td>
+    <tr class="c-table__row">
+      <td class="c-table__row__cell"><a href="#/admin/people">${o.name}</a></td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.group")}</td>
     </tr>
     `
   )  
@@ -58,38 +63,26 @@ let getGroupMarkup = (o) => {
 let getTopicMarkup = (o) => {
   return (
     `
-    <tr>
-      <td><a href="/entries/${o.id}" target="_blank">${o.title}</a></td>
-      <td class="type">${I18n.t("search.result_type.topic")}</td>
+    <tr class="c-table__row">
+      <td class="c-table__row__cell"><a href="/entries/${o.id}" target="_blank">${o.title}</a></td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.topic")}</td>
     </tr>
     `
   )  
 }
 
 let getPaginationMarkup = (args) => {
-  if(!args.is_paged){
-    return ''
-  }
   return (
+    args.pagination.is_paged
+    ?
     `
-    <div class="search-results-pagination clearfix">
-      <p class="paging-counter">Page ${args.current_page} of ${args.page_count}</p>
-      ${
-        args.previous_page 
-        ? 
-        `<a data-url="${args.previous_page}" href="#" class="left page-link">&larr; ${I18n.t("search.previous")}</a>`
-        :
-        ''
-      }
-      ${
-        args.next_page
-        ?
-        `<a data-url="${args.next_page}" href="#" class="right page-link">${I18n.t("search.next")} &rarr;</a>`
-        :
-        ''
-      }
-    </div>
+    <ul class="c-pagination">
+      <li class="c-pagination__page c-pagination__page--previous page-link" data-url="${args.pagination.previous_page || ''}">previous</li>
+      <li class="c-pagination__page c-pagination__page--next page-link" data-url="${args.pagination.next_page || ''}">next</li>
+    </ul>
     `
+    :
+    ''
   )
 }
 
@@ -99,29 +92,19 @@ var template = function(args){
   }
   return (
   `
-  <p class="count"><strong>${args.count}</strong></p>
-  <table class="table table-condensed">
+  <p class="count"><strong>${args.pagination.count}</strong></p>
+  <table class="c-table">
     <tbody>
       ${
         args.results.reduce((accumulator, result) => {
           let html = ''
-          if(result.is_ticket){
-            html = getTicketMarkup(result)
-          }
-          else if(result.is_article){
-            html = getArticleMarkup(result)
-          }
-          else if(result.is_user){
-            html = getUserMarkup(result)
-          }
-          else if(result.is_organization){
-            html = getOrganizationMarkup(result)
-          }
-          else if(result.is_group){
-            html = getGroupMarkup(result)
-          }
-          else if(result.is_topic){
-            html = getTopicMarkup(result)
+          switch(result.result_type){
+            case 'ticket': html = getTicketMarkup(result); break;
+            case 'article': html = getArticleMarkup(result); break;
+            case 'user': html = getUserMarkup(result); break;
+            case 'organization': html = getOrganizationMarkup(result); break;
+            case 'group': html = getGroupMarkup(result); break;
+            case 'topic': html = getTopicMarkup(result); break;
           }
           return `${accumulator}${html}`
         }, '')

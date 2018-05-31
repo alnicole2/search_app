@@ -4,11 +4,10 @@
 
 import Storage from '../lib/storage';
 import I18n from '../lib/i18n';
-import getBrandFilterTemplate from '../../templates/brand-filter';
+import {resizeContainer} from '../lib/helpers';
 import getErrorTemplate from '../../templates/error';
 import getResultsTemplate from '../../templates/results';
 import getSearchTemplate from '../../templates/search';
-import getSuggestionsTemplate from '../../templates/suggestions';
 
 const PER_PAGE = 2,
       MAX_HEIGHT = 1000;
@@ -24,8 +23,10 @@ class Search{
       users: `${this._client._origin}/api/v2/group_memberships/assignable.json?include=users`,
       search: `${this._client._origin}/api/v2/search.json?per_page=${PER_PAGE}&query=`
     }
-    this._showAdvancedOptions = false;
-    this._hasMultiplebBrands = false;
+    this._states = {
+      showAdvancedOptions: false,
+      hasMultiplebBrands: false
+    };
     // this._storage = new Storage(this._metadata.installationId, true);
     this._init();
   }
@@ -34,25 +35,31 @@ class Search{
     const currentUser = (await this._client.get('currentUser')).currentUser;
     I18n.loadTranslations(currentUser.locale);
     this._ticket = (await this._client.get('ticket')).ticket;
-    const searchFragment = document.createRange().createContextualFragment(getSearchTemplate());
+    Object.assign(
+      this._states,
+      {
+        brands: await this._getBrands(),
+        suggestions: await this._loadSearchSuggestions(),
+        assignees: await this._populateAssignees()
+      }
+    )
+    const searchFragment = document.createRange().createContextualFragment(getSearchTemplate(this._states));
     this._appContainer = searchFragment.querySelector('.search-app');
     this._keywordField = searchFragment.querySelector('.search-box');
-    await this._getBrands();
-    await this._loadSearchSuggestions();
-    await this._populateAssignees();
+    this._resultsContainer = searchFragment.querySelector('.results-wrapper');
     this._appContainer.addEventListener('click', this._eventHandlerDispatch.bind(this));
     this._keywordField.addEventListener('keydown', this._handleKeydown.bind(this));
+    this._appContainer.querySelector('#advanced-field-toggle').addEventListener('change', this._handleAdvancedFieldsToggle.bind(this));
     document.querySelector('[data-main]').replaceChild(searchFragment, document.querySelector('.loader'));
-    this._resizeContainer();
+    resizeContainer(this._client, MAX_HEIGHT);
   }
 
   _eventHandlerDispatch(event){
-    event.preventDefault();
     const target = event.target;
-    if(target.getAttribute('id') === 'search-submit') this._doTheSearch(event)
-    else if(target.parentNode.classList.contains('toggle-advanced')) this._toggleAdvanced(event)
-    else if(target.classList.contains('suggestion')) this._suggestionClicked(event)
-    else if(target.classList.contains('page-link')) this._fetchPage(event)
+    if(target.parentNode.getAttribute('id') === 'search-submit') this._doTheSearch(event)
+    else if(target.classList.contains('suggestion')) this._handleSuggestionClick(event)
+    else if(target.classList.contains('page-link') && target.dataset.url) this._doTheSearch(event, target.dataset.url)
+    else if(target.classList.contains('ticket-link')) this._handleResultLinkClick(event)
   }
 
   async _getBrands(){
@@ -60,19 +67,15 @@ class Search{
       url: this._apis.brands,
       cors: true
     })).brands;
-    if (brands.length > 1) {
-      this._hasMultiplebBrands = true;
-      const currentTicketBrand = this._ticket.brand;
-      const options = brands.map((brand) => {
-        return {
-          value: brand.id,
-          label: brand.name,
-          selected: brand.id === currentTicketBrand.id
-        };
-      });      
-      const fragment = document.createRange().createContextualFragment(getBrandFilterTemplate({options: options}));
-      this._appContainer.querySelector('.advanced-options').appendChild(fragment);
-    }
+    if (brands.length > 1) this._states.hasMultiplebBrands = true;
+    const currentTicketBrand = this._ticket.brand;
+    return brands.map((brand) => {
+      return {
+        value: brand.id,
+        label: brand.name,
+        selected: brand.id === currentTicketBrand.id
+      };
+    });
   }
 
   async _loadSearchSuggestions() {
@@ -103,32 +106,26 @@ class Search{
                       });
       searchSuggestions.push(...keywords);
     }
-    const fragment = document.createRange().createContextualFragment(getSuggestionsTemplate({searchSuggestions: searchSuggestions}));
-    this._appContainer.querySelector('.suggestions').appendChild(fragment);
+    return searchSuggestions;
   }
 
   async _populateAssignees() {
-    const assignees = (await this._client.request({
+    return (await this._client.request({
       url: this._apis.users,
       cors: true
     })).users;
-    const htmlOptions = assignees.reduce(
-      (options, assignee) => {
-        return `${options}<option value="${assignee.name}">${assignee.name}</option>`;
-      },
-      '<option value="">-</option>');
-    this._appContainer.querySelector('#assignee').innerHTML = htmlOptions;
   }
 
-  _doTheSearch(ev, url) {
+  async _doTheSearch(event, url) {
+    event.preventDefault();
+    this._resultsContainer.classList.add('loading');
+    resizeContainer(this._client, MAX_HEIGHT);
     url = url || this._apis.search + encodeURIComponent(this._getSearchParams());
-    return this._client.request({
+    const results = await this._client.request({
       url: url,
       cors: true
-    }).then(
-      this._handleResults.bind(this),
-      this._handleFail.bind(this)
-    )
+    }).catch(this._handleSearchFail.bind(this));
+    results && this._handleSearchResults(results);
   }
 
   _getSearchParams() {
@@ -139,7 +136,7 @@ class Search{
     if(searchType !== "all"){
       params.push(`type:${searchType}`);
     }
-    if(this._showAdvancedOptions){
+    if(this._states.showAdvancedOptions){
       // Status
       const filter = $search.querySelector('#filter').value,
             condition = $search.querySelector('#condition').value,
@@ -155,92 +152,69 @@ class Search{
       const assignee = $search.querySelector('#assignee').value;
       if(assignee) params.push(`assignee:"${assignee}"`);
       // Brand
-      const brand = $search.querySelector('.brand-filter').value;
-      if(this._hasMultiplebBrands) brand && params.push(`brand_id:"${brand}"`)
+      const brand = $search.querySelector('#brand-filter').value;
+      if(this._states.hasMultiplebBrands) brand && params.push(`brand_id:"${brand}"`);
     }
     if(params.length) return `${searchTerm} ${params.join(" ")}`;
     return searchTerm;
   }
 
-  _handleResults(data) {
-    const ticketId = this._ticket.id;
-    data.results = data.results.filter((result, index) => {
-      result["is_" + result.result_type] = true;
+  _handleSearchResults(data) {
+    this._states.results = data.results.filter((result, index) => {
       // format descriptions
       if(result.result_type === 'ticket'){
-        if (result.id === ticketId) return false;
+        if (result.id === this._ticket.id) return true;
         result.description = result.description.substr(0,300).concat("...");
       }
       return true;
     });
-    this._paginate(data);
-    data.count = I18n.t('search.results', { count: data.count });
-    this._appContainer.querySelector('.results').innerHTML = getResultsTemplate(data);
-    this._resizeContainer();
+    this._states.pagination = {
+      is_paged: !!(data.next_page || data.previous_page),
+      previous_page: data.previous_page,
+      next_page: data.next_page,
+      count: I18n.t('search.results', { count: data.count })
+    };
+    this._renderTemplate('.results', getResultsTemplate);
   }
 
-  _paginate(data) {
-    data.is_paged = true;
-    data.pages = [
-      {
-        url: '#1',
-        number: 1
-      },
-      {
-        url: '#2',
-        number: 2
-      },
-      {
-        url: '#3',
-        number: 3
-      },
-    ];
-  }
-
-  _handleFail(data) {
+  _handleSearchFail(data) {
     const response = JSON.parse(data.responseText);
-    let message = "";
-    if(response.error){
-      message = I18n.t(`global.error.${response.error}`);
-    } else if(response.description){
-      message = response.description;
-    } else{
-      message = I18n.t('global.error.message');
-    }
-    const error = {
+    let message = '';
+    if(response.error){ message = I18n.t(`global.error.${response.error}`); }
+    else if(response.description){ message = response.description; }
+    else{ message = I18n.t('global.error.message'); }
+    this._states.error = {
       title: I18n.t('global.error.title'),
       message: message
     };
-    this._appContainer.querySelector('.results').innerHTML = getErrorTemplate(error);
-    this._resizeContainer();
+    this._renderTemplate('.results', getErrorTemplate);
   }
 
-  _toggleAdvanced(e){
-    this._showAdvancedOptions = !this._showAdvancedOptions;
-    const $advancedOptions = this._appContainer.querySelector('.advanced-options-wrapper');
-    if(this._showAdvancedOptions){
-      $advancedOptions.classList.add('visible');
-    } else {
-      $advancedOptions.classList.remove('visible');
-    }
+  _handleAdvancedFieldsToggle(event){
+    this._states.showAdvancedOptions = event.target.checked;
+    this._appContainer.querySelector('.advanced-options-wrapper').classList.toggle('u-display-block');
+    resizeContainer(this._client, MAX_HEIGHT);
   }
 
-  _suggestionClicked(e) {
-    this._keywordField.setAttribute('value', `${this._keywordField.value} ${e.target.textContent}`.trim());
-    this._doTheSearch(e);
+  _handleSuggestionClick(event){
+    this._keywordField.value = `${this._keywordField.value} ${event.target.textContent}`.trim();
+    this._doTheSearch(event);
   }
 
-  _handleKeydown(e) {
-    e.which === 13 && this._doTheSearch(e);
+  _handleResultLinkClick(event){
+    event.preventDefault();
+    console.log(event.target.dataset.id);
+    this._client.invoke('routeTo', 'ticket', event.target.dataset.id);
   }
 
-  _fetchPage(e) {
-    this._doTheSearch(e, e.target.dataset.url);
+  _handleKeydown(event) {
+    event.which === 13 && this._doTheSearch(event);
   }
 
-  _resizeContainer(){
-    const newHeight = Math.min(document.body.clientHeight, MAX_HEIGHT);
-    return this._client.invoke('resize', { height: newHeight });
+  _renderTemplate(container, template){
+    this._resultsContainer.classList.remove('loading');
+    this._appContainer.querySelector(container).innerHTML = template(this._states);
+    resizeContainer(this._client, MAX_HEIGHT);
   }
 }
 

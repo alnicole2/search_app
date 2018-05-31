@@ -2,8 +2,8 @@ var template = function(args){
   return (
   `
   <div class="alert">
-    <h4>${args.title}</h4>
-    <p>${args.message}</p>
+    <h4>${args.error.title}</h4>
+    <p>${args.error.message}</p>
   </div>
   `
   )
