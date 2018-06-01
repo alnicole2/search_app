@@ -89,9 +89,9 @@ let getPaginationMarkup = (args) => {
 let getErrorMarkup = (args) => {
   return (
     `
-    <div class="alert">
-      <h4>${args.error.title}</h4>
-      <p>${args.error.message}</p>
+    <div class="c-callout c-callout--error">
+      <strong class="c-callout__title"><span dir="ltr">${args.error.title}</span></strong>
+      <p class="c-callout__paragraph">${args.error.message}</p>
     </div>
     `
   )
