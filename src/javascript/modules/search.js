@@ -5,7 +5,6 @@
 import Storage from '../lib/storage';
 import I18n from '../lib/i18n';
 import {resizeContainer} from '../lib/helpers';
-import getErrorTemplate from '../../templates/error';
 import getResultsTemplate from '../../templates/results';
 import getSearchTemplate from '../../templates/search';
 
@@ -14,7 +13,6 @@ const PER_PAGE = 2,
 
 class Search{
   constructor(client, appData, config) {
-    console.log(client, appData);
     this._client = client;
     this._appData = appData;
     this._config = config;
@@ -25,13 +23,18 @@ class Search{
     }
     this._states = {
       showAdvancedOptions: false,
-      hasMultiplebBrands: false
+      hasMultiplebBrands: false,
+      results: [],
+      isLoading: false
     };
-    // this._storage = new Storage(this._metadata.installationId, true);
     this._init();
   }
 
+  /**
+   * Initialization App 
+   */
   async _init(){
+    // retrieve initialization data
     const currentUser = (await this._client.get('currentUser')).currentUser;
     I18n.loadTranslations(currentUser.locale);
     this._ticket = (await this._client.get('ticket')).ticket;
@@ -39,35 +42,31 @@ class Search{
       this._states,
       {
         brands: await this._getBrands(),
-        suggestions: await this._loadSearchSuggestions(),
-        assignees: await this._populateAssignees()
+        suggestions: await this._getSearchSuggestions(),
+        assignees: await this._getAssignees()
       }
     )
-    const searchFragment = document.createRange().createContextualFragment(getSearchTemplate(this._states));
-    this._appContainer = searchFragment.querySelector('.search-app');
-    this._keywordField = searchFragment.querySelector('.search-box');
-    this._resultsContainer = searchFragment.querySelector('.results-wrapper');
-    this._appContainer.addEventListener('click', this._eventHandlerDispatch.bind(this));
+    // render application markup
+    await this._render('.loader', getSearchTemplate);
+    this._appContainer = document.querySelector('.search-app');
+    this._keywordField = document.querySelector('.search-box');
+    this._advancedToggle = document.querySelector('#advanced-field-toggle');
+    // bind events
+    this._appContainer.addEventListener('click', this._clickHandlerDispatch.bind(this));
     this._keywordField.addEventListener('keydown', this._handleKeydown.bind(this));
-    this._appContainer.querySelector('#advanced-field-toggle').addEventListener('change', this._handleAdvancedFieldsToggle.bind(this));
-    document.querySelector('[data-main]').replaceChild(searchFragment, document.querySelector('.loader'));
-    resizeContainer(this._client, MAX_HEIGHT);
+    this._advancedToggle.addEventListener('change', this._handleAdvancedFieldsToggle.bind(this));
   }
 
-  _eventHandlerDispatch(event){
-    const target = event.target;
-    if(target.parentNode.getAttribute('id') === 'search-submit') this._doTheSearch(event)
-    else if(target.classList.contains('suggestion')) this._handleSuggestionClick(event)
-    else if(target.classList.contains('page-link') && target.dataset.url) this._doTheSearch(event, target.dataset.url)
-    else if(target.classList.contains('ticket-link')) this._handleResultLinkClick(event)
-  }
-
+  /**
+   * Get available brands list
+   * @return {Promise} Resolved to a brands array
+   */
   async _getBrands(){
     const brands = (await this._client.request({
       url: this._apis.brands,
       cors: true
     })).brands;
-    if (brands.length > 1) this._states.hasMultiplebBrands = true;
+    if (brands.length > 1) Object.assign(this._states, {hasMultiplebBrands : true});
     const currentTicketBrand = this._ticket.brand;
     return brands.map((brand) => {
       return {
@@ -78,7 +77,11 @@ class Search{
     });
   }
 
-  async _loadSearchSuggestions() {
+  /**
+   * Get keyword suggestions list from custom fields and ticket subject
+   * @return {Promise} Resolved to a suggestions array
+   */
+  async _getSearchSuggestions() {
     const searchSuggestions = [],
           customFieldIDs = this._appData.metadata.settings.custom_fields.match(/\d+/g),
           isRelatedTicketsConfigOn = this._appData.metadata.settings.related_tickets, 
@@ -109,17 +112,56 @@ class Search{
     return searchSuggestions;
   }
 
-  async _populateAssignees() {
+  /**
+   * Get assignees list
+   * !! To be confirm, how to get the full list in one shot
+   * @return {Promise} Resolved to an assignees array
+   */
+  async _getAssignees() {
     return (await this._client.request({
       url: this._apis.users,
       cors: true
     })).users;
   }
 
+  /**
+   * Handling click events delegation
+   * @param {Event} event
+   */
+  _clickHandlerDispatch(event){
+    const target = event.target;
+    if(target.parentNode.id === 'search-submit') this._doTheSearch(event);
+    else if(target.classList.contains('suggestion')) this._handleSuggestionClick(event);
+    else if(target.classList.contains('page-link') && target.dataset.url) this._doTheSearch(event, target.dataset.url);
+    else if(target.classList.contains('ticket-link')) this._handleResultLinkClick(event);
+  }
+
+  /**
+   * Keyword field keydown handler, search when press enter key
+   * @param {Event} event
+   */
+  _handleKeydown(event) {
+    event.which === 13 && this._doTheSearch(event);
+  }
+
+  /**
+   * Advanced toggle change handler
+   * @param {Event} event
+   */
+  _handleAdvancedFieldsToggle(event){
+    Object.assign(this._states, {showAdvancedOptions: event.target.checked});
+    this._appContainer.querySelector('.advanced-options-wrapper').classList.toggle('u-display-block');
+    resizeContainer(this._client, MAX_HEIGHT);
+  }
+    /**
+   * Fire the search request
+   * @param {Event} event
+   * @param {String} url if url is passed in(e.g. prev/next links), use it instead of compsing endpoint from form.
+   */
   async _doTheSearch(event, url) {
     event.preventDefault();
-    this._resultsContainer.classList.add('loading');
-    resizeContainer(this._client, MAX_HEIGHT);
+    Object.assign(this._states, {isLoading: true});
+    await this._render('.results-wrapper', getResultsTemplate);
     url = url || this._apis.search + encodeURIComponent(this._getSearchParams());
     const results = await this._client.request({
       url: url,
@@ -128,6 +170,28 @@ class Search{
     results && this._handleSearchResults(results);
   }
 
+  /**
+   * Suggestion tag click handler
+   * @param {Event} event
+   */
+  _handleSuggestionClick(event){
+    this._keywordField.value = `${this._keywordField.value} ${event.target.textContent}`.trim();
+    this._doTheSearch(event);
+  }
+
+  /**
+   * Result link click handler
+   * @param {Event} event
+   */
+  _handleResultLinkClick(event){
+    event.preventDefault();
+    this._client.invoke('routeTo', 'ticket', event.target.dataset.id);
+  }
+
+  /**
+   * Retrieve the search params from form fields
+   * @return {String} concatenated search terms string
+   */
   _getSearchParams() {
     const params = [],
           $search = this._appContainer.querySelector('.search'),
@@ -159,62 +223,71 @@ class Search{
     return searchTerm;
   }
 
+  /**
+   * Format and render search results
+   * @param {Object} data response of the search request
+   */
   _handleSearchResults(data) {
-    this._states.results = data.results.filter((result, index) => {
-      // format descriptions
-      if(result.result_type === 'ticket'){
-        if (result.id === this._ticket.id) return true;
-        result.description = result.description.substr(0,300).concat("...");
+    Object.assign(
+      this._states, 
+      {
+        results: data.results.filter((result, index) => {
+          // Format result description,
+          // !! Discard current open ticket from the results list, this causes an existing bug when results are paginated
+          if(result.result_type === 'ticket'){
+            if (result.id === this._ticket.id) return false;
+            result.description = result.description.substr(0,300).concat("...");
+          }
+          return true;
+        }),
+        pagination: {
+          is_paged: !!(data.next_page || data.previous_page),
+          previous_page: data.previous_page,
+          next_page: data.next_page,
+          count: I18n.t('search.results', { count: data.count })
+        },
+        isLoading: false,
+        isError: false
       }
-      return true;
-    });
-    this._states.pagination = {
-      is_paged: !!(data.next_page || data.previous_page),
-      previous_page: data.previous_page,
-      next_page: data.next_page,
-      count: I18n.t('search.results', { count: data.count })
-    };
-    this._renderTemplate('.results', getResultsTemplate);
+    );
+    this._render('.results-wrapper', getResultsTemplate);
   }
 
+  /**
+   * Format and render error message
+   * @param {Object} data response of the search request
+   */
   _handleSearchFail(data) {
     const response = JSON.parse(data.responseText);
     let message = '';
     if(response.error){ message = I18n.t(`global.error.${response.error}`); }
     else if(response.description){ message = response.description; }
     else{ message = I18n.t('global.error.message'); }
-    this._states.error = {
-      title: I18n.t('global.error.title'),
-      message: message
-    };
-    this._renderTemplate('.results', getErrorTemplate);
+    Object.assign(
+      this._states, 
+      {
+        error: {
+          title: I18n.t('global.error.title'),
+          message: message
+        },
+        isLoading: false,
+        isError: true
+      }
+    )
+    this._render('.results-wrapper', getResultsTemplate);
   }
 
-  _handleAdvancedFieldsToggle(event){
-    this._states.showAdvancedOptions = event.target.checked;
-    this._appContainer.querySelector('.advanced-options-wrapper').classList.toggle('u-display-block');
-    resizeContainer(this._client, MAX_HEIGHT);
-  }
-
-  _handleSuggestionClick(event){
-    this._keywordField.value = `${this._keywordField.value} ${event.target.textContent}`.trim();
-    this._doTheSearch(event);
-  }
-
-  _handleResultLinkClick(event){
-    event.preventDefault();
-    console.log(event.target.dataset.id);
-    this._client.invoke('routeTo', 'ticket', event.target.dataset.id);
-  }
-
-  _handleKeydown(event) {
-    event.which === 13 && this._doTheSearch(event);
-  }
-
-  _renderTemplate(container, template){
-    this._resultsContainer.classList.remove('loading');
-    this._appContainer.querySelector(container).innerHTML = template(this._states);
-    resizeContainer(this._client, MAX_HEIGHT);
+  /**
+   * Render template
+   * @param {String} replacedNodeSelector selector of the node to be replaced
+   * @param {Function} getTemplate function to generate the new Node
+   * @return {Promise} will resolved after resize
+   */
+  _render(replacedNodeSelector, getTemplate){
+    const fragment = document.createRange().createContextualFragment(getTemplate(this._states));
+    const replacedNode = document.querySelector(replacedNodeSelector)
+    replacedNode.parentNode.replaceChild(fragment, replacedNode);
+    return resizeContainer(this._client, MAX_HEIGHT);
   }
 }
 

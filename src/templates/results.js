@@ -6,7 +6,7 @@ let getTicketMarkup = (o) => {
       <td class="c-table__row__cell">
         <div class=" u-position-relative">
           <a href class="ticket-link" data-id="${o.id}"><b>#${o.id}</b> ${o.subject}</a>
-          <div class="c-tooltip c-tooltip--large c-arrow c-arrow--t"><small>${o.description}</small></div>
+          <div class="c-tooltip c-tooltip--large c-arrow c-arrow--b"><small>${o.description}</small></div>
         </div>
       </td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.ticket")}</td>
@@ -86,34 +86,53 @@ let getPaginationMarkup = (args) => {
   )
 }
 
-var template = function(args){
-  if(!args.results.length){
-    return I18n.t("global.no_results")
-  }
+let getErrorMarkup = (args) => {
   return (
-  `
-  <p class="count"><strong>${args.pagination.count}</strong></p>
-  <table class="c-table">
-    <tbody>
-      ${
-        args.results.reduce((accumulator, result) => {
-          let html = ''
-          switch(result.result_type){
-            case 'ticket': html = getTicketMarkup(result); break;
-            case 'article': html = getArticleMarkup(result); break;
-            case 'user': html = getUserMarkup(result); break;
-            case 'organization': html = getOrganizationMarkup(result); break;
-            case 'group': html = getGroupMarkup(result); break;
-            case 'topic': html = getTopicMarkup(result); break;
+    `
+    <div class="alert">
+      <h4>${args.error.title}</h4>
+      <p>${args.error.message}</p>
+    </div>
+    `
+  )
+}
+
+let getLoaderMarkup = (args) => {
+  return `<div class="loader"><img src="dot.gif"/> ${I18n.t("global.searching")}</div>`
+}
+
+let getResultsMarkup = (args) => {
+  return (
+    `
+      <p class="count"><strong>${args.pagination.count}</strong></p>
+      <table class="c-table">
+        <tbody>
+          ${
+            args.results.reduce((accumulator, result) => {
+              let html = ''
+              switch(result.result_type){
+                case 'ticket': html = getTicketMarkup(result); break;
+                case 'article': html = getArticleMarkup(result); break;
+                case 'user': html = getUserMarkup(result); break;
+                case 'organization': html = getOrganizationMarkup(result); break;
+                case 'group': html = getGroupMarkup(result); break;
+                case 'topic': html = getTopicMarkup(result); break;
+              }
+              return `${accumulator}${html}`
+            }, '')
           }
-          return `${accumulator}${html}`
-        }, '')
-      }
-    </tbody>
-  </table>
-  ${getPaginationMarkup(args)}
-  `
+        </tbody>
+      </table>
+      ${getPaginationMarkup(args)}
+    `
   )
 }
   
-export default template
+export default function template(args){
+  let resultsHTML = '';
+  if(args.isLoading) resultsHTML = getLoaderMarkup(args)
+  else if(args.isError) resultsHTML = getErrorMarkup(args)
+  else if(!args.results.length) resultsHTML = I18n.t("global.no_results")
+  else resultsHTML = getResultsMarkup(args)
+  return `<div class="results-wrapper">${resultsHTML}</div>`
+}

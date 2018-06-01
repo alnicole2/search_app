@@ -117,10 +117,7 @@ var template = function(args){
         </div>
       </form>
     </div>
-    <div class="results-wrapper">
-      <div class="loader"><img src="dot.gif"/> ${I18n.t("global.searching")}</div>
-      <div class="results"></div>
-    </div>
+    <div class="results-wrapper"></div>
   </div>
   `
   )
