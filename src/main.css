@@ -1,19 +1,22 @@
 @import '@zendeskgarden/css-bedrock';
-@import '@zendeskgarden/css-buttons';
-@import '@zendeskgarden/css-forms';
-@import '@zendeskgarden/css-tags';
-@import '@zendeskgarden/css-utilities';
-@import '@zendeskgarden/css-grid';
-@import '@zendeskgarden/css-pagination';
-@import '@zendeskgarden/css-tables';
-@import '@zendeskgarden/css-tooltips';
-@import '@zendeskgarden/css-arrows';
-@import '@zendeskgarden/css-callouts';
+@import '@zendeskgarden/css-buttons/dist/index.css';
+@import '@zendeskgarden/css-forms/dist/index.css';
+@import '@zendeskgarden/css-tags/dist/index.css';
+@import '@zendeskgarden/css-utilities/dist/index.css';
+@import '@zendeskgarden/css-grid/dist/index.css';
+@import '@zendeskgarden/css-pagination/dist/index.css';
+@import '@zendeskgarden/css-tables/dist/index.css';
+@import '@zendeskgarden/css-tooltips/dist/index.css';
+@import '@zendeskgarden/css-arrows/dist/index.css';
+@import '@zendeskgarden/css-callouts/dist/index.css';
 
 .c-txt__input{
   align-items: center;
   padding-top: 0;
   padding-bottom: 0;
+}
+.c-chk__label--toggle{
+  height: 20px;
 }
 .advanced-options-wrapper{
   display: none;

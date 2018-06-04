@@ -3,17 +3,16 @@ const CleanWebpackPlugin = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const TranslationsPlugin = require('./webpack/translations-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env) => {
-
-  const getEnvConfig = (dev, prod) => {
-    switch(process.env.NODE_ENV){
-      case 'development': return dev || {};
-      case 'production': return prod || {};
-      default: return {};
-    }
-  }
+  // const getEnvConfig = (dev, prod) => {
+  //   switch (process.env.NODE_ENV){
+  //     case 'development': return dev || {}
+  //     case 'production': return prod || {}
+  //     default: return {}
+  //   }
+  // }
 
   return {
     entry: {
@@ -78,7 +77,7 @@ module.exports = (env) => {
       }),
 
       // Take the css and put it in styles.css
-      new ExtractTextPlugin('styles.css'),
+      new ExtractTextPlugin('styles.css')
 
       // new BundleAnalyzerPlugin()
     ]

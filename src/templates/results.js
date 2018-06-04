@@ -1,4 +1,5 @@
 import I18n from '../javascript/lib/i18n.js'
+import {templatingLoop as loop} from '../javascript/lib/helpers.js'
 let getTicketMarkup = (o) => {
   return (
     `
@@ -9,10 +10,10 @@ let getTicketMarkup = (o) => {
           <div class="c-tooltip c-tooltip--large c-arrow c-arrow--b"><small>${o.description}</small></div>
         </div>
       </td>
-      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.ticket")}</td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.ticket')}</td>
     </tr>
     `
-  )        
+  )
 }
 
 let getArticleMarkup = (o) => {
@@ -20,22 +21,21 @@ let getArticleMarkup = (o) => {
     `
     <tr class="c-table__row">
       <td class="c-table__row__cell"><a href="${o.html_url}" target="_blank">${o.name}</a></td>
-      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.article")}</td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.article')}</td>
     </tr>
     `
-  )        
+  )
 }
-
 
 let getUserMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
       <td class="c-table__row__cell"><a href="#/users/${o.id}">${o.name}</a></td>
-      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.user")}</td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.user')}</td>
     </tr>
     `
-  )        
+  )
 }
 
 let getOrganizationMarkup = (o) => {
@@ -43,10 +43,10 @@ let getOrganizationMarkup = (o) => {
     `
     <tr class="c-table__row">
       <td class="c-table__row__cell"><a href="#/organizations/${o.id}/tickets">${o.name}</a></td>
-      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.organization")}</td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.organization')}</td>
     </tr>
     `
-  )  
+  )
 }
 
 let getGroupMarkup = (o) => {
@@ -54,10 +54,10 @@ let getGroupMarkup = (o) => {
     `
     <tr class="c-table__row">
       <td class="c-table__row__cell"><a href="#/admin/people">${o.name}</a></td>
-      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.group")}</td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.group')}</td>
     </tr>
     `
-  )  
+  )
 }
 
 let getTopicMarkup = (o) => {
@@ -65,24 +65,22 @@ let getTopicMarkup = (o) => {
     `
     <tr class="c-table__row">
       <td class="c-table__row__cell"><a href="/entries/${o.id}" target="_blank">${o.title}</a></td>
-      <td class="type c-table__row__cell u-ta-right">${I18n.t("search.result_type.topic")}</td>
+      <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.topic')}</td>
     </tr>
     `
-  )  
+  )
 }
 
 let getPaginationMarkup = (args) => {
   return (
     args.pagination.is_paged
-    ?
-    `
+      ? `
     <ul class="c-pagination">
       <li class="c-pagination__page c-pagination__page--previous page-link" data-url="${args.pagination.previous_page || ''}">previous</li>
       <li class="c-pagination__page c-pagination__page--next page-link" data-url="${args.pagination.next_page || ''}">next</li>
     </ul>
     `
-    :
-    ''
+      : ''
   )
 }
 
@@ -97,8 +95,20 @@ let getErrorMarkup = (args) => {
   )
 }
 
+let getResultMarkup = (result) => {
+  switch (result.result_type) {
+    case 'ticket': return getTicketMarkup(result)
+    case 'article': return getArticleMarkup(result)
+    case 'user': return getUserMarkup(result)
+    case 'organization': return getOrganizationMarkup(result)
+    case 'group': return getGroupMarkup(result)
+    case 'topic': return getTopicMarkup(result)
+    default: return ''
+  }
+}
+
 let getLoaderMarkup = (args) => {
-  return `<div class="loader"><img src="dot.gif"/> ${I18n.t("global.searching")}</div>`
+  return `<div class="loader"><img src="dot.gif"/> ${I18n.t('global.searching')}</div>`
 }
 
 let getResultsMarkup = (args) => {
@@ -107,32 +117,19 @@ let getResultsMarkup = (args) => {
       <p class="count"><strong>${args.pagination.count}</strong></p>
       <table class="c-table">
         <tbody>
-          ${
-            args.results.reduce((accumulator, result) => {
-              let html = ''
-              switch(result.result_type){
-                case 'ticket': html = getTicketMarkup(result); break;
-                case 'article': html = getArticleMarkup(result); break;
-                case 'user': html = getUserMarkup(result); break;
-                case 'organization': html = getOrganizationMarkup(result); break;
-                case 'group': html = getGroupMarkup(result); break;
-                case 'topic': html = getTopicMarkup(result); break;
-              }
-              return `${accumulator}${html}`
-            }, '')
-          }
+          ${loop(args.results, getResultMarkup)}
         </tbody>
       </table>
       ${getPaginationMarkup(args)}
     `
   )
 }
-  
-export default function template(args){
-  let resultsHTML = '';
-  if(args.isLoading) resultsHTML = getLoaderMarkup(args)
-  else if(args.isError) resultsHTML = getErrorMarkup(args)
-  else if(!args.results.length) resultsHTML = I18n.t("global.no_results")
+
+export default function template (args) {
+  let resultsHTML = ''
+  if (args.isLoading) resultsHTML = getLoaderMarkup(args)
+  else if (args.isError) resultsHTML = getErrorMarkup(args)
+  else if (!args.results.length) resultsHTML = I18n.t('global.no_results')
   else resultsHTML = getResultsMarkup(args)
   return `<div class="results-wrapper">${resultsHTML}</div>`
 }

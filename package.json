@@ -7,9 +7,9 @@
   "license": "ISC",
   "scripts": {
     "test": "karma start --single-run",
-    "watch": "NODE_ENV='development' webpack --watch",
-    "build:dev": "NODE_ENV='development' webpack",
-    "build": "NODE_ENV='production' webpack -p",
+    "watch": "cross-env NODE_ENV='development' webpack --watch",
+    "build:dev": "cross-env NODE_ENV='development' webpack",
+    "build": "cross-env NODE_ENV='production' webpack -p",
     "lint": "standard"
   },
   "devDependencies": {
@@ -41,12 +41,12 @@
     "babel-preset-env": "^1.6.1",
     "clean-webpack-plugin": "^0.1.18",
     "copy-webpack-plugin": "^4.4.1",
+    "cross-env": "^5.1.6",
     "css-loader": "^0.28.9",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.9",
     "html-webpack-plugin": "^2.30.1",
     "js-yaml": "^3.11.0",
-    "postcss-apply": "^0.10.0",
     "postcss-import": "^11.1.0",
     "postcss-loader": "^2.1.5",
     "postcss-preset-env": "^5.1.0",
