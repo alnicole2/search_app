@@ -20,7 +20,7 @@ module.exports = (env) => {
       app: [
         'babel-polyfill',
         './src/javascript/main.js',
-        './src/main.scss'
+        './src/main.css'
       ]
     },
 
@@ -47,9 +47,9 @@ module.exports = (env) => {
           use: './webpack/translations-loader'
         },
         {
-          test: /\.(scss)|(css)$/,
+          test: /\.css$/,
           use: ExtractTextPlugin.extract({
-            use: ['css-loader', 'sass-loader']
+            use: ['css-loader', 'postcss-loader']
           })
         },
         {

@@ -1,14 +1,14 @@
-@import '~@zendeskgarden/css-bedrock';
-@import '~@zendeskgarden/css-buttons';
-@import '~@zendeskgarden/css-forms';
-@import '~@zendeskgarden/css-tags';
-@import '~@zendeskgarden/css-utilities';
-@import '~@zendeskgarden/css-grid';
-@import '~@zendeskgarden/css-pagination';
-@import '~@zendeskgarden/css-tables';
-@import '~@zendeskgarden/css-tooltips';
-@import '~@zendeskgarden/css-arrows';
-@import '~@zendeskgarden/css-callouts';
+@import '@zendeskgarden/css-bedrock';
+@import '@zendeskgarden/css-buttons';
+@import '@zendeskgarden/css-forms';
+@import '@zendeskgarden/css-tags';
+@import '@zendeskgarden/css-utilities';
+@import '@zendeskgarden/css-grid';
+@import '@zendeskgarden/css-pagination';
+@import '@zendeskgarden/css-tables';
+@import '@zendeskgarden/css-tooltips';
+@import '@zendeskgarden/css-arrows';
+@import '@zendeskgarden/css-callouts';
 
 .c-txt__input{
   align-items: center;
@@ -36,7 +36,6 @@
         }
       }
     }
-
   }
 }
 
