@@ -56,6 +56,7 @@ const I18n = {
       I18n.tryRequire(locale.replace(/-.+$/, '')) || // e.g. fallback `en-US` to `en`
       I18n.tryRequire(defaultLocale) ||
       {}
+    return translations
   }
 }
 

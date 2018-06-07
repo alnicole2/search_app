@@ -33,7 +33,7 @@ module.exports = (env) => {
       rules: [
         {
           test: /\.js$/,
-          use: { loader: 'babel-loader', options: { presets: ['babel-preset-env'] } }
+          use: { loader: 'babel-loader' }
         },
         {
           test: /\.json$/,

@@ -26,7 +26,7 @@ class Search {
       results: [],
       isLoading: false
     }
-    this._init()
+    this._initializePromise = this._init()
   }
 
   /**
@@ -86,7 +86,7 @@ class Search {
     const isRelatedTicketsConfigOn = this._appData.metadata.settings.related_tickets
     const ticketSubject = (await this._client.get('ticket.subject'))['ticket.subject']
     // custom field suggestions
-    if (customFieldIDs.length) {
+    if (customFieldIDs) {
       await customFieldIDs.reduce((p, id) => {
         const customFieldName = `ticket.customField:custom_field_${id}`
         return p.then(() => {
