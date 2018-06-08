@@ -1,16 +1,15 @@
-import NewTicketSidebar from '../src/javascript/locations/new_ticket_sidebar';
+/* global describe, it, jest, expect */
+import NewTicketSidebar from '../src/javascript/locations/new_ticket_sidebar'
 var mockSearch
 jest.mock('../src/javascript/modules/search', () => {
-  mockSearch = class {
-    constructor(){}
-  }
+  mockSearch = class {}
   return mockSearch
 })
 
 describe('NewTicketSidebar', () => {
-  const app = new NewTicketSidebar({}, {});
+  const app = new NewTicketSidebar({}, {})
 
   it('constructs a new instance from Search class', () => {
-    expect(app instanceof mockSearch).toBe(true);
-  });
-});
+    expect(app instanceof mockSearch).toBe(true)
+  })
+})

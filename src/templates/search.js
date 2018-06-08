@@ -27,9 +27,9 @@ var template = function (args) {
         </fieldset>
         <fieldset class="u-mb-sm suggestions">
           ${loop(
-            args.suggestions,
-            suggestion => `<a href class="c-tag u-mr-xs suggestion">${suggestion}</a>`
-          )}
+      args.suggestions,
+      suggestion => `<a href class="c-tag u-mr-xs suggestion">${suggestion}</a>`
+    )}
         </fieldset>
         <fieldset class="u-mb-sm u-ta-right c-chk">
           <input class="c-chk__input" id="advanced-field-toggle" type="checkbox">
@@ -89,10 +89,10 @@ var template = function (args) {
             <label class="c-txt__label" for="assignee">${I18n.t('search.user.assignee')}</label>
             <select name="assignee" id="assignee" class="c-txt__input c-txt__input--select">
               ${loop(
-                args.assignees,
-                assignee => `<option value="${assignee.name}">${assignee.name}</option>`,
-                `<option value="">-</option>`
-              )}
+      args.assignees,
+      assignee => `<option value="${assignee.name}">${assignee.name}</option>`,
+      `<option value="">-</option>`
+    )}
             </select>
             ${args.hasMultiplebBrands &&
               `
@@ -100,14 +100,14 @@ var template = function (args) {
                 <label class="c-txt__label" for="brand-filter">${I18n.t('brand_filter.brand')}</label>
                 <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select">
                   ${loop(
-                    args.brands,
-                    brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${brand.label}</option>`,
-                    `<option value="">${I18n.t('brand_filter.all_brands')}</option>`
-                  )}
+      args.brands,
+      brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${brand.label}</option>`,
+      `<option value="">${I18n.t('brand_filter.all_brands')}</option>`
+    )}
                 </select>
               </div>
               `
-            }
+    }
           </fieldset>
         </div>
       </form>

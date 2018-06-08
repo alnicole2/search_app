@@ -1,4 +1,4 @@
-/* eslint-env jasmine */
+/* global describe, it, jest, expect, beforeAll */
 import I18n from '../src/javascript/lib/i18n'
 
 jest.mock('../src/manifest.json', () => {
@@ -25,7 +25,7 @@ describe('I18n', () => {
     it('should throw error calling translate without initialization', function () {
       expect(() => {
         t('one')
-      }).toThrow();
+      }).toThrow()
     })
     it('loadTranslations return en translations', function () {
       expect(I18n.loadTranslations('en')).toBe(mocktranslationObject)
@@ -34,7 +34,7 @@ describe('I18n', () => {
       expect(I18n.loadTranslations('FAIL')).toBe(mocktranslationObject)
     })
     it('loadTranslations fail, returnm empty object', function () {
-      mockTryRequire = jest.spyOn(I18n, 'tryRequire').mockImplementation(locale => null);
+      mockTryRequire = jest.spyOn(I18n, 'tryRequire').mockImplementation(locale => null)
       expect(I18n.loadTranslations('FAIL')).toEqual({})
     })
   })
@@ -43,7 +43,7 @@ describe('I18n', () => {
       mockTryRequire.mockRestore()
       I18n.loadTranslations('en')
     })
-    
+
     it('returns a string', function () {
       expect(t('one')).toBe('the first translation')
     })
@@ -63,19 +63,19 @@ describe('I18n', () => {
     it('should throw error if translate keyword is not string', function () {
       expect(() => {
         t({})
-      }).toThrow();
+      }).toThrow()
     })
 
     it('should throw error if translate keyword is missing in the language file', function () {
       expect(() => {
         t('four')
-      }).toThrow();
+      }).toThrow()
     })
 
     it('should throw error if translation is not a string', function () {
       expect(() => {
         t('object')
-      }).toThrow();
+      }).toThrow()
     })
   })
 })

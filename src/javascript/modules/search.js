@@ -7,7 +7,7 @@ import {resizeContainer} from '../lib/helpers'
 import getResultsTemplate from '../../templates/results'
 import getSearchTemplate from '../../templates/search'
 
-const PER_PAGE = 2
+const PER_PAGE = 10
 const MAX_HEIGHT = 1000
 
 class Search {
@@ -214,8 +214,8 @@ class Search {
       const assignee = $search.querySelector('#assignee').value
       if (assignee) params.push(`assignee:"${assignee}"`)
       // Brand
-      const brand = $search.querySelector('#brand-filter').value
-      if (this._states.hasMultiplebBrands) brand && params.push(`brand_id:"${brand}"`)
+      const brand = $search.querySelector('#brand-filter')
+      if (this._states.hasMultiplebBrands) brand.value && params.push(`brand_id:"${brand.value}"`)
     }
     if (params.length) return `${searchTerm} ${params.join(' ')}`
     return searchTerm
