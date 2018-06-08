@@ -28,6 +28,25 @@ if (!document.createRange) {
 }
 
 describe('Search App', () => {
+  describe('Initialization Failure', () => {
+    let app
+    beforeEach(() => {
+      document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
+      CLIENT.request = jest.fn()
+        .mockReturnValueOnce(Promise.reject({responseText: '{"description": "fake error"}'}))
+        .mockReturnValueOnce(Promise.resolve(ASSIGNEES))
+      app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
+    })
+
+    it('should render error message', (done) => {
+      app._initializePromise.then(() => {
+        expect(app._states.isError).toBe(true)
+        expect(app._states.error.message).toBe('fake error')
+        done()
+      })
+    })
+  })
+
   describe('Multi Brands, Custom Fields = set, Related tickets = true', () => {
     let doTheSearchSpy, app
     beforeEach(() => {

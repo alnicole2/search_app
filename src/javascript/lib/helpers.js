@@ -8,3 +8,19 @@ export function templatingLoop (set, getTemplate, initialValue = '') {
     return `${accumulator}${getTemplate(item)}`
   }, initialValue)
 }
+
+export async function loopingPaginatedRequest (client, url, entityName, max = Number.POSITIVE_INFINITY, loadedPageCount = 0) {
+  let results = []
+  if (loadedPageCount < max) {
+    loadedPageCount++
+    let res = await client.request({
+      url: url,
+      cors: true
+    })
+    Array.isArray(res[entityName]) && results.push(...res[entityName])
+    if (res.next_page) {
+      results.push(...(await loopingPaginatedRequest(client, res.next_page, entityName, max, loadedPageCount)))
+    }
+  }
+  return results
+}

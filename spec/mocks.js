@@ -20,7 +20,8 @@ export const ASSIGNEES = {
       'name': 'TT',
       'email': 'tt@zendesk.com'
     }
-  ]
+  ],
+  'next_page': ''
 }
 
 export const RESULTS_MULTI_PAGE = {

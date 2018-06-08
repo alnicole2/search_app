@@ -3,12 +3,13 @@
  **/
 
 import I18n from '../lib/i18n'
-import {resizeContainer} from '../lib/helpers'
+import {resizeContainer, loopingPaginatedRequest} from '../lib/helpers'
 import getResultsTemplate from '../../templates/results'
 import getSearchTemplate from '../../templates/search'
 
 const PER_PAGE = 10
 const MAX_HEIGHT = 1000
+const MAX_PAGE = 100
 
 class Search {
   constructor (client, appData, config) {
@@ -40,20 +41,22 @@ class Search {
     Object.assign(
       this._states,
       {
-        brands: await this._getBrands(),
-        suggestions: await this._getSearchSuggestions(),
-        assignees: await this._getAssignees()
+        brands: await this._getBrands().catch(this._handleRequestFail.bind(this, '.loader')),
+        suggestions: await this._getSearchSuggestions().catch(this._handleRequestFail.bind(this, '.loader')),
+        assignees: await this._getAssignees().catch(this._handleRequestFail.bind(this, '.loader'))
       }
     )
-    // render application markup
-    await this._render('.loader', getSearchTemplate)
-    this._appContainer = document.querySelector('.search-app')
-    this._keywordField = document.querySelector('.search-box')
-    this._advancedToggle = document.querySelector('#advanced-field-toggle')
-    // bind events
-    this._appContainer.addEventListener('click', this._clickHandlerDispatch.bind(this))
-    this._keywordField.addEventListener('keydown', this._handleKeydown.bind(this))
-    this._advancedToggle.addEventListener('change', this._handleAdvancedFieldsToggle.bind(this))
+    if (this._states.brands && this._states.suggestions && this._states.assignees) {
+      await this._render('.loader', getSearchTemplate)
+      // render application markup
+      this._appContainer = document.querySelector('.search-app')
+      this._keywordField = document.querySelector('.search-box')
+      this._advancedToggle = document.querySelector('#advanced-field-toggle')
+      // bind events
+      this._appContainer.addEventListener('click', this._clickHandlerDispatch.bind(this))
+      this._keywordField.addEventListener('keydown', this._handleKeydown.bind(this))
+      this._advancedToggle.addEventListener('change', this._handleAdvancedFieldsToggle.bind(this))
+    }
   }
 
   /**
@@ -61,10 +64,7 @@ class Search {
    * @return {Promise} Resolved to a brands array
    */
   async _getBrands () {
-    const brands = (await this._client.request({
-      url: this._apis.brands,
-      cors: true
-    })).brands
+    const brands = await loopingPaginatedRequest(this._client, this._apis.brands, 'brands', MAX_PAGE)
     if (brands.length > 1) Object.assign(this._states, {hasMultiplebBrands: true})
     const currentTicketBrand = this._ticket.brand
     return brands.map((brand) => {
@@ -117,10 +117,7 @@ class Search {
    * @return {Promise} Resolved to an assignees array
    */
   async _getAssignees () {
-    return (await this._client.request({
-      url: this._apis.users,
-      cors: true
-    })).users
+    return loopingPaginatedRequest(this._client, this._apis.users, 'users', MAX_PAGE)
   }
 
   /**
@@ -164,7 +161,7 @@ class Search {
     const results = await this._client.request({
       url: url || this._apis.search + encodeURIComponent(this._getSearchParams()),
       cors: true
-    }).catch(this._handleSearchFail.bind(this))
+    }).catch(this._handleRequestFail.bind(this, '.results-wrapper'))
     results && this._handleSearchResults(results)
   }
 
@@ -255,7 +252,7 @@ class Search {
    * Format and render error message
    * @param {Object} data response of the search request
    */
-  _handleSearchFail (data) {
+  _handleRequestFail (container, data) {
     const response = JSON.parse(data.responseText)
     let message = ''
     if (response.error) { message = I18n.t(`global.error.${response.error}`) } else if (response.description) { message = response.description } else { message = I18n.t('global.error.message') }
@@ -270,7 +267,7 @@ class Search {
         isError: true
       }
     )
-    this._render('.results-wrapper', getResultsTemplate)
+    this._render(container, getResultsTemplate)
   }
 
   /**
