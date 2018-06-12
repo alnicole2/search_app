@@ -1,6 +1,6 @@
 import I18n from '../javascript/lib/i18n.js'
 import {templatingLoop as loop} from '../javascript/lib/helpers.js'
-var template = function (args) {
+export default function (args) {
   return (
     `
   <div class="search-app">
@@ -117,5 +117,3 @@ var template = function (args) {
   `
   )
 }
-
-export default template

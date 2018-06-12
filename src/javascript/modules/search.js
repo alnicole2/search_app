@@ -17,9 +17,9 @@ class Search {
     this._appData = appData
     this._config = config
     this._apis = {
-      brands: `${this._client._origin}/api/v2/brands.json`,
-      users: `${this._client._origin}/api/v2/group_memberships/assignable.json?include=users`,
-      search: `${this._client._origin}/api/v2/search.json?per_page=${PER_PAGE}&query=`
+      brands: `/api/v2/brands.json`,
+      users: `/api/v2/group_memberships/assignable.json?include=users`,
+      search: `/api/v2/search.json?per_page=${PER_PAGE}&query=`
     }
     this._states = {
       showAdvancedOptions: false,
@@ -82,21 +82,19 @@ class Search {
    */
   async _getSearchSuggestions () {
     const searchSuggestions = []
-    const customFieldIDs = this._appData.metadata.settings.custom_fields.match(/\d+/g)
+    const customFieldIDs = this._appData.metadata.settings.custom_fields && this._appData.metadata.settings.custom_fields.match(/\d+/g)
     const isRelatedTicketsConfigOn = this._appData.metadata.settings.related_tickets
     const ticketSubject = (await this._client.get('ticket.subject'))['ticket.subject']
     // custom field suggestions
     if (customFieldIDs) {
-      await customFieldIDs.reduce((p, id) => {
-        const customFieldName = `ticket.customField:custom_field_${id}`
-        return p.then(() => {
-          return this._client.get(customFieldName).then((value) => {
-            if (value[customFieldName]) {
-              searchSuggestions.push(value[customFieldName])
-            }
-          })
+      let customFieldNames = customFieldIDs.map((id) => {
+        return `ticket.customField:custom_field_${id}`
+      })
+      await this._client.get(customFieldNames).then((values) => {
+        customFieldNames.forEach((name) => {
+          values[name] && searchSuggestions.push(values[name])
         })
-      }, Promise.resolve())
+      })
     }
     // ticket subject suggestions
     if (isRelatedTicketsConfigOn && ticketSubject) {

@@ -6,14 +6,6 @@ const TranslationsPlugin = require('./webpack/translations-plugin')
 // const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env) => {
-  // const getEnvConfig = (dev, prod) => {
-  //   switch (process.env.NODE_ENV){
-  //     case 'development': return dev || {}
-  //     case 'production': return prod || {}
-  //     default: return {}
-  //   }
-  // }
-
   return {
     entry: {
       app: [
@@ -78,8 +70,6 @@ module.exports = (env) => {
 
       // Take the css and put it in styles.css
       new ExtractTextPlugin('styles.css')
-
-      // new BundleAnalyzerPlugin()
     ]
   }
 }

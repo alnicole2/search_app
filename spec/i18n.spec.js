@@ -33,7 +33,7 @@ describe('I18n', () => {
     it('loadTranslations fallback to en', function () {
       expect(I18n.loadTranslations('FAIL')).toBe(mocktranslationObject)
     })
-    it('loadTranslations fail, returnm empty object', function () {
+    it('loadTranslations fail, return empty object', function () {
       mockTryRequire = jest.spyOn(I18n, 'tryRequire').mockImplementation(locale => null)
       expect(I18n.loadTranslations('FAIL')).toEqual({})
     })

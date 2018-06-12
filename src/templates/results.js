@@ -1,6 +1,6 @@
 import I18n from '../javascript/lib/i18n.js'
 import {templatingLoop as loop} from '../javascript/lib/helpers.js'
-let getTicketMarkup = (o) => {
+const getTicketMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
@@ -16,7 +16,7 @@ let getTicketMarkup = (o) => {
   )
 }
 
-let getArticleMarkup = (o) => {
+const getArticleMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
@@ -27,7 +27,7 @@ let getArticleMarkup = (o) => {
   )
 }
 
-let getUserMarkup = (o) => {
+const getUserMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
@@ -38,7 +38,7 @@ let getUserMarkup = (o) => {
   )
 }
 
-let getOrganizationMarkup = (o) => {
+const getOrganizationMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
@@ -49,7 +49,7 @@ let getOrganizationMarkup = (o) => {
   )
 }
 
-let getGroupMarkup = (o) => {
+const getGroupMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
@@ -60,7 +60,7 @@ let getGroupMarkup = (o) => {
   )
 }
 
-let getTopicMarkup = (o) => {
+const getTopicMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
@@ -71,7 +71,7 @@ let getTopicMarkup = (o) => {
   )
 }
 
-let getPaginationMarkup = (args) => {
+const getPaginationMarkup = (args) => {
   return (
     args.pagination.is_paged
       ? `
@@ -84,7 +84,7 @@ let getPaginationMarkup = (args) => {
   )
 }
 
-let getErrorMarkup = (args) => {
+const getErrorMarkup = (args) => {
   return (
     `
     <div class="c-callout c-callout--error">
@@ -95,7 +95,7 @@ let getErrorMarkup = (args) => {
   )
 }
 
-let getResultMarkup = (result) => {
+const getResultMarkup = (result) => {
   switch (result.result_type) {
     case 'ticket': return getTicketMarkup(result)
     case 'article': return getArticleMarkup(result)
@@ -107,11 +107,11 @@ let getResultMarkup = (result) => {
   }
 }
 
-let getLoaderMarkup = (args) => {
+const getLoaderMarkup = (args) => {
   return `<div class="loader"><img src="dot.gif"/> ${I18n.t('global.searching')}</div>`
 }
 
-let getResultsMarkup = (args) => {
+const getResultsMarkup = (args) => {
   return (
     `
       <p class="count"><strong>${args.pagination.count}</strong></p>

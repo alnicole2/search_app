@@ -133,10 +133,13 @@ export const CLIENT = {
       case 'ticket.subject': return Promise.resolve({
         'ticket.subject': 'New Ticket'
       })
-      case 'ticket.customField:custom_field_1': return Promise.resolve({
-        'ticket.customField:custom_field_1': 'cf_suggestion_1'
+    }
+    /* istanbul ignore next */
+    if (Array.isArray(prop)) {
+      return Promise.resolve({
+        'ticket.customField:custom_field_1': 'cf_suggestion_1',
+        'ticket.customField:custom_field_2': ''
       })
-      case 'ticket.customField:custom_field_2': return Promise.resolve({})
     }
   },
   request: jest.fn(),

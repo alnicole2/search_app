@@ -10,6 +10,9 @@
 @import '@zendeskgarden/css-arrows/dist/index.css';
 @import '@zendeskgarden/css-callouts/dist/index.css';
 
+.loader{
+  width: 50px;
+}
 .c-txt__input{
   align-items: center;
   padding-top: 0;
@@ -41,4 +44,3 @@
     }
   }
 }
-
