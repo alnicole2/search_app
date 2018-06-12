@@ -87,7 +87,7 @@ class Search {
     const ticketSubject = (await this._client.get('ticket.subject'))['ticket.subject']
     // custom field suggestions
     if (customFieldIDs) {
-      let customFieldNames = customFieldIDs.map((id) => {
+      const customFieldNames = customFieldIDs.map((id) => {
         return `ticket.customField:custom_field_${id}`
       })
       await this._client.get(customFieldNames).then((values) => {
@@ -229,7 +229,9 @@ class Search {
           // !! Discard current open ticket from the results list, this causes an existing bug when results are paginated
           if (result.result_type === 'ticket') {
             if (result.id === this._ticket.id) return false
-            result.description = result.description.substr(0, 300).concat('...')
+            if (result.description.length > 140) {
+              result.description = result.description.substr(0, 140).concat('...')
+            }
           }
           return true
         }),

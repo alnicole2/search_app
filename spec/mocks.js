@@ -37,7 +37,14 @@ export const RESULTS_MULTI_PAGE = {
       'url': 'https://z3n4693.zendesk.com/api/v2/tickets/6.json',
       'id': 6,
       'subject': 'New ticket 4 text',
-      'description': 'New ticket 4',
+      'description': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
+      'result_type': 'ticket'
+    },
+    {
+      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/6.json',
+      'id': 7,
+      'subject': 'New ticket 5 text',
+      'description': 'Lorem Ipsum',
       'result_type': 'ticket'
     },
     {
