@@ -36,7 +36,7 @@ export default function (args) {
           <label class="c-chk__label c-chk__label--toggle" for="advanced-field-toggle"><span dir="ltr">Advanced</span></label>
         </fieldset>
         <div class="advanced-options-wrapper">
-          <fieldset class="u-mb-sm">
+          <fieldset class="u-mb-sm ticket-only">
             <label class="c-txt__label" for="filter">Ticket Status</label>
             <div class="row">
               <div class="col">
@@ -85,7 +85,7 @@ export default function (args) {
             </div>
           </fieldset>
 
-          <fieldset class="u-mb-sm">
+          <fieldset class="u-mb-sm ticket-only">
             <label class="c-txt__label" for="assignee">${I18n.t('search.user.assignee')}</label>
             <select name="assignee" id="assignee" class="c-txt__input c-txt__input--select">
               ${loop(
@@ -94,6 +94,8 @@ export default function (args) {
       `<option value="">-</option>`
     )}
             </select>
+          </fieldset>
+          <fieldset class="u-mb-sm">
             ${args.hasMultiplebBrands &&
               `
               <div class="advanced-option">
