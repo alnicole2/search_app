@@ -1,4 +1,4 @@
-/* global describe, it, jest, expect, CustomEvent, MouseEvent, KeyboardEvent, beforeEach */
+/* global describe, it, jest, expect, CustomEvent, MouseEvent, KeyboardEvent, beforeEach, Event */
 import Search from '../src/javascript/modules/search'
 import {
   BRANDS_SINGLE,
@@ -210,6 +210,7 @@ describe('Search App', () => {
         expect(app._getSearchParams()).toBe('TestKeyword')
 
         document.querySelector('#type').value = 'ticket'
+        document.querySelector('#type').dispatchEvent(new Event('change', { 'bubbles': true }))
         expect(app._getSearchParams()).toBe('TestKeyword type:ticket')
 
         app._advancedToggle.click()
@@ -230,6 +231,10 @@ describe('Search App', () => {
 
         document.querySelector('#brand-filter').value = ''
         expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT"')
+
+        document.querySelector('#type').value = 'all'
+        document.querySelector('#type').dispatchEvent(new Event('change', { 'bubbles': true }))
+        expect(app._getSearchParams()).toBe('TestKeyword created>2018-06-01 created<2018-06-07')
         done()
       })
     })
