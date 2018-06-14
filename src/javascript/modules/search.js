@@ -252,11 +252,11 @@ class Search {
    * Get the translation key according to the number of search results
    * @param {Number} count Number of the search results
    */
-  _getResultsCountKey (count){
-    let key 
-    switch(count){
-      case 0: key = 'zero'; break;
-      case 1: key = 'one'; break;
+  _getResultsCountKey (count) {
+    let key
+    switch (count) {
+      case 0: key = 'zero'; break
+      case 1: key = 'one'; break
       default: key = 'other'
     }
     return `search.results_count.${key}`
