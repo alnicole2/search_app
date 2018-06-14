@@ -24,3 +24,16 @@ export async function loopingPaginatedRequest (client, url, entityName, max = Nu
   }
   return results
 }
+
+export function escapeSpecialChars (str) {
+  const escape = {
+	  '&': '&amp;',
+	  '<': '&lt;',
+	  '>': '&gt;',
+	  '"': '&quot;',
+	  "'": '&#x27;',
+	  '`': '&#x60;',
+	  '=': '&#x3D;'
+  };
+  return str.replace(/[&<>"'`=]/g, function(m) { return escape[m]; });
+}

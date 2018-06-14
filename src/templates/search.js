@@ -1,5 +1,5 @@
 import I18n from '../javascript/lib/i18n.js'
-import {templatingLoop as loop} from '../javascript/lib/helpers.js'
+import {templatingLoop as loop, escapeSpecialChars as escape} from '../javascript/lib/helpers.js'
 export default function (args) {
   return (
     `
@@ -28,7 +28,7 @@ export default function (args) {
         <fieldset class="u-mb-sm suggestions">
           ${loop(
       args.suggestions,
-      suggestion => `<a href class="c-tag u-mr-xs suggestion">${suggestion}</a>`
+      suggestion => `<a href class="c-tag u-mr-xs suggestion">${escape(suggestion)}</a>`
     )}
         </fieldset>
         <fieldset class="u-mb-sm u-ta-right c-chk">
