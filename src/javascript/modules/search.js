@@ -239,13 +239,27 @@ class Search {
           is_paged: !!(data.next_page || data.previous_page),
           previous_page: data.previous_page,
           next_page: data.next_page,
-          count: I18n.t('search.results', { count: data.count })
+          count: I18n.t(this._getResultsCountKey(data.count), { count: data.count })
         },
         isLoading: false,
         isError: false
       }
     )
     this._render('.results-wrapper', getResultsTemplate)
+  }
+
+  /**
+   * Get the translation key according to the number of search results
+   * @param {Number} count Number of the search results
+   */
+  _getResultsCountKey (count){
+    let key 
+    switch(count){
+      case 0: key = 'zero'; break;
+      case 1: key = 'one'; break;
+      default: key = 'other'
+    }
+    return `search.results_count.${key}`
   }
 
   /**
