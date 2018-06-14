@@ -4,11 +4,9 @@ const getTicketMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
-      <td class="c-table__row__cell">
-        <div class=" u-position-relative">
-          <a href class="ticket-link" data-id="${o.id}"><b>#${o.id}</b> ${escape(o.subject)}</a>
-          <div class="c-tooltip c-tooltip--large c-arrow c-arrow--b"><small>${escape(o.description)}</small></div>
-        </div>
+      <td class="c-table__row__cell u-position-relative">
+        <a href class="ticket-link" data-id="${o.id}"><b>#${o.id}</b> ${escape(o.subject)}</a>
+        <div class="c-tooltip c-tooltip--large c-arrow c-arrow--l">${escape(o.description)}</div>
       </td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.ticket')}</td>
     </tr>
