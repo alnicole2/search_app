@@ -26,6 +26,7 @@ export async function loopingPaginatedRequest (client, url, entityName, max = Nu
 }
 
 export function escapeSpecialChars (str) {
+  if (!str || typeof str !== 'string') return ''
   const escape = {
     '&': '&amp;',
     '<': '&lt;',

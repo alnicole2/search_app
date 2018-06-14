@@ -1,13 +1,13 @@
 import I18n from '../javascript/lib/i18n.js'
-import {templatingLoop as loop} from '../javascript/lib/helpers.js'
+import {templatingLoop as loop, escapeSpecialChars as escape} from '../javascript/lib/helpers.js'
 const getTicketMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
       <td class="c-table__row__cell">
         <div class=" u-position-relative">
-          <a href class="ticket-link" data-id="${o.id}"><b>#${o.id}</b> ${o.subject}</a>
-          <div class="c-tooltip c-tooltip--large c-arrow c-arrow--b"><small>${o.description}</small></div>
+          <a href class="ticket-link" data-id="${o.id}"><b>#${o.id}</b> ${escape(o.subject)}</a>
+          <div class="c-tooltip c-tooltip--large c-arrow c-arrow--b"><small>${escape(o.description)}</small></div>
         </div>
       </td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.ticket')}</td>
@@ -20,7 +20,7 @@ const getArticleMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
-      <td class="c-table__row__cell"><a href="${o.html_url}" target="_blank">${o.name}</a></td>
+      <td class="c-table__row__cell"><a href="${o.html_url}" target="_blank">${escape(o.name)}</a></td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.article')}</td>
     </tr>
     `
@@ -31,7 +31,7 @@ const getUserMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
-      <td class="c-table__row__cell"><a href="#/users/${o.id}">${o.name}</a></td>
+      <td class="c-table__row__cell"><a href="#/users/${o.id}">${escape(o.name)}</a></td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.user')}</td>
     </tr>
     `
@@ -42,7 +42,7 @@ const getOrganizationMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
-      <td class="c-table__row__cell"><a href="#/organizations/${o.id}/tickets">${o.name}</a></td>
+      <td class="c-table__row__cell"><a href="#/organizations/${o.id}/tickets">${escape(o.name)}</a></td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.organization')}</td>
     </tr>
     `
@@ -53,7 +53,7 @@ const getGroupMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
-      <td class="c-table__row__cell"><a href="#/admin/people">${o.name}</a></td>
+      <td class="c-table__row__cell"><a href="#/admin/people">${escape(o.name)}</a></td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.group')}</td>
     </tr>
     `
@@ -64,7 +64,7 @@ const getTopicMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
-      <td class="c-table__row__cell"><a href="/entries/${o.id}" target="_blank">${o.title}</a></td>
+      <td class="c-table__row__cell"><a href="/entries/${o.id}" target="_blank">${escape(o.title)}</a></td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.topic')}</td>
     </tr>
     `

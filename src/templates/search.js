@@ -90,7 +90,7 @@ export default function (args) {
             <select name="assignee" id="assignee" class="c-txt__input c-txt__input--select">
               ${loop(
       args.assignees,
-      assignee => `<option value="${assignee.name}">${assignee.name}</option>`,
+      assignee => `<option value="${escape(assignee.name)}">${escape(assignee.name)}</option>`,
       `<option value="">-</option>`
     )}
             </select>
@@ -101,7 +101,7 @@ export default function (args) {
                 <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select">
                   ${loop(
       args.brands,
-      brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${brand.label}</option>`,
+      brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${escape(brand.label)}</option>`,
       `<option value="">${I18n.t('brand_filter.all_brands')}</option>`
     )}
                 </select>
