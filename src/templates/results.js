@@ -75,14 +75,24 @@ const getPaginationMarkup = (args) => {
   const maxNumberOfLinks = 7
   const pageCount = args.pagination.page_count
   const current = args.currentPage
+  let offset = 2
   let pages = ''
+  if(current === 1 || current === pageCount){
+    offset = 5
+  }
+  else if(current === 2 || current === pageCount - 1){
+    offset = 4
+  }
+  else if(current === 3 || current === pageCount - 2){
+    offset = 3
+  }
   for (let i = 1; i <= pageCount; i++) {
-    if (pageCount <= maxNumberOfLinks || i === 1 || i === pageCount || Math.abs(current - i) < 2) {
+    if (pageCount <= maxNumberOfLinks || i === 1 || i === pageCount || Math.abs(current - i) < offset) {
       pages += `<li class="c-pagination__page page-link" ${current === i ? 'aria-current="true"' : `data-index="${i}"`}>${i}</li>`
     } else {
       let from = i
       if (i < current) {
-        while (i < current - 2) {
+        while (i < current - offset) {
           i++
         }
       } else {
@@ -90,7 +100,8 @@ const getPaginationMarkup = (args) => {
           i++
         }
       }
-      pages += `<li class="c-pagination__page c-pagination__page--gap">${from}-${i}</li>`
+      if(from === i) pages += `<li class="c-pagination__page page-link" data-index="${i}"}>${i}</li>`
+      else pages += `<li class="c-pagination__page c-pagination__page--gap">${from}-${i}</li>`
     }
   }
   return (
