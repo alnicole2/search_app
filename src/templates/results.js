@@ -72,12 +72,34 @@ const getTopicMarkup = (o) => {
 }
 
 const getPaginationMarkup = (args) => {
+  const maxNumberOfLinks = 7
+  const pageCount = args.pagination.page_count
+  const current = args.currentPage
+  let pages = ''
+  for (let i = 1; i <= pageCount; i++) {
+    if (pageCount <= maxNumberOfLinks || i === 1 || i === pageCount || Math.abs(current - i) < 2) {
+      pages += `<li class="c-pagination__page page-link" ${current === i ? 'aria-current="true"' : `data-index="${i}"`}>${i}</li>`
+    } else {
+      let from = i
+      if (i < current) {
+        while (i < current - 2) {
+          i++
+        }
+      } else {
+        while (i < pageCount - 1) {
+          i++
+        }
+      }
+      pages += `<li class="c-pagination__page c-pagination__page--gap">${from}-${i}</li>`
+    }
+  }
   return (
     args.pagination.is_paged
       ? `
-    <ul class="c-pagination">
-      <li class="c-pagination__page c-pagination__page--previous page-link" data-url="${args.pagination.previous_page || ''}">previous</li>
-      <li class="c-pagination__page c-pagination__page--next page-link" data-url="${args.pagination.next_page || ''}">next</li>
+    <ul class="c-pagination" role="navigation">
+      <li class="c-pagination__page c-pagination__page--previous page-link" ${current > 1 ? `data-index="${current - 1}"` : ''} aria-hidden="${args.pagination.previous_page ? 'false' : 'true'}">previous</li>
+      ${pages}
+      <li class="c-pagination__page c-pagination__page--next page-link" ${current < pageCount ? `data-index="${current + 1}"` : ''} aria-hidden="${args.pagination.next_page ? 'false' : 'true'}">next</li>
     </ul>
     `
       : ''
@@ -115,7 +137,7 @@ const getResultsMarkup = (args) => {
   return (
     `
       <p class="count"><strong>${args.pagination.count}</strong></p>
-      <table class="c-table">
+      <table class="c-table u-mb-sm">
         <tbody>
           ${loop(args.results, getResultMarkup)}
         </tbody>
