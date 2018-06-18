@@ -253,6 +253,9 @@ class Search {
    * @param {Number} count Number of the search results
    */
   _getResultsCountKey (count) {
+    if(typeof count !== 'number' || count < 0){
+      throw 'count param should be a positive integer'
+    }
     let key
     switch (count) {
       case 0: key = 'zero'; break
