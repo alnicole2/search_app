@@ -10,26 +10,26 @@
 @import '@zendeskgarden/css-arrows/dist/index.css';
 @import '@zendeskgarden/css-callouts/dist/index.css';
 
-.loader{
+.loader {
   width: 50px;
 }
-.c-txt__input{
+.c-txt__input {
   align-items: center;
   padding-bottom: 0;
   padding-top: 0;
 }
-.c-chk__label--toggle{
+.c-chk__label--toggle {
   height: 20px;
 }
-.advanced-options-wrapper{
+.advanced-options-wrapper {
   display: none;
   overflow: hidden;
 }
-.results-wrapper{
-  table{
+.results-wrapper {
+  table {
     table-layout: auto;
-    tr{
-      .c-tooltip{
+    tr {
+      .c-tooltip {
         display: none;
         font-size: 12px;
         left: 120px;
@@ -40,13 +40,13 @@
         width: 200px;
         z-index: 1;
       }
-      &:hover{
-        .c-tooltip{
+      &:hover {
+        .c-tooltip {
           display: block;
         }
       }
-      &:last-child{
-        .c-tooltip{
+      &:last-child {
+        .c-tooltip {
           bottom: 0;
           top: auto;
           transform: none;
