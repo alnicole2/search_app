@@ -154,13 +154,15 @@ class Search {
    */
   async _doTheSearch (event, url) {
     event.preventDefault()
-    Object.assign(this._states, {isLoading: true})
-    await this._render('.results-wrapper', getResultsTemplate)
-    const results = await this._client.request({
-      url: url || this._apis.search + encodeURIComponent(this._getSearchParams()),
-      cors: true
-    }).catch(this._handleRequestFail.bind(this, '.results-wrapper'))
-    results && this._handleSearchResults(results)
+    if(this._keywordField.value){
+      Object.assign(this._states, {isLoading: true})
+      await this._render('.results-wrapper', getResultsTemplate)
+      const results = await this._client.request({
+        url: url || this._apis.search + encodeURIComponent(this._getSearchParams()),
+        cors: true
+      }).catch(this._handleRequestFail.bind(this, '.results-wrapper'))
+      results && this._handleSearchResults(results)
+    }
   }
 
   /**
