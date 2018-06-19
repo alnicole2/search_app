@@ -230,12 +230,8 @@ class Search {
       {
         results: data.results.filter((result, index) => {
           // Format result description,
-          // !! Discard current open ticket from the results list, this causes an existing bug when results are paginated
-          if (result.result_type === 'ticket') {
-            // if (result.id === this._ticket.id) return false
-            if (result.description.length > 140) {
-              result.description = result.description.substr(0, 140).concat('...')
-            }
+          if (result.result_type === 'ticket' && result.description.length > 140) {
+            result.description = result.description.substr(0, 140).concat('...')
           }
           return true
         }),
