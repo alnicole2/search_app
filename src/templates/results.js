@@ -72,20 +72,11 @@ const getTopicMarkup = (o) => {
 }
 
 const getPaginationMarkup = (args) => {
-  const maxNumberOfLinks = 7
+  const maxNumberOfLinks = 7 // In practice, 7 is the min number that works => 1,...,4,5,6,...,10
   const pageCount = args.pagination.page_count
   const current = args.currentPage
-  let offset = 2
+  let offset = Math.max(maxNumberOfLinks - 2 - (current - 1), maxNumberOfLinks - 2 - (pageCount - current), 2)
   let pages = ''
-  if(current === 1 || current === pageCount){
-    offset = 5
-  }
-  else if(current === 2 || current === pageCount - 1){
-    offset = 4
-  }
-  else if(current === 3 || current === pageCount - 2){
-    offset = 3
-  }
   for (let i = 1; i <= pageCount; i++) {
     if (pageCount <= maxNumberOfLinks || i === 1 || i === pageCount || Math.abs(current - i) < offset) {
       pages += `<li class="c-pagination__page page-link" ${current === i ? 'aria-current="true"' : `data-index="${i}"`}>${i}</li>`
