@@ -1,5 +1,37 @@
 import I18n from '../javascript/lib/i18n.js'
 import {templatingLoop as loop, escapeSpecialChars as escape} from '../javascript/lib/helpers.js'
+const getSuggestionsListTemplate = (suggestions) => {
+  return loop(
+    suggestions,
+    suggestion => `<a href class="c-tag u-mr-xs suggestion">${escape(suggestion)}</a>`
+  )
+}
+const getAssigneesListTemplate = (assignees) => {
+  return loop(
+    assignees,
+    assignee => `<option value="${escape(assignee.name)}">${escape(assignee.name)}</option>`
+  )
+}
+const getBrandsDropdownTemplate = (args) => {
+  if (args.hasMultiplebBrands) {
+    return `
+      <div class="advanced-option">
+        <label class="c-txt__label" for="brand-filter">${I18n.t('brand_filter.brand')}</label>
+        <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select">
+          <option value="">${I18n.t('brand_filter.all_brands')}</option>
+          ${getBrandsOptionsTemplate(args.brands)}
+        </select>
+      </div>
+    `
+  }
+}
+const getBrandsOptionsTemplate = (brands) => {
+  return loop(
+    brands,
+    brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${escape(brand.label)}</option>`
+  )
+}
+
 export default function (args) {
   return (
     `
@@ -26,10 +58,7 @@ export default function (args) {
           </div>
         </fieldset>
         <fieldset class="u-mb-sm suggestions">
-          ${loop(
-      args.suggestions,
-      suggestion => `<a href class="c-tag u-mr-xs suggestion">${escape(suggestion)}</a>`
-    )}
+          ${getSuggestionsListTemplate(args.suggestions)}
         </fieldset>
         <fieldset class="u-mb-sm u-ta-right c-chk">
           <input class="c-chk__input" id="advanced-field-toggle" type="checkbox">
@@ -88,28 +117,12 @@ export default function (args) {
           <fieldset class="u-mb-sm ticket-only">
             <label class="c-txt__label" for="assignee">${I18n.t('search.user.assignee')}</label>
             <select name="assignee" id="assignee" class="c-txt__input c-txt__input--select">
-              ${loop(
-      args.assignees,
-      assignee => `<option value="${escape(assignee.name)}">${escape(assignee.name)}</option>`,
-      `<option value="">-</option>`
-    )}
+              <option value="">-</option>
+              ${getAssigneesListTemplate(args.assignees)}
             </select>
           </fieldset>
           <fieldset class="u-mb-sm">
-            ${args.hasMultiplebBrands &&
-              `
-              <div class="advanced-option">
-                <label class="c-txt__label" for="brand-filter">${I18n.t('brand_filter.brand')}</label>
-                <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select">
-                  ${loop(
-      args.brands,
-      brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${escape(brand.label)}</option>`,
-      `<option value="">${I18n.t('brand_filter.all_brands')}</option>`
-    )}
-                </select>
-              </div>
-              `
-    }
+            ${getBrandsDropdownTemplate(args)}
           </fieldset>
         </div>
       </form>
