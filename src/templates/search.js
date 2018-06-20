@@ -59,6 +59,7 @@ export default function (args) {
                   <option value="new">${I18n.t('search.value.new')}</option>
                   <option value="open">${I18n.t('search.value.open')}</option>
                   <option value="pending">${I18n.t('search.value.pending')}</option>
+                  <option value="hold">${I18n.t('search.value.onhold')}</option>
                   <option value="solved">${I18n.t('search.value.solved')}</option>
                   <option value="closed">${I18n.t('search.value.closed')}</option>
                 </select>
