@@ -91,7 +91,7 @@ const getPaginationMarkup = (args) => {
           i++
         }
       }
-      if(from === i) pages += `<li class="c-pagination__page page-link" data-index="${i}"}>${i}</li>`
+      if (from === i) pages += `<li class="c-pagination__page page-link" data-index="${i}"}>${i}</li>`
       else pages += `<li class="c-pagination__page c-pagination__page--gap">${from}-${i}</li>`
     }
   }
