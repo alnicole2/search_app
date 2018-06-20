@@ -134,7 +134,7 @@ class Search {
    * @param {Event} event
    */
   _handleKeydown (event) {
-    event.which === 13 && this._doTheSearch(event)
+    if (event.which === 13) this._doTheSearch(event)
   }
 
   /**

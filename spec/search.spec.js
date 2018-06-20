@@ -95,7 +95,9 @@ describe('Search App', () => {
     it('should trigger search when keyword field focused and press entry key', () => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
       app._keywordField.dispatchEvent(new KeyboardEvent('keydown', { 'which': 13 }))
-      expect(doTheSearchSpy).toHaveBeenCalled()
+      expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
+      app._keywordField.dispatchEvent(new KeyboardEvent('keydown', { 'which': 32 }))
+      expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
     })
 
     it('should trigger search when search button is clicked', () => {
