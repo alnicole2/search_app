@@ -1,4 +1,4 @@
-/* global describe, it, jest, expect, beforeAll */
+/* eslint-env jest */
 import I18n from '../src/javascript/lib/i18n'
 
 jest.mock('../src/manifest.json', () => {

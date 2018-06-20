@@ -153,7 +153,7 @@ class Search {
    */
   async _doTheSearch (event, url) {
     event.preventDefault()
-    if(this._keywordField.value){
+    if (this._keywordField.value) {
       Object.assign(this._states, {isLoading: true})
       await this._render('.results-wrapper', getResultsTemplate)
       const results = await this._client.request({

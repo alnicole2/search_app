@@ -1,4 +1,4 @@
-/* global describe, it, jest, expect */
+/* eslint-env jest */
 import {resizeContainer, templatingLoop, loopingPaginatedRequest, escapeSpecialChars as escape} from '../src/javascript/lib/helpers'
 
 const client = {

@@ -1,4 +1,4 @@
-/* global describe, it, jest, expect */
+/* eslint-env jest */
 import NewTicketSidebar from '../src/javascript/locations/new_ticket_sidebar'
 var mockSearch
 jest.mock('../src/javascript/modules/search', () => {

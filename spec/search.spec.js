@@ -1,4 +1,4 @@
-/* global describe, it, jest, expect, CustomEvent, MouseEvent, KeyboardEvent, beforeEach */
+/* eslint-env jest, browser */
 import Search from '../src/javascript/modules/search'
 import {
   BRANDS_SINGLE,
@@ -68,7 +68,7 @@ describe('Search App', () => {
     })
 
     it('should populate brands dropdown', () => {
-        expect(app._states.brands.length).toBe(2)
+      expect(app._states.brands.length).toBe(2)
     })
 
     it('should populate assignees dropdown', () => {
