@@ -138,14 +138,15 @@ export const CLIENT = {
         }
       })
       case 'ticket.subject': return Promise.resolve({
-        'ticket.subject': 'New Ticket'
+        'ticket.subject': 'New Ticket Ticket'
       })
     }
     /* istanbul ignore next */
     if (Array.isArray(prop)) {
       return Promise.resolve({
         'ticket.customField:custom_field_1': 'cf_suggestion_1',
-        'ticket.customField:custom_field_2': ''
+        'ticket.customField:custom_field_2': '',
+        'ticket.customField:custom_field_3': 'cf_suggestion_1'
       })
     }
   },
@@ -156,7 +157,7 @@ export const CLIENT = {
 export const APPDATA_WITH_CF = {
   metadata: {
     settings: {
-      custom_fields: '1 2',
+      custom_fields: '1 2 3',
       related_tickets: true
     }
   }

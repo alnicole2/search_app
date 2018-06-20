@@ -81,7 +81,7 @@ class Search {
    * @return {Promise} Resolved to a suggestions array
    */
   async _getSearchSuggestions () {
-    const searchSuggestions = []
+    const searchSuggestions = new Set()
     const customFieldIDs = this._appData.metadata.settings.custom_fields && this._appData.metadata.settings.custom_fields.match(/\d+/g)
     const isRelatedTicketsConfigOn = this._appData.metadata.settings.related_tickets
     const ticketSubject = (await this._client.get('ticket.subject'))['ticket.subject']
@@ -92,7 +92,7 @@ class Search {
       })
       await this._client.get(customFieldNames).then((values) => {
         customFieldNames.forEach((name) => {
-          values[name] && searchSuggestions.push(values[name])
+          values[name] && searchSuggestions.add(values[name])
         })
       })
     }
@@ -101,12 +101,11 @@ class Search {
       // strip punctuation and extra spaces, split by spaces
       const words = ticketSubject.toLowerCase().replace(/[.,-/#!$?%^&*;:{}=\-_`~()]/g, '').replace(/\s{2,}/g, ' ').split(' ')
       const exclusions = I18n.t('stopwords.exclusions').split(',')
-      const keywords = words.filter((w) => {
-        return !exclusions.includes(w)
+      words.forEach((w) => {
+        !exclusions.includes(w) && searchSuggestions.add(w)
       })
-      searchSuggestions.push(...keywords)
     }
-    return searchSuggestions
+    return Array.from(searchSuggestions)
   }
 
   /**
