@@ -88,13 +88,7 @@ export default function (args) {
 
           <fieldset class="u-mb-sm">
             <label class="c-txt__label" for="assignee">${I18n.t('search.user.assignee')}</label>
-            <select name="assignee" id="assignee" class="c-txt__input c-txt__input--select">
-              ${loop(
-      args.assignees,
-      assignee => `<option value="${escape(assignee.name)}">${escape(assignee.name)}</option>`,
-      `<option value="">-</option>`
-    )}
-            </select>
+            <span id="assignee" class="placeholder"></span>
             ${args.hasMultiplebBrands &&
               `
               <div class="advanced-option">

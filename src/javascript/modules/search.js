@@ -6,6 +6,7 @@ import I18n from '../lib/i18n'
 import {resizeContainer, loopingPaginatedRequest} from '../lib/helpers'
 import getResultsTemplate from '../../templates/results'
 import getSearchTemplate from '../../templates/search'
+import getAssigneesTemplate from '../../templates/assignees'
 
 const PER_PAGE = 10
 const MAX_HEIGHT = 1000
@@ -42,11 +43,10 @@ class Search {
       this._states,
       {
         brands: await this._getBrands().catch(this._handleRequestFail.bind(this, '.loader')),
-        suggestions: await this._getSearchSuggestions().catch(this._handleRequestFail.bind(this, '.loader')),
-        assignees: await this._getAssignees().catch(this._handleRequestFail.bind(this, '.loader'))
+        suggestions: await this._getSearchSuggestions().catch(this._handleRequestFail.bind(this, '.loader'))
       }
     )
-    if (this._states.brands && this._states.suggestions && this._states.assignees) {
+    if (this._states.brands && this._states.suggestions) {
       await this._render('.loader', getSearchTemplate)
       // render application markup
       this._appContainer = document.querySelector('.search-app')
@@ -141,7 +141,16 @@ class Search {
    * Advanced toggle change handler
    * @param {Event} event
    */
-  _handleAdvancedFieldsToggle (event) {
+  async _handleAdvancedFieldsToggle (event) {
+    if (!this._states.assignees) {
+      Object.assign(
+        this._states,
+        {
+          assignees: await this._getAssignees().catch(this._handleRequestFail.bind(this, '.loader'))
+        }
+      )
+      await this._render('#assignee', getAssigneesTemplate)
+    }
     Object.assign(this._states, {showAdvancedOptions: event.target.checked})
     this._appContainer.querySelector('.advanced-options-wrapper').classList.toggle('u-display-block')
     resizeContainer(this._client, MAX_HEIGHT)

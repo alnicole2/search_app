@@ -34,7 +34,6 @@ describe('Search App', () => {
       document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
       CLIENT.request = jest.fn()
         .mockReturnValueOnce(Promise.reject({responseText: '{"description": "fake error"}'}))
-        .mockReturnValueOnce(Promise.resolve(ASSIGNEES))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
       app._initializePromise.then(() => {
         done()
@@ -53,7 +52,6 @@ describe('Search App', () => {
       document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
       CLIENT.request = jest.fn()
         .mockReturnValueOnce(Promise.resolve(BRANDS_MULTI))
-        .mockReturnValueOnce(Promise.resolve(ASSIGNEES))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
       doTheSearchSpy = jest.spyOn(app, '_doTheSearch')
       app._initializePromise.then(() => {
@@ -71,10 +69,6 @@ describe('Search App', () => {
       expect(app._states.brands.length).toBe(2)
     })
 
-    it('should populate assignees dropdown', () => {
-      expect(app._states.assignees.length).toBe(1)
-    })
-
     it('should populate search suggestions', () => {
       expect(app._states.suggestions.length).toBe(3)
     })
@@ -85,11 +79,25 @@ describe('Search App', () => {
       expect(advancedOptionsWrapper.classList.contains('u-display-block')).toBe(false)
     })
 
-    it('should toggle advanced search options', () => {
+    it('should show search options and populate assignees dropdown', (done) => {
       const advancedOptionsWrapper = document.querySelector('.advanced-options-wrapper')
-      app._advancedToggle.click()
-      expect(app._states.showAdvancedOptions).toBe(true)
-      expect(advancedOptionsWrapper.classList.contains('u-display-block')).toBe(true)
+      const fakeEventObject = {
+        target: {
+          checked: true
+        }
+      }
+      app._client.request.mockReturnValueOnce(Promise.resolve(ASSIGNEES))
+      app._handleAdvancedFieldsToggle(fakeEventObject).then(() => {
+        expect(app._states.showAdvancedOptions).toBe(true)
+        expect(advancedOptionsWrapper.classList.contains('u-display-block')).toBe(true)
+        expect(app._states.assignees.length).toBe(1)
+        expect(app._client.request).toHaveBeenCalledTimes(2)
+
+        app._advancedToggle.click()
+        // Request assignee is only called once at the first time toggled
+        expect(app._client.request).toHaveBeenCalledTimes(2)
+        done()
+      })
     })
 
     it('should trigger search when keyword field focused and press entry key', () => {
@@ -180,30 +188,38 @@ describe('Search App', () => {
       })
     })
 
-    it('should compose search terms from form fields', () => {
+    it('should compose search terms from form fields', (done) => {
       expect(app._getSearchParams()).toBe('TestKeyword')
 
       document.querySelector('#type').value = 'ticket'
       expect(app._getSearchParams()).toBe('TestKeyword type:ticket')
 
-      app._advancedToggle.click()
-      expect(app._getSearchParams()).toBe('TestKeyword type:ticket brand_id:"360000636152"')
+      const fakeEventObject = {
+        target: {
+          checked: true
+        }
+      }
+      app._client.request.mockReturnValueOnce(Promise.resolve(ASSIGNEES))
+      app._handleAdvancedFieldsToggle(fakeEventObject).then(() => {
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket brand_id:"360000636152"')
 
-      document.querySelector('#filter').value = 'status'
-      document.querySelector('#condition').value = '>'
-      document.querySelector('#value').value = 'closed'
-      expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed brand_id:"360000636152"')
+        document.querySelector('#filter').value = 'status'
+        document.querySelector('#condition').value = '>'
+        document.querySelector('#value').value = 'closed'
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed brand_id:"360000636152"')
 
-      document.querySelector('#range').value = 'created'
-      document.querySelector('#from').value = '2018-06-01'
-      document.querySelector('#to').value = '2018-06-07'
-      expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 brand_id:"360000636152"')
+        document.querySelector('#range').value = 'created'
+        document.querySelector('#from').value = '2018-06-01'
+        document.querySelector('#to').value = '2018-06-07'
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 brand_id:"360000636152"')
 
-      document.querySelector('#assignee').value = 'TT'
-      expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT" brand_id:"360000636152"')
+        document.querySelector('#assignee').value = 'TT'
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT" brand_id:"360000636152"')
 
-      document.querySelector('#brand-filter').value = ''
-      expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT"')
+        document.querySelector('#brand-filter').value = ''
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT"')
+        done()
+      })
     })
 
     it('should handle search request failure with error description', (done) => {
@@ -240,7 +256,6 @@ describe('Search App', () => {
       document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
       CLIENT.request = jest.fn()
         .mockReturnValueOnce(Promise.resolve(BRANDS_SINGLE))
-        .mockReturnValueOnce(Promise.resolve(ASSIGNEES))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
       app._initializePromise.then(() => {
         done()
@@ -252,9 +267,17 @@ describe('Search App', () => {
       expect(document.querySelector('#brand-filter')).toBe(null)
     })
 
-    it('should compose search terms without brands', () => {
-      app._advancedToggle.click()
-      expect(app._getSearchParams()).toBe('TestKeyword')
+    it('should compose search terms without brands', (done) => {
+      const fakeEventObject = {
+        target: {
+          checked: true
+        }
+      }
+      app._client.request.mockReturnValueOnce(Promise.resolve(ASSIGNEES))
+      app._handleAdvancedFieldsToggle(fakeEventObject).then(() => {
+        expect(app._getSearchParams()).toBe('TestKeyword')
+        done()
+      })
     })
   })
 
@@ -264,7 +287,6 @@ describe('Search App', () => {
       document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
       CLIENT.request = jest.fn()
         .mockReturnValueOnce(Promise.resolve(BRANDS_SINGLE))
-        .mockReturnValueOnce(Promise.resolve(ASSIGNEES))
       app = new Search(CLIENT, APPDATA_WITHOUT_CF, CONFIG)
       app._initializePromise.then(() => {
         done()
