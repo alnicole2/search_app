@@ -59,6 +59,7 @@ export default function (args) {
                   <option value="new">${I18n.t('search.value.new')}</option>
                   <option value="open">${I18n.t('search.value.open')}</option>
                   <option value="pending">${I18n.t('search.value.pending')}</option>
+                  <option value="hold">${I18n.t('search.value.onhold')}</option>
                   <option value="solved">${I18n.t('search.value.solved')}</option>
                   <option value="closed">${I18n.t('search.value.closed')}</option>
                 </select>
@@ -87,13 +88,7 @@ export default function (args) {
 
           <fieldset class="u-mb-sm">
             <label class="c-txt__label" for="assignee">${I18n.t('search.user.assignee')}</label>
-            <select name="assignee" id="assignee" class="c-txt__input c-txt__input--select">
-              ${loop(
-      args.assignees,
-      assignee => `<option value="${escape(assignee.name)}">${escape(assignee.name)}</option>`,
-      `<option value="">-</option>`
-    )}
-            </select>
+            <span id="assignee" class="placeholder"></span>
             ${args.hasMultiplebBrands &&
               `
               <div class="advanced-option">

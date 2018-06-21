@@ -1,5 +1,5 @@
-/* global describe, it, jest, expect */
-import {resizeContainer, templatingLoop, loopingPaginatedRequest} from '../src/javascript/lib/helpers'
+/* eslint-env jest */
+import {resizeContainer, templatingLoop, loopingPaginatedRequest, escapeSpecialChars as escape} from '../src/javascript/lib/helpers'
 
 const client = {
   invoke: jest.fn()
@@ -57,5 +57,23 @@ describe('loopingPaginatedRequest', () => {
       expect(results.length).toBe(10)
       done()
     })
+  })
+})
+
+describe('escapeSpecialChars', () => {
+  it('should escape open/close html tags', () => {
+    expect(escape('<script></script>')).toBe('&lt;script&gt;&lt;/script&gt;')
+  })
+  it('should escape ampersand', () => {
+    expect(escape('a && b')).toBe('a &amp;&amp; b')
+  })
+  it('should escape quotes and back tick', () => {
+    expect(escape('"string" \'string\' `string`')).toBe('&quot;string&quot; &#x27;string&#x27; &#x60;string&#x60;')
+  })
+  it('should escape equal sign', () => {
+    expect(escape('a = b')).toBe('a &#x3D; b')
+  })
+  it('should escape unsafe tags and characters', () => {
+    expect(escape('Test Ticket for Text App</a><script>javascript:alret(1);</script>')).toBe('Test Ticket for Text App&lt;/a&gt;&lt;script&gt;javascript:alret(1);&lt;/script&gt;')
   })
 })

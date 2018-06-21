@@ -6,6 +6,7 @@ import I18n from '../lib/i18n'
 import {resizeContainer, loopingPaginatedRequest} from '../lib/helpers'
 import getResultsTemplate from '../../templates/results'
 import getSearchTemplate from '../../templates/search'
+import getAssigneesTemplate from '../../templates/assignees'
 
 const PER_PAGE = 1
 const MAX_HEIGHT = 1000
@@ -43,11 +44,10 @@ class Search {
       this._states,
       {
         brands: await this._getBrands().catch(this._handleRequestFail.bind(this, '.loader')),
-        suggestions: await this._getSearchSuggestions().catch(this._handleRequestFail.bind(this, '.loader')),
-        assignees: await this._getAssignees().catch(this._handleRequestFail.bind(this, '.loader'))
+        suggestions: await this._getSearchSuggestions().catch(this._handleRequestFail.bind(this, '.loader'))
       }
     )
-    if (this._states.brands && this._states.suggestions && this._states.assignees) {
+    if (this._states.brands && this._states.suggestions) {
       await this._render('.loader', getSearchTemplate)
       // render application markup
       this._appContainer = document.querySelector('.search-app')
@@ -82,7 +82,7 @@ class Search {
    * @return {Promise} Resolved to a suggestions array
    */
   async _getSearchSuggestions () {
-    const searchSuggestions = []
+    const searchSuggestions = new Set()
     const customFieldIDs = this._appData.metadata.settings.custom_fields && this._appData.metadata.settings.custom_fields.match(/\d+/g)
     const isRelatedTicketsConfigOn = this._appData.metadata.settings.related_tickets
     const ticketSubject = (await this._client.get('ticket.subject'))['ticket.subject']
@@ -93,7 +93,7 @@ class Search {
       })
       await this._client.get(customFieldNames).then((values) => {
         customFieldNames.forEach((name) => {
-          values[name] && searchSuggestions.push(values[name])
+          values[name] && searchSuggestions.add(values[name])
         })
       })
     }
@@ -102,12 +102,11 @@ class Search {
       // strip punctuation and extra spaces, split by spaces
       const words = ticketSubject.toLowerCase().replace(/[.,-/#!$?%^&*;:{}=\-_`~()]/g, '').replace(/\s{2,}/g, ' ').split(' ')
       const exclusions = I18n.t('stopwords.exclusions').split(',')
-      const keywords = words.filter((w) => {
-        return !exclusions.includes(w)
+      words.forEach((w) => {
+        !exclusions.includes(w) && searchSuggestions.add(w)
       })
-      searchSuggestions.push(...keywords)
     }
-    return searchSuggestions
+    return Array.from(searchSuggestions)
   }
 
   /**
@@ -136,14 +135,23 @@ class Search {
    * @param {Event} event
    */
   _handleKeydown (event) {
-    event.which === 13 && this._doTheSearch(event)
+    if (event.which === 13) this._doTheSearch(event)
   }
 
   /**
    * Advanced toggle change handler
    * @param {Event} event
    */
-  _handleAdvancedFieldsToggle (event) {
+  async _handleAdvancedFieldsToggle (event) {
+    if (!this._states.assignees) {
+      Object.assign(
+        this._states,
+        {
+          assignees: await this._getAssignees().catch(this._handleRequestFail.bind(this, '.loader'))
+        }
+      )
+      await this._render('#assignee', getAssigneesTemplate)
+    }
     Object.assign(this._states, {showAdvancedOptions: event.target.checked})
     this._appContainer.querySelector('.advanced-options-wrapper').classList.toggle('u-display-block')
     resizeContainer(this._client, MAX_HEIGHT)
@@ -155,15 +163,17 @@ class Search {
    */
   async _doTheSearch (event, pageIndex = 1) {
     event.preventDefault()
-    Object.assign(this._states, {isLoading: true})
-    await this._render('.results-wrapper', getResultsTemplate)
-    const results = await this._client.request({
-      url: `${this._apis.search + encodeURIComponent(this._getSearchParams())}&page=${pageIndex}`,
-      cors: true
-    }).catch(this._handleRequestFail.bind(this, '.results-wrapper'))
-    if (results) {
-      pageIndex && Object.assign(this._states, {currentPage: +pageIndex || 1})
-      this._handleSearchResults(results)
+    if (this._keywordField.value) {
+      Object.assign(this._states, {isLoading: true})
+      await this._render('.results-wrapper', getResultsTemplate)
+      const results = await this._client.request({
+        url: `${this._apis.search + encodeURIComponent(this._getSearchParams())}&page=${pageIndex}`,
+        cors: true
+      }).catch(this._handleRequestFail.bind(this, '.results-wrapper'))
+      if (results) {
+        pageIndex && Object.assign(this._states, {currentPage: +pageIndex || 1})
+        this._handleSearchResults(results)
+      }
     }
   }
 
