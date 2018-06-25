@@ -24,71 +24,92 @@ export const ASSIGNEES = {
   'next_page': ''
 }
 
-export const RESULTS_MULTI_PAGE = {
+export const RESULTS_12 = {
   'results': [
     {
-      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/4.json',
+      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/1.json',
       'id': 1,
-      'subject': 'New ticket 2',
-      'description': 'New ticket 2 text',
+      'subject': 'New ticket 1',
+      'description': 'Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+      'result_type': 'ticket'
+    },
+    {
+      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/2.json',
+      'id': 2,
+      'subject': 'New ticket 2 text',
+      'description': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      'result_type': 'ticket'
+    },
+    {
+      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/3.json',
+      'id': 3,
+      'subject': 'New ticket 3 text',
+      'description': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      'result_type': 'ticket'
+    },
+    {
+      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/4.json',
+      'id': 4,
+      'subject': 'New ticket 4 text',
+      'description': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      'result_type': 'ticket'
+    },
+    {
+      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/5.json',
+      'id': 5,
+      'subject': 'New ticket 5 text',
+      'description': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
       'result_type': 'ticket'
     },
     {
       'url': 'https://z3n4693.zendesk.com/api/v2/tickets/6.json',
       'id': 6,
-      'subject': 'New ticket 4 text',
-      'description': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
+      'subject': 'New ticket 6 text',
+      'description': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
       'result_type': 'ticket'
     },
     {
-      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/6.json',
-      'id': 7,
-      'subject': 'New ticket 5 text',
-      'description': 'Lorem Ipsum',
-      'result_type': 'ticket'
-    },
-    {
-      'html_url': 'https://z3n4693.zendesk.com/api/v2/tickets/6.json',
-      'name': 'New article 1 text',
+      'html_url': 'https://z3n4693.zendesk.com/api/v2/article/7.json',
+      'name': 'New article 7 text',
       'result_type': 'article'
     },
     {
       'id': 8,
-      'name': 'New article 1 text',
+      'name': 'New user 8 text',
       'result_type': 'user'
     },
     {
       'id': 9,
-      'name': 'New article 1 text',
+      'name': 'New organization 9 text',
       'result_type': 'organization'
     },
     {
-      'name': 'New article 1 text',
+      'name': 'New group 10 text',
       'result_type': 'group'
     },
     {
-      'id': 10,
-      'title': 'New article 1 text',
+      'id': 11,
+      'title': 'New topic 11 text',
       'result_type': 'topic'
     },
     {
-      'id': 11,
+      'id': 12,
       'result_type': 'unknow'
     }
   ],
-  'next_page': 'https://z3n4693.zendesk.com/api/v2/search.json?page=3&per_page=2&query=ticket+ticket',
-  'previous_page': 'https://z3n4693.zendesk.com/api/v2/search.json?page=1&per_page=2&query=ticket+ticket',
-  'count': 6
+  'next_page': '#link',
+  'previous_page': '#link',
+  'count': 12
 }
 
-export const RESULTS_SINGLE_PAGE = {
+export const RESULTS_1 = {
   'results': [
     {
-      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/6.json',
-      'id': 8,
-      'subject': 'New article 1 text',
-      'description': 'New article',
-      'result_type': 'article'
+      'url': 'https://z3n4693.zendesk.com/api/v2/tickets/1.json',
+      'id': 1,
+      'subject': 'New ticket 1',
+      'description': 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      'result_type': 'ticket'
     }
   ],
   'next_page': '',
@@ -96,29 +117,18 @@ export const RESULTS_SINGLE_PAGE = {
   'count': 1
 }
 
-export const RESULTS_EMPTY = {
+export const RESULTS_0 = {
   'results': [],
   'next_page': '',
   'previous_page': '',
   'count': 0
 }
 
-export const RESULTS_FIRST_PAGE = {
-  'results': [
-    {}, {}
-  ],
-  'next_page': 'https://z3n4693.zendesk.com/api/v2/search.json?page=3&per_page=2&query=ticket+ticke',
-  'previous_page': '',
-  'count': 2
-}
-
-export const RESULTS_LAST_PAGE = {
-  'results': [
-    {}, {}
-  ],
-  'next_page': '',
-  'previous_page': 'https://z3n4693.zendesk.com/api/v2/search.json?page=3&per_page=2&query=ticket+ticke',
-  'count': 2
+export const RESULTS_200 = {
+  'results': new Array(200).fill({}),
+  'next_page': '#link',
+  'previous_page': '#link',
+  'count': 200
 }
 
 export const CLIENT = {

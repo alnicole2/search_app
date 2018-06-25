@@ -75,6 +75,7 @@ const getPaginationMarkup = (args) => {
   const maxNumberOfLinks = 7 // In practice, 7 is the min number that works => 1,...,4,5,6,...,10
   const pageCount = args.pagination.page_count
   const current = args.currentPage
+  // logic to make sure as many pages visible as possible(up to maxNumberOfLinks)
   let offset = Math.max(maxNumberOfLinks - 2 - (current - 1), maxNumberOfLinks - 2 - (pageCount - current), 2)
   let pages = ''
   for (let i = 1; i <= pageCount; i++) {
@@ -99,9 +100,9 @@ const getPaginationMarkup = (args) => {
     args.pagination.is_paged
       ? `
     <ul class="c-pagination" role="navigation">
-      <li class="c-pagination__page c-pagination__page--previous page-link" ${current > 1 ? `data-index="${current - 1}"` : ''} aria-hidden="${args.pagination.previous_page ? 'false' : 'true'}">previous</li>
+      <li class="c-pagination__page c-pagination__page--previous page-link" ${current > 1 ? `data-index="${current - 1}"` : ''} aria-hidden="${current > 1 ? 'false' : 'true'}">previous</li>
       ${pages}
-      <li class="c-pagination__page c-pagination__page--next page-link" ${current < pageCount ? `data-index="${current + 1}"` : ''} aria-hidden="${args.pagination.next_page ? 'false' : 'true'}">next</li>
+      <li class="c-pagination__page c-pagination__page--next page-link" ${current < pageCount ? `data-index="${current + 1}"` : ''} aria-hidden="${current < pageCount ? 'false' : 'true'}">next</li>
     </ul>
     `
       : ''

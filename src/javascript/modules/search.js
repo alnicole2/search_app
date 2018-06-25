@@ -8,7 +8,7 @@ import getResultsTemplate from '../../templates/results'
 import getSearchTemplate from '../../templates/search'
 import getAssigneesTemplate from '../../templates/assignees'
 
-const PER_PAGE = 1
+const PER_PAGE = 10
 const MAX_HEIGHT = 1000
 const MAX_PAGE = 100
 
@@ -159,7 +159,7 @@ class Search {
   /**
    * Fire the search request
    * @param {Event} event
-   * @param {String} pageIndex compose url with passedin page index.
+   * @param {String} pageIndex index of the requested page
    */
   async _doTheSearch (event, pageIndex = 1) {
     event.preventDefault()
@@ -171,7 +171,7 @@ class Search {
         cors: true
       }).catch(this._handleRequestFail.bind(this, '.results-wrapper'))
       if (results) {
-        pageIndex && Object.assign(this._states, {currentPage: +pageIndex || 1})
+        Object.assign(this._states, {currentPage: +pageIndex || 1})
         this._handleSearchResults(results)
       }
     }

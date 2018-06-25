@@ -61,6 +61,11 @@ describe('loopingPaginatedRequest', () => {
 })
 
 describe('escapeSpecialChars', () => {
+  it('should throw error if the argument passed in is not of String type', function () {
+    expect(() => {
+      escape(1)
+    }).toThrow()
+  })
   it('should escape open/close html tags', () => {
     expect(escape('<script></script>')).toBe('&lt;script&gt;&lt;/script&gt;')
   })
