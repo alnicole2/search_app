@@ -246,9 +246,7 @@ class Search {
           return true
         }),
         pagination: {
-          is_paged: !!(data.next_page || data.previous_page),
-          previous_page: data.previous_page,
-          next_page: data.next_page,
+          hasMultiplePages: !!(data.next_page || data.previous_page),
           page_count: Math.ceil(data.count / PER_PAGE),
           count: I18n.t('search.results', { count: data.count })
         },

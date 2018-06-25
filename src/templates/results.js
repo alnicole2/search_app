@@ -84,11 +84,11 @@ const getPaginationMarkup = (args) => {
     } else {
       let from = i
       if (i < current) {
-        while (i < current - offset) {
+        while (i < (current - offset)) {
           i++
         }
       } else {
-        while (i < pageCount - 1) {
+        while (i < (pageCount - 1)) {
           i++
         }
       }
@@ -97,7 +97,7 @@ const getPaginationMarkup = (args) => {
     }
   }
   return (
-    args.pagination.is_paged
+    args.pagination.hasMultiplePages
       ? `
     <ul class="c-pagination" role="navigation">
       <li class="c-pagination__page c-pagination__page--previous page-link" ${current > 1 ? `data-index="${current - 1}"` : ''} aria-hidden="${current > 1 ? 'false' : 'true'}">previous</li>

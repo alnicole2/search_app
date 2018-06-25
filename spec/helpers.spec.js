@@ -61,7 +61,7 @@ describe('loopingPaginatedRequest', () => {
 })
 
 describe('escapeSpecialChars', () => {
-  it('should throw error if the argument passed in is not of String type', function () {
+  it('should throw error if the passed in argument type is not String', function () {
     expect(() => {
       escape(1)
     }).toThrow()

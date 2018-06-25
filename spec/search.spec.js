@@ -143,7 +143,7 @@ describe('Search App', () => {
       })
     })
 
-    it('_doTheSearch should handle invalid type of pageIndex passed in', (done) => {
+    it('should handle invalid type of pageIndex passed in to _doTheSearch', (done) => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
       app._doTheSearch(new CustomEvent('fake'), {}).then(() => {
         // Prev is not clickable as we are on the first page
@@ -198,7 +198,7 @@ describe('Search App', () => {
     it('should not show paginations with one page results', (done) => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
-        expect(app._states.pagination.is_paged).toBe(false)
+        expect(app._states.pagination.hasMultiplePages).toBe(false)
         done()
       })
     })

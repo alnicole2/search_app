@@ -24,13 +24,14 @@ export const ASSIGNEES = {
   'next_page': ''
 }
 
+// Mock results with 12 records, including all different result types
 export const RESULTS_12 = {
   'results': [
     {
       'url': 'https://z3n4693.zendesk.com/api/v2/tickets/1.json',
       'id': 1,
       'subject': 'New ticket 1',
-      'description': 'Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.',
+      'description': "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
       'result_type': 'ticket'
     },
     {
@@ -102,6 +103,7 @@ export const RESULTS_12 = {
   'count': 12
 }
 
+// Mock results with only 1 record, this is used for testing single page response and also serve as a simple mock api response
 export const RESULTS_1 = {
   'results': [
     {
@@ -117,6 +119,7 @@ export const RESULTS_1 = {
   'count': 1
 }
 
+// Mock empty results
 export const RESULTS_0 = {
   'results': [],
   'next_page': '',
@@ -124,6 +127,7 @@ export const RESULTS_0 = {
   'count': 0
 }
 
+// Mock results with 200 records, used for testing pagination function
 export const RESULTS_200 = {
   'results': new Array(200).fill({}),
   'next_page': '#link',
