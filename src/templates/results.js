@@ -72,41 +72,54 @@ const getTopicMarkup = (o) => {
 }
 
 const getPaginationMarkup = (args) => {
-  const maxNumberOfLinks = 7 // In practice, 7 is the min number that works => 1,...,4,5,6,...,10
   const pageCount = args.pagination.page_count
   const current = args.currentPage
+  let html = ''
+  if (args.pagination.hasMultiplePages) {
+    html = `
+      <ul class="c-pagination" role="navigation">
+        <li class="c-pagination__page c-pagination__page--previous page-link" ${current > 1 ? `data-index="${current - 1}"` : ''} aria-hidden="${current > 1 ? 'false' : 'true'}">previous</li>
+        ${getPages(current, pageCount)}
+        <li class="c-pagination__page c-pagination__page--next page-link" ${current < pageCount ? `data-index="${current + 1}"` : ''} aria-hidden="${current < pageCount ? 'false' : 'true'}">next</li>
+      </ul>
+    `
+  }
+  return html
+}
+
+const getPages = (current, pageCount) => {
+  const maxNumberOfLinks = 7 // In practice, 7 is the min number that works => 1,...,4,5,6,...,10
   // logic to make sure as many pages visible as possible(up to maxNumberOfLinks)
   let offset = Math.max(maxNumberOfLinks - 2 - (current - 1), maxNumberOfLinks - 2 - (pageCount - current), 2)
   let pages = ''
   for (let i = 1; i <= pageCount; i++) {
+    // display page link if
+    // - total page count is smaller than maxNumberOfLinks
+    // - first page
+    // - last page
+    // - pages within the range of current -/+ offset
     if (pageCount <= maxNumberOfLinks || i === 1 || i === pageCount || Math.abs(current - i) < offset) {
-      pages += `<li class="c-pagination__page page-link" ${current === i ? 'aria-current="true"' : `data-index="${i}"`}>${i}</li>`
+      pages += getPageLinkMarkup(current, i)
     } else {
       let from = i
       if (i < current) {
-        while (i < (current - offset)) {
-          i++
-        }
+        i = current - offset
       } else {
-        while (i < (pageCount - 1)) {
-          i++
-        }
+        i = pageCount - 1
       }
-      if (from === i) pages += `<li class="c-pagination__page page-link" data-index="${i}"}>${i}</li>`
-      else pages += `<li class="c-pagination__page c-pagination__page--gap">${from}-${i}</li>`
+      if (from === i) pages += getPageLinkMarkup(current, i)
+      else pages += getGapMarkup(from, i)
     }
   }
-  return (
-    args.pagination.hasMultiplePages
-      ? `
-    <ul class="c-pagination" role="navigation">
-      <li class="c-pagination__page c-pagination__page--previous page-link" ${current > 1 ? `data-index="${current - 1}"` : ''} aria-hidden="${current > 1 ? 'false' : 'true'}">previous</li>
-      ${pages}
-      <li class="c-pagination__page c-pagination__page--next page-link" ${current < pageCount ? `data-index="${current + 1}"` : ''} aria-hidden="${current < pageCount ? 'false' : 'true'}">next</li>
-    </ul>
-    `
-      : ''
-  )
+  return pages
+}
+
+const getPageLinkMarkup = (current, index) => {
+  return `<li class="c-pagination__page page-link" ${current === index ? 'aria-current="true"' : `data-index="${index}"`}>${index}</li>`
+}
+
+const getGapMarkup = (from, to) => {
+  return `<li class="c-pagination__page c-pagination__page--gap">${from}-${to}</li>`
 }
 
 const getErrorMarkup = (args) => {
