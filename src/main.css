@@ -25,7 +25,6 @@
 .advanced-options-wrapper,
 .ticket-only{
   display: none;
-  overflow: hidden;
 }
 .c-menu{
   z-index: 1;

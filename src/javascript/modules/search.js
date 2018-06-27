@@ -194,20 +194,20 @@ class Search {
     }
     Object.assign(this._states, {showAdvancedOptions: event.target.checked})
     this._appContainer.querySelector('.advanced-options-wrapper').classList.toggle('u-display-block')
-    resizeContainer(this._client, MAX_HEIGHT)
+    return resizeContainer(this._client, MAX_HEIGHT)
   }
 
   /**
    * Filter field change handler
    * @param {Event} event
    */
-  _handleFilterChange (event) {
+  async _handleFilterChange (event) {
     const isTicketSelected = event.target.value === 'ticket'
     Object.assign(this._states, {showTicketFields: isTicketSelected})
     Array.prototype.forEach.call(this._appContainer.querySelectorAll('.ticket-only'), (field) => {
       field.classList[isTicketSelected ? 'add' : 'remove']('u-display-block')
     })
-    resizeContainer(this._client, MAX_HEIGHT)
+    return resizeContainer(this._client, MAX_HEIGHT)
   }
 
   /**
@@ -260,10 +260,12 @@ class Search {
     }
     if (this._states.showAdvancedOptions) {
       // Status
-      const filter = $search.querySelector('#filter').value
-      const condition = $search.querySelector('#condition').value
-      const value = $search.querySelector('#value').value
-      if (this._states.showTicketFields && filter && condition && value) params.push([filter, condition, value].join(''))
+      if (this._states.showTicketFields){
+        const selectedStatuses = this._ticketStatusObj.getValues()
+        const statusParam = selectedStatuses.forEach((status) => {
+          params.push(`status:${status}`)
+        })
+      }
       // Created
       const range = $search.querySelector('#range').value
       const from = $search.querySelector('#from').value
