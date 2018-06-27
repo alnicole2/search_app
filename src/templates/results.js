@@ -72,15 +72,19 @@ const getTopicMarkup = (o) => {
 }
 
 const getPaginationMarkup = (args) => {
-  const pageCount = args.pagination.page_count
-  const current = args.currentPage
   let html = ''
   if (args.pagination.hasMultiplePages) {
+    const pageCount = args.pagination.page_count
+    const current = args.currentPage
+    const prevLinkDataIndex = current > 1 ? `data-index="${current - 1}"` : ''
+    const prevLinkAriaHidden = current > 1 ? 'false' : 'true'
+    const nextLinkDataIndex = current < pageCount ? `data-index="${current + 1}"` : ''
+    const nextLinkAriaHidden = current < pageCount ? 'false' : 'true'
     html = `
       <ul class="c-pagination" role="navigation">
-        <li class="c-pagination__page c-pagination__page--previous page-link" ${current > 1 ? `data-index="${current - 1}"` : ''} aria-hidden="${current > 1 ? 'false' : 'true'}">previous</li>
+        <li class="c-pagination__page c-pagination__page--previous page-link" ${prevLinkDataIndex} aria-hidden="${prevLinkAriaHidden}">previous</li>
         ${getPages(current, pageCount)}
-        <li class="c-pagination__page c-pagination__page--next page-link" ${current < pageCount ? `data-index="${current + 1}"` : ''} aria-hidden="${current < pageCount ? 'false' : 'true'}">next</li>
+        <li class="c-pagination__page c-pagination__page--next page-link" ${nextLinkDataIndex} aria-hidden="${nextLinkAriaHidden}">next</li>
       </ul>
     `
   }
@@ -88,7 +92,8 @@ const getPaginationMarkup = (args) => {
 }
 
 const getPages = (current, pageCount) => {
-  const maxNumberOfLinks = 7 // In practice, 7 is the min number that works => 1,...,4,5,6,...,10
+  // In practice, 7 is the min number that works for the current design => 1,...,4,5,6,...,10
+  const maxNumberOfLinks = 7
   // logic to make sure as many pages visible as possible(up to maxNumberOfLinks)
   let offset = Math.max(maxNumberOfLinks - 2 - (current - 1), maxNumberOfLinks - 2 - (pageCount - current), 2)
   let pages = ''
