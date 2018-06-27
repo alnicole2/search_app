@@ -22,7 +22,8 @@
 .c-chk__label--toggle{
   height: 20px;
 }
-.advanced-options-wrapper{
+.advanced-options-wrapper,
+.ticket-only{
   display: none;
   overflow: hidden;
 }

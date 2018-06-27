@@ -1,5 +1,33 @@
 import I18n from '../javascript/lib/i18n.js'
 import {templatingLoop as loop, escapeSpecialChars as escape} from '../javascript/lib/helpers.js'
+const getSuggestionsListTemplate = (suggestions) => {
+  return loop(
+    suggestions,
+    suggestion => `<a href class="c-tag u-mr-xs suggestion">${escape(suggestion)}</a>`
+  )
+}
+
+const getBrandsDropdownTemplate = (args) => {
+  if (args.hasMultiplebBrands) {
+    return `
+      <div class="advanced-option">
+        <label class="c-txt__label" for="brand-filter">${I18n.t('brand_filter.brand')}</label>
+        <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select">
+          <option value="">${I18n.t('brand_filter.all_brands')}</option>
+          ${getBrandsOptionsTemplate(args.brands)}
+        </select>
+      </div>
+    `
+  }
+}
+
+const getBrandsOptionsTemplate = (brands) => {
+  return loop(
+    brands,
+    brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${escape(brand.label)}</option>`
+  )
+}
+
 export default function (args) {
   return (
     `
@@ -26,18 +54,14 @@ export default function (args) {
           </div>
         </fieldset>
         <fieldset class="u-mb-sm suggestions">
-          ${loop(
-      args.suggestions,
-      suggestion => `<a href class="c-tag u-mr-xs suggestion">${escape(suggestion)}</a>`
-    )}
+          ${getSuggestionsListTemplate(args.suggestions)}
         </fieldset>
         <fieldset class="u-mb-sm u-ta-right c-chk">
           <input class="c-chk__input" id="advanced-field-toggle" type="checkbox">
           <label class="c-chk__label c-chk__label--toggle" for="advanced-field-toggle"><span dir="ltr">Advanced</span></label>
         </fieldset>
         <div class="advanced-options-wrapper">
-          <fieldset class="u-mb-sm u-position-relative" id="ticket-status"></fieldset>
-
+          <fieldset class="u-mb-sm u-position-relative ticket-only" id="ticket-status"></fieldset>
           <fieldset class="u-mb-sm">
             <label class="c-txt__label" for="range">Date Range</label>
             <select name="range" id="range" class="c-txt__input c-txt__input--select u-mb-sm">
@@ -56,24 +80,12 @@ export default function (args) {
               </div>
             </div>
           </fieldset>
-
-          <fieldset class="u-mb-sm">
+          <fieldset class="u-mb-sm ticket-only">
             <label class="c-txt__label" for="assignee">${I18n.t('search.user.assignee')}</label>
             <span id="assignee" class="placeholder"></span>
-            ${args.hasMultiplebBrands &&
-              `
-              <div class="advanced-option">
-                <label class="c-txt__label" for="brand-filter">${I18n.t('brand_filter.brand')}</label>
-                <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select">
-                  ${loop(
-      args.brands,
-      brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${escape(brand.label)}</option>`,
-      `<option value="">${I18n.t('brand_filter.all_brands')}</option>`
-    )}
-                </select>
-              </div>
-              `
-    }
+          </fieldset>
+          <fieldset class="u-mb-sm">
+            ${getBrandsDropdownTemplate(args)}
           </fieldset>
         </div>
       </form>

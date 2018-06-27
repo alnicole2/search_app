@@ -25,6 +25,7 @@ class Search {
     }
     this._states = {
       showAdvancedOptions: false,
+      showTicketFields: false,
       hasMultiplebBrands: false,
       results: [],
       isLoading: false
@@ -76,20 +77,26 @@ class Search {
             value: 'closed',
             isSelected: false
           }
-        ],
+        ]
       }
     )
     if (this._states.brands && this._states.suggestions) {
       await this._render('.loader', getSearchTemplate)
-      this._ticketStatusObj = new DropdownWithTags(this._states.ticketStatusOptions, document.querySelector('#ticket-status'), 'Ticket Status')
       // render application markup
       this._appContainer = document.querySelector('.search-app')
       this._keywordField = document.querySelector('.search-box')
       this._advancedToggle = document.querySelector('#advanced-field-toggle')
+      this._filterField = document.querySelector('#type')
+      this._ticketStatusObj = new DropdownWithTags(
+        this._states.ticketStatusOptions,
+        document.querySelector('#ticket-status'),
+        'Ticket Status'
+      )
       // bind events
       this._appContainer.addEventListener('click', this._clickHandlerDispatch.bind(this))
       this._keywordField.addEventListener('keydown', this._handleKeydown.bind(this))
       this._advancedToggle.addEventListener('change', this._handleAdvancedFieldsToggle.bind(this))
+      this._filterField.addEventListener('change', this._handleFilterChange.bind(this))
     }
   }
 
@@ -189,6 +196,20 @@ class Search {
     this._appContainer.querySelector('.advanced-options-wrapper').classList.toggle('u-display-block')
     resizeContainer(this._client, MAX_HEIGHT)
   }
+
+  /**
+   * Filter field change handler
+   * @param {Event} event
+   */
+  _handleFilterChange (event) {
+    const isTicketSelected = event.target.value === 'ticket'
+    Object.assign(this._states, {showTicketFields: isTicketSelected})
+    Array.prototype.forEach.call(this._appContainer.querySelectorAll('.ticket-only'), (field) => {
+      field.classList[isTicketSelected ? 'add' : 'remove']('u-display-block')
+    })
+    resizeContainer(this._client, MAX_HEIGHT)
+  }
+
   /**
    * Fire the search request
    * @param {Event} event
@@ -242,7 +263,7 @@ class Search {
       const filter = $search.querySelector('#filter').value
       const condition = $search.querySelector('#condition').value
       const value = $search.querySelector('#value').value
-      if (filter && condition && value) params.push([filter, condition, value].join(''))
+      if (this._states.showTicketFields && filter && condition && value) params.push([filter, condition, value].join(''))
       // Created
       const range = $search.querySelector('#range').value
       const from = $search.querySelector('#from').value
@@ -251,7 +272,7 @@ class Search {
       if (range && to) params.push(`${range}<${to}`)
       // Assignee
       const assignee = $search.querySelector('#assignee').value
-      if (assignee) params.push(`assignee:"${assignee}"`)
+      if (this._states.showTicketFields && assignee) params.push(`assignee:"${assignee}"`)
       // Brand
       const brand = $search.querySelector('#brand-filter')
       if (this._states.hasMultiplebBrands) brand.value && params.push(`brand_id:"${brand.value}"`)

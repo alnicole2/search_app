@@ -67,8 +67,8 @@ class TagContentDropdown {
       const nextFocusElement = document.activeElement
       if (!nextFocusElement.classList.contains('c-tag') && !nextFocusElement.classList.contains('c-menu__item')) {
         this._collapseDropdown()
-      } 
-    },0)
+      }
+    }, 0)
   }
   _handleSelectOption (target) {
     const index = target.dataset.index
@@ -85,11 +85,11 @@ class TagContentDropdown {
   }
   getValues () {
     return this._dataset.reduce((accumulator, option) => {
-      if(option.isSelected){
+      if (option.isSelected) {
         accumulator.push(option.value)
       }
       return accumulator
-    },[])
+    }, [])
   }
 }
 export default TagContentDropdown
