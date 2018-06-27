@@ -7,6 +7,7 @@ import {resizeContainer, loopingPaginatedRequest} from '../lib/helpers'
 import getResultsTemplate from '../../templates/results'
 import getSearchTemplate from '../../templates/search'
 import getAssigneesTemplate from '../../templates/assignees'
+import DropdownWithTags from '../lib/dropdown_with_tags'
 
 const PER_PAGE = 10
 const MAX_HEIGHT = 1000
@@ -43,11 +44,44 @@ class Search {
       this._states,
       {
         brands: await this._getBrands().catch(this._handleRequestFail.bind(this, '.loader')),
-        suggestions: await this._getSearchSuggestions().catch(this._handleRequestFail.bind(this, '.loader'))
+        suggestions: await this._getSearchSuggestions().catch(this._handleRequestFail.bind(this, '.loader')),
+        ticketStatusOptions: [
+          {
+            label: I18n.t('search.value.new'),
+            value: 'new',
+            isSelected: true
+          },
+          {
+            label: I18n.t('search.value.open'),
+            value: 'open',
+            isSelected: false
+          },
+          {
+            label: I18n.t('search.value.pending'),
+            value: 'pending',
+            isSelected: false
+          },
+          {
+            label: I18n.t('search.value.onhold'),
+            value: 'hold',
+            isSelected: false
+          },
+          {
+            label: I18n.t('search.value.solved'),
+            value: 'solved',
+            isSelected: false
+          },
+          {
+            label: I18n.t('search.value.closed'),
+            value: 'closed',
+            isSelected: false
+          }
+        ],
       }
     )
     if (this._states.brands && this._states.suggestions) {
       await this._render('.loader', getSearchTemplate)
+      this._ticketStatusObj = new DropdownWithTags(this._states.ticketStatusOptions, document.querySelector('#ticket-status'), 'Ticket Status')
       // render application markup
       this._appContainer = document.querySelector('.search-app')
       this._keywordField = document.querySelector('.search-box')

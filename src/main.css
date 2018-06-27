@@ -9,6 +9,7 @@
 @import '@zendeskgarden/css-tooltips/dist/index.css';
 @import '@zendeskgarden/css-arrows/dist/index.css';
 @import '@zendeskgarden/css-callouts/dist/index.css';
+@import '@zendeskgarden/css-menus/dist/index.css';
 
 .loader{
   width: 50px;
@@ -24,6 +25,9 @@
 .advanced-options-wrapper{
   display: none;
   overflow: hidden;
+}
+.c-menu{
+  z-index: 1;
 }
 .results-wrapper{
   table{

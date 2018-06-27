@@ -36,36 +36,7 @@ export default function (args) {
           <label class="c-chk__label c-chk__label--toggle" for="advanced-field-toggle"><span dir="ltr">Advanced</span></label>
         </fieldset>
         <div class="advanced-options-wrapper">
-          <fieldset class="u-mb-sm">
-            <label class="c-txt__label" for="filter">Ticket Status</label>
-            <div class="row">
-              <div class="col">
-                <select name="filter" id="filter" class="c-txt__input c-txt__input--select">
-                  <option value="">-</option>
-                  <option value="status">${I18n.t('search.filter.status')}</option>
-                </select>
-              </div>
-              <div class="col">
-                <select name="condition" id="condition" class="c-txt__input c-txt__input--select">
-                  <option value="">-</option>
-                  <option value=":">${I18n.t('search.condition.equal')}</option>
-                  <option value=">">${I18n.t('search.condition.greater')}}</option>
-                  <option value="<">${I18n.t('search.condition.less')}</option>
-                </select>
-                </div>
-              <div class="col">
-                <select name="value" id="value" class="c-txt__input c-txt__input--select">
-                  <option value="">-</option>
-                  <option value="new">${I18n.t('search.value.new')}</option>
-                  <option value="open">${I18n.t('search.value.open')}</option>
-                  <option value="pending">${I18n.t('search.value.pending')}</option>
-                  <option value="hold">${I18n.t('search.value.onhold')}</option>
-                  <option value="solved">${I18n.t('search.value.solved')}</option>
-                  <option value="closed">${I18n.t('search.value.closed')}</option>
-                </select>
-              </div>
-            </div>
-          </fieldset>
+          <fieldset class="u-mb-sm u-position-relative" id="ticket-status"></fieldset>
 
           <fieldset class="u-mb-sm">
             <label class="c-txt__label" for="range">Date Range</label>

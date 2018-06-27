@@ -4,8 +4,8 @@ export function resizeContainer (client, max = Number.POSITIVE_INFINITY) {
 }
 
 export function templatingLoop (set, getTemplate, initialValue = '') {
-  return set.reduce((accumulator, item) => {
-    return `${accumulator}${getTemplate(item)}`
+  return set.reduce((accumulator, item, index) => {
+    return `${accumulator}${getTemplate(item, index)}`
   }, initialValue)
 }
 
