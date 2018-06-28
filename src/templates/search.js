@@ -1,27 +1,27 @@
 import I18n from '../javascript/lib/i18n.js'
 import {templatingLoop as loop, escapeSpecialChars as escape} from '../javascript/lib/helpers.js'
-const getSuggestionsListTemplate = (suggestions) => {
+const getSuggestionsListMarkup = (suggestions) => {
   return loop(
     suggestions,
     suggestion => `<a href class="c-tag u-mr-xs suggestion">${escape(suggestion)}</a>`
   )
 }
 
-const getBrandsDropdownTemplate = (args) => {
+const getBrandsDropdownMarkup = (args) => {
   if (args.hasMultiplebBrands) {
     return `
       <div class="advanced-option">
         <label class="c-txt__label" for="brand-filter">${I18n.t('brand_filter.brand')}</label>
         <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select">
           <option value="">${I18n.t('brand_filter.all_brands')}</option>
-          ${getBrandsOptionsTemplate(args.brands)}
+          ${getBrandsOptionsMarkup(args.brands)}
         </select>
       </div>
     `
   }
 }
 
-const getBrandsOptionsTemplate = (brands) => {
+const getBrandsOptionsMarkup = (brands) => {
   return loop(
     brands,
     brand => `<option value='${brand.value}' ${brand.selected ? 'selected' : ''}>${escape(brand.label)}</option>`
@@ -54,7 +54,7 @@ export default function (args) {
           </div>
         </fieldset>
         <fieldset class="u-mb-sm suggestions">
-          ${getSuggestionsListTemplate(args.suggestions)}
+          ${getSuggestionsListMarkup(args.suggestions)}
         </fieldset>
         <fieldset class="u-mb-sm u-ta-right c-chk">
           <input class="c-chk__input" id="advanced-field-toggle" type="checkbox">
@@ -85,7 +85,7 @@ export default function (args) {
             <span id="assignee" class="placeholder"></span>
           </fieldset>
           <fieldset class="u-mb-sm">
-            ${getBrandsDropdownTemplate(args)}
+            ${getBrandsDropdownMarkup(args)}
           </fieldset>
         </div>
       </form>

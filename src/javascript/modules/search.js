@@ -234,8 +234,7 @@ class Search {
     if (this._states.showAdvancedOptions) {
       // Status
       if (this._states.showTicketFields) {
-        const selectedStatuses = this._ticketStatusObj.values
-        const statusParam = selectedStatuses.forEach((status) => {
+        this._ticketStatusObj.selectedValues.forEach((status) => {
           params.push(`status:${status}`)
         })
       }

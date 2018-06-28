@@ -1,9 +1,8 @@
-import I18n from './i18n.js'
 import {templatingLoop as loop, escapeSpecialChars as escape} from './helpers.js'
 class DropdownWithTags {
   /**
    * Constructor
-   * @param {Array} dataset array of option objects [{label, value[, isSelected]}] 
+   * @param {Array} dataset array of option objects [{label, value[, isSelected]}]
    * @param {HTMLElement} container parentNode which the dropdown is appended to
    * @param {String} label Label of the dropdown
    */
@@ -151,7 +150,7 @@ class DropdownWithTags {
    * Getter array of selected options' values
    * @return {Array}
    */
-  get values () {
+  get selectedValues () {
     return this._dataset.reduce((accumulator, option) => {
       if (option.isSelected) {
         accumulator.push(option.value)
