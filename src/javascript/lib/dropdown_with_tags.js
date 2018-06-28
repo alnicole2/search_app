@@ -42,7 +42,7 @@ class DropdownWithTags {
   get optionsMarkup () {
     return loop(
       this._dataset,
-      (option, index) => `<a href data-index="${index}" tabindex="0" class="c-menu__item ${option.isSelected ? 'is-checked' : ''}">${escape(option.label)}</a>`
+      (option, index) => `<a href data-index="${index}" class="c-menu__item ${option.isSelected ? 'is-checked' : ''}">${escape(option.label)}</a>`
     )
   }
 
@@ -90,6 +90,7 @@ class DropdownWithTags {
     if (target === this._tagsContainer) this._expandDropdown()
     else if (target.classList.contains('c-menu__item') && !target.classList.contains('is-checked')) this._handleSelectOption(target)
     else if (target.parentNode.classList.contains('c-tag-option')) this._handleDeselectOption(target.parentNode)
+    else if (target.classList.contains('c-tag')) this._handleDeselectOption(target)
   }
 
   /**
