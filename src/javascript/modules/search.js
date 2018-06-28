@@ -12,17 +12,17 @@ import DropdownWithTags from '../lib/dropdown_with_tags'
 const PER_PAGE = 10
 const MAX_HEIGHT = 1000
 const MAX_PAGE = 100
+const API = {
+  brands: `/api/v2/brands.json`,
+  users: `/api/v2/group_memberships/assignable.json?include=users`,
+  search: `/api/v2/search.json?per_page=${PER_PAGE}&query=`
+}
 
 class Search {
   constructor (client, appData, config) {
     this._client = client
     this._appData = appData
     this._config = config
-    this._apis = {
-      brands: `/api/v2/brands.json`,
-      users: `/api/v2/group_memberships/assignable.json?include=users`,
-      search: `/api/v2/search.json?per_page=${PER_PAGE}&query=`
-    }
     this._states = {
       showAdvancedOptions: false,
       showTicketFields: false,
@@ -34,7 +34,7 @@ class Search {
   }
 
   /**
-   * Initialization App
+   * Initialize App
    */
   async _init () {
     // retrieve initialization data
@@ -47,56 +47,30 @@ class Search {
         brands: await this._getBrands().catch(this._handleRequestFail.bind(this, '.loader')),
         suggestions: await this._getSearchSuggestions().catch(this._handleRequestFail.bind(this, '.loader')),
         ticketStatusOptions: [
-          {
-            label: I18n.t('search.value.new'),
-            value: 'new',
-            isSelected: true
-          },
-          {
-            label: I18n.t('search.value.open'),
-            value: 'open',
-            isSelected: false
-          },
-          {
-            label: I18n.t('search.value.pending'),
-            value: 'pending',
-            isSelected: false
-          },
-          {
-            label: I18n.t('search.value.onhold'),
-            value: 'hold',
-            isSelected: false
-          },
-          {
-            label: I18n.t('search.value.solved'),
-            value: 'solved',
-            isSelected: false
-          },
-          {
-            label: I18n.t('search.value.closed'),
-            value: 'closed',
-            isSelected: false
-          }
+          {label: I18n.t('search.value.new'), value: 'new', isSelected: false},
+          {label: I18n.t('search.value.open'), value: 'open', isSelected: false},
+          {label: I18n.t('search.value.pending'), value: 'pending', isSelected: false},
+          {label: I18n.t('search.value.onhold'), value: 'hold', isSelected: false},
+          {label: I18n.t('search.value.solved'), value: 'solved', isSelected: false},
+          {label: I18n.t('search.value.closed'), value: 'closed', isSelected: false}
         ]
       }
     )
     if (this._states.brands && this._states.suggestions) {
-      await this._render('.loader', getSearchTemplate)
       // render application markup
+      await this._render('.loader', getSearchTemplate)
       this._appContainer = document.querySelector('.search-app')
       this._keywordField = document.querySelector('.search-box')
-      this._advancedToggle = document.querySelector('#advanced-field-toggle')
-      this._filterField = document.querySelector('#type')
       this._ticketStatusObj = new DropdownWithTags(
         this._states.ticketStatusOptions,
         document.querySelector('#ticket-status'),
         'Ticket Status'
       )
-      // bind events
+      // events binding
       this._appContainer.addEventListener('click', this._clickHandlerDispatch.bind(this))
       this._keywordField.addEventListener('keydown', this._handleKeydown.bind(this))
-      this._advancedToggle.addEventListener('change', this._handleAdvancedFieldsToggle.bind(this))
-      this._filterField.addEventListener('change', this._handleFilterChange.bind(this))
+      document.querySelector('#advanced-field-toggle').addEventListener('change', this._handleAdvancedFieldsToggle.bind(this))
+      document.querySelector('#type').addEventListener('change', this._handleFilterChange.bind(this))
     }
   }
 
@@ -105,7 +79,7 @@ class Search {
    * @return {Promise} Resolved to a brands array
    */
   async _getBrands () {
-    const brands = await loopingPaginatedRequest(this._client, this._apis.brands, 'brands', MAX_PAGE)
+    const brands = await loopingPaginatedRequest(this._client, API.brands, 'brands', MAX_PAGE)
     if (brands.length > 1) Object.assign(this._states, {hasMultiplebBrands: true})
     const currentTicketBrand = this._ticket.brand
     return brands.map((brand) => {
@@ -151,11 +125,10 @@ class Search {
 
   /**
    * Get assignees list
-   * !! To be confirm, how to get the full list in one shot
    * @return {Promise} Resolved to an assignees array
    */
   async _getAssignees () {
-    return loopingPaginatedRequest(this._client, this._apis.users, 'users', MAX_PAGE)
+    return loopingPaginatedRequest(this._client, API.users, 'users', MAX_PAGE)
   }
 
   /**
@@ -221,7 +194,7 @@ class Search {
       Object.assign(this._states, {isLoading: true})
       await this._render('.results-wrapper', getResultsTemplate)
       const results = await this._client.request({
-        url: url || this._apis.search + encodeURIComponent(this._getSearchParams()),
+        url: url || API.search + encodeURIComponent(this._getSearchParams()),
         cors: true
       }).catch(this._handleRequestFail.bind(this, '.results-wrapper'))
       results && this._handleSearchResults(results)
@@ -260,8 +233,8 @@ class Search {
     }
     if (this._states.showAdvancedOptions) {
       // Status
-      if (this._states.showTicketFields){
-        const selectedStatuses = this._ticketStatusObj.getValues()
+      if (this._states.showTicketFields) {
+        const selectedStatuses = this._ticketStatusObj.values
         const statusParam = selectedStatuses.forEach((status) => {
           params.push(`status:${status}`)
         })
@@ -322,7 +295,13 @@ class Search {
   _handleRequestFail (container, data) {
     const response = JSON.parse(data.responseText)
     let message = ''
-    if (response.error) { message = I18n.t(`global.error.${response.error}`) } else if (response.description) { message = response.description } else { message = I18n.t('global.error.message') }
+    if (response.error) {
+      message = I18n.t(`global.error.${response.error}`)
+    } else if (response.description) {
+      message = response.description
+    } else {
+      message = I18n.t('global.error.message')
+    }
     Object.assign(
       this._states,
       {
