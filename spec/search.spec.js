@@ -1,5 +1,6 @@
 /* eslint-env jest, browser */
 import Search from '../src/javascript/modules/search'
+import {createRangePolyfill} from './polyfill'
 import {
   BRANDS_SINGLE,
   BRANDS_MULTI,
@@ -12,8 +13,7 @@ import {
   CLIENT,
   APPDATA_WITH_CF,
   APPDATA_WITHOUT_CF,
-  CONFIG,
-  createRangePolyfill
+  CONFIG
 } from './mocks'
 
 jest.mock('../src/javascript/lib/i18n', () => {
@@ -81,6 +81,7 @@ describe('Search App', () => {
 
     it('should show search options and populate assignees dropdown', (done) => {
       const advancedOptionsWrapper = document.querySelector('.advanced-options-wrapper')
+      const advancedToggle = document.querySelector('#advanced-field-toggle')
       const fakeEventObject = {
         target: {
           checked: true
@@ -93,7 +94,7 @@ describe('Search App', () => {
         expect(app._states.assignees.length).toBe(1)
         expect(app._client.request).toHaveBeenCalledTimes(2)
 
-        app._advancedToggle.click()
+        advancedToggle.click()
         // Request assignee is only called once at the first time toggled
         expect(app._client.request).toHaveBeenCalledTimes(2)
         done()
@@ -205,21 +206,19 @@ describe('Search App', () => {
       app._handleAdvancedFieldsToggle(fakeEventObject).then(() => {
         expect(app._getSearchParams()).toBe('TestKeyword type:ticket brand_id:"360000636152"')
 
-        document.querySelector('#filter').value = 'status'
-        document.querySelector('#condition').value = '>'
-        document.querySelector('#value').value = 'closed'
-        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed brand_id:"360000636152"')
+        document.querySelector('.c-menu__item').click()
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new brand_id:"360000636152"')
 
         document.querySelector('#range').value = 'created'
         document.querySelector('#from').value = '2018-06-01'
         document.querySelector('#to').value = '2018-06-07'
-        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 brand_id:"360000636152"')
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 brand_id:"360000636152"')
 
         document.querySelector('#assignee').value = 'TT'
-        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT" brand_id:"360000636152"')
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 assignee:"TT" brand_id:"360000636152"')
 
         document.querySelector('#brand-filter').value = ''
-        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT"')
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 assignee:"TT"')
 
         document.querySelector('#type').value = 'all'
         document.querySelector('#type').dispatchEvent(new Event('change'))
