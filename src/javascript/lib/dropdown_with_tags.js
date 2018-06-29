@@ -15,6 +15,7 @@ class DropdownWithTags {
     this._tagsContainer = fragment.querySelector('#select-label')
     this._menuElement = fragment.querySelector('.c-menu')
     this._moduleContainer.appendChild(fragment)
+    this._tagsContainerFocusEventTimeStamp = 0
     this._renderTags()
     this._init()
   }
@@ -72,7 +73,7 @@ class DropdownWithTags {
    */
   _init () {
     this._moduleContainer.addEventListener('click', this._clickHandlerDispatcher.bind(this))
-    this._tagsContainer.addEventListener('focus', defer(this._expandDropdown.bind(this), 100))
+    this._tagsContainer.addEventListener('focus', this._tagsContainerFocusHandler.bind(this))
     this._moduleContainer.addEventListener('focusout', this._focusoutHandlerDispatcher.bind(this))
   }
 
@@ -84,10 +85,28 @@ class DropdownWithTags {
     event.preventDefault()
     event.stopPropagation()
     const target = event.target
-    if (target === this._tagsContainer) this._isOptionsVisible ? this._collapseDropdown() : this._expandDropdown()
-    else if (target.classList.contains('c-menu__item') && !target.classList.contains('is-checked')) this._handleSelectOption(target)
-    else if (target.parentNode.classList.contains('c-tag-option')) this._handleDeselectOption(target.parentNode)
-    else if (target.classList.contains('c-tag')) this._handleDeselectOption(target)
+    const timeDiff = event.timeStamp - this._tagsContainerFocusEventTimeStamp
+    if (target === this._tagsContainer && timeDiff > 150) {
+      this._isOptionsVisible ? this._collapseDropdown() : this._expandDropdown()
+    }
+    else if (target.classList.contains('c-menu__item') && !target.classList.contains('is-checked')) {
+      this._handleSelectOption(target)
+    }
+    else if (target.parentNode.classList.contains('c-tag-option')) {
+      this._handleDeselectOption(target.parentNode)
+    }
+    else if (target.classList.contains('c-tag')) {
+      this._handleDeselectOption(target)
+    }
+  }
+
+  /**
+   * Handling focus event on the tagsContainer
+   * @param {Event} event
+   */
+  _tagsContainerFocusHandler (event) {
+    this._tagsContainerFocusEventTimeStamp = event.timeStamp
+    this._expandDropdown()
   }
 
   /**
@@ -124,13 +143,13 @@ class DropdownWithTags {
    * @param {FocusEvent} blur
    */
   _handleCollapseDropdown () {
-    // set timeout to wait for next element to receive focus, ref:https://www.w3.org/TR/uievents/#events-focusevent-event-order
-    setTimeout(() => {
+    // defer to wait for next element to receive focus, ref:https://www.w3.org/TR/uievents/#events-focusevent-event-order
+    defer(() => {
       const nextFocusElement = document.activeElement
       if (!nextFocusElement.classList.contains('c-tag-option') && !nextFocusElement.classList.contains('c-menu__item')) {
         this._collapseDropdown()
       }
-    }, 0)
+    }, 0)()
   }
 
   /**

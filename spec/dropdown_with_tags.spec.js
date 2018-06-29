@@ -38,6 +38,11 @@ describe('dropdown_with_tags', () => {
     expect(dropdownObj._isOptionsVisible).toBe(false)
   })
 
+  it('should expand options dropdown when focus on the tags container', function () {
+    dropdownObj._tagsContainer.focus()
+    expect(dropdownObj._isOptionsVisible).toBe(true)
+  })
+
   it('should add the tag when an option is clicked', function () {
     dropdownObj._optionElements[2].click()
     expect(dropdownObj._dataset[2].isSelected).toBe(true)
@@ -87,6 +92,7 @@ describe('dropdown_with_tags', () => {
     expect(dropdownObj._isOptionsVisible).toBe(true)
 
     // Move focus to a tag from an option should not collapse the options dropdown
+    dropdownObj._optionElements[2].click()
     dropdownObj._optionElements[2].dispatchEvent(
       new FocusEvent('focusout', {
         bubbles: true

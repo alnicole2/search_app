@@ -48,7 +48,9 @@ export function escapeSpecialChars (str) {
 export function defer (fn, delay) {
   return function (...args){
     return new Promise((resolve, reject) => {
-      setTimeout(resolve, delay, fn.call(this, ...args));
+      setTimeout(() => {
+        resolve(fn.call(this, ...args))
+      }, delay);
     });
   }
 }
