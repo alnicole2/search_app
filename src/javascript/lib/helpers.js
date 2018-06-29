@@ -46,11 +46,11 @@ export function escapeSpecialChars (str) {
  * @return {Function} the new deferred function who returns a promise which will be resolved to the oringinal function's return value
  */
 export function defer (fn, delay) {
-  return function (...args){
+  return function (...args) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         resolve(fn.call(this, ...args))
-      }, delay);
-    });
+      }, delay)
+    })
   }
 }
