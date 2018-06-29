@@ -30,9 +30,12 @@ describe('dropdown_with_tags', () => {
     expect(document.querySelector('[for="select-label"]').innerHTML).toBe('Dropdown Label')
   })
 
-  it('should expand options when click on the tags container', function () {
+  it('should toggle options dropdown when click on the tags container', function () {
     dropdownObj._tagsContainer.click()
-    expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+    expect(dropdownObj._isOptionsVisible).toBe(true)
+
+    dropdownObj._tagsContainer.click()
+    expect(dropdownObj._isOptionsVisible).toBe(false)
   })
 
   it('should add the tag when an option is clicked', function () {
@@ -64,7 +67,7 @@ describe('dropdown_with_tags', () => {
   it('should collapse options when move focus out of the tags container', function (done) {
     // Click on the tagsContainer should expand the options dropdown
     dropdownObj._tagsContainer.click()
-    expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+    expect(dropdownObj._isOptionsVisible).toBe(true)
 
     // Move focus to body should collapse the options dropdown
     dropdownObj._tagsContainer.dispatchEvent(
@@ -73,7 +76,7 @@ describe('dropdown_with_tags', () => {
       })
     )
     setTimeout(() => {
-      expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('true')
+      expect(dropdownObj._isOptionsVisible).toBe(false)
       done()
     }, 10)
   })
@@ -81,7 +84,7 @@ describe('dropdown_with_tags', () => {
   it('should NOT collapse options when move focus to a tag or option', function (done) {
     // Click on the tagsContainer should expand the options dropdown
     dropdownObj._tagsContainer.click()
-    expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+    expect(dropdownObj._isOptionsVisible).toBe(true)
 
     // Move focus to a tag from an option should not collapse the options dropdown
     dropdownObj._optionElements[2].dispatchEvent(
@@ -91,7 +94,7 @@ describe('dropdown_with_tags', () => {
     )
     document.querySelector('.c-tag-option').focus()
     setTimeout(() => {
-      expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+      expect(dropdownObj._isOptionsVisible).toBe(true)
       done()
     }, 10)
   })
@@ -99,7 +102,7 @@ describe('dropdown_with_tags', () => {
   it('should NOT collapse options when focus out a tag', function () {
     // Click on the tagsContainer should expand the options dropdown
     dropdownObj._tagsContainer.click()
-    expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+    expect(dropdownObj._isOptionsVisible).toBe(true)
 
     // Focusout the tag should not collapse the options dropdown
     dropdownObj._optionElements[2].click()
@@ -108,6 +111,6 @@ describe('dropdown_with_tags', () => {
         bubbles: true
       })
     )
-    expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+    expect(dropdownObj._isOptionsVisible).toBe(true)
   })
 })

@@ -1,4 +1,4 @@
-import {templatingLoop as loop, escapeSpecialChars as escape} from './helpers.js'
+import {templatingLoop as loop, escapeSpecialChars as escape, defer} from './helpers.js'
 class DropdownWithTags {
   /**
    * Constructor
@@ -72,7 +72,7 @@ class DropdownWithTags {
    */
   _init () {
     this._moduleContainer.addEventListener('click', this._clickHandlerDispatcher.bind(this))
-    this._tagsContainer.addEventListener('focus', this._expandDropdown.bind(this))
+    this._tagsContainer.addEventListener('focus', defer(this._expandDropdown.bind(this), 100))
     this._moduleContainer.addEventListener('focusout', this._focusoutHandlerDispatcher.bind(this))
   }
 
@@ -84,7 +84,7 @@ class DropdownWithTags {
     event.preventDefault()
     event.stopPropagation()
     const target = event.target
-    if (target === this._tagsContainer) this._expandDropdown()
+    if (target === this._tagsContainer) this._isOptionsVisible ? this._collapseDropdown() : this._expandDropdown()
     else if (target.classList.contains('c-menu__item') && !target.classList.contains('is-checked')) this._handleSelectOption(target)
     else if (target.parentNode.classList.contains('c-tag-option')) this._handleDeselectOption(target.parentNode)
     else if (target.classList.contains('c-tag')) this._handleDeselectOption(target)
@@ -104,6 +104,7 @@ class DropdownWithTags {
    * Expand dropdown options
    */
   _expandDropdown () {
+    this._isOptionsVisible = true
     this._menuElement.setAttribute('aria-hidden', 'false')
   }
 
@@ -111,6 +112,7 @@ class DropdownWithTags {
    * Collapse dropdown options
    */
   _collapseDropdown () {
+    this._isOptionsVisible = false
     this._menuElement.setAttribute('aria-hidden', 'true')
   }
 

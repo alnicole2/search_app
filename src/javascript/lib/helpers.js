@@ -38,3 +38,17 @@ export function escapeSpecialChars (str) {
   }
   return str.replace(/[&<>"'`=]/g, function (m) { return escape[m] })
 }
+
+/**
+ * Higher order function to defer the execution of the passed in function
+ * @param {Function} fn function to be deferred
+ * @param {Number} delay The time to be delayed, in milliseconds
+ * @return {Function} the new deferred function who returns a promise which will be resolved to the oringinal function's return value
+ */
+export function defer (fn, delay) {
+  return function (...args){
+    return new Promise((resolve, reject) => {
+      setTimeout(resolve, delay, fn.call(this, ...args));
+    });
+  }
+}
