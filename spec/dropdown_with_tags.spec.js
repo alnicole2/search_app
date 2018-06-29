@@ -1,4 +1,4 @@
-/* eslint-env jest */
+/* eslint-env jest, browser */
 import DropdownWithTags from '../src/javascript/lib/dropdown_with_tags'
 import {createRangePolyfill} from './polyfill'
 
@@ -62,9 +62,16 @@ describe('dropdown_with_tags', () => {
   })
 
   it('should collapse options when move focus out of the tags container', function (done) {
+    // Click on the tagsContainer should expand the options dropdown
     dropdownObj._tagsContainer.click()
     expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
-    dropdownObj._tagsContainer.dispatchEvent(new FocusEvent('blur'))
+
+    // Move focus to body should collapse the options dropdown
+    dropdownObj._tagsContainer.dispatchEvent(
+      new FocusEvent('focusout', {
+        bubbles: true
+      })
+    )
     setTimeout(() => {
       expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('true')
       done()
@@ -72,13 +79,35 @@ describe('dropdown_with_tags', () => {
   })
 
   it('should NOT collapse options when move focus to a tag or option', function (done) {
-    dropdownObj._optionElements[2].click()
+    // Click on the tagsContainer should expand the options dropdown
     dropdownObj._tagsContainer.click()
-    dropdownObj._tagsContainer.dispatchEvent(new FocusEvent('blur'))
+    expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+
+    // Move focus to a tag from an option should not collapse the options dropdown
+    dropdownObj._optionElements[2].dispatchEvent(
+      new FocusEvent('focusout', {
+        bubbles: true
+      })
+    )
     document.querySelector('.c-tag-option').focus()
     setTimeout(() => {
       expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
       done()
     }, 10)
-  }) 
+  })
+
+  it('should NOT collapse options when focus out a tag', function () {
+    // Click on the tagsContainer should expand the options dropdown
+    dropdownObj._tagsContainer.click()
+    expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+
+    // Focusout the tag should not collapse the options dropdown
+    dropdownObj._optionElements[2].click()
+    document.querySelector('.c-tag-option').dispatchEvent(
+      new FocusEvent('focusout', {
+        bubbles: true
+      })
+    )
+    expect(dropdownObj._menuElement.getAttribute('aria-hidden')).toBe('false')
+  })
 })

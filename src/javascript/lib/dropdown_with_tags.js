@@ -73,10 +73,7 @@ class DropdownWithTags {
   _init () {
     this._moduleContainer.addEventListener('click', this._clickHandlerDispatcher.bind(this))
     this._tagsContainer.addEventListener('focus', this._expandDropdown.bind(this))
-    this._tagsContainer.addEventListener('blur', this._handleCollapseDropdown.bind(this))
-    this._optionElements.forEach((el) => {
-      el.addEventListener('blur', this._handleCollapseDropdown.bind(this))
-    })
+    this._moduleContainer.addEventListener('focusout', this._focusoutHandlerDispatcher.bind(this))
   }
 
   /**
@@ -91,6 +88,16 @@ class DropdownWithTags {
     else if (target.classList.contains('c-menu__item') && !target.classList.contains('is-checked')) this._handleSelectOption(target)
     else if (target.parentNode.classList.contains('c-tag-option')) this._handleDeselectOption(target.parentNode)
     else if (target.classList.contains('c-tag')) this._handleDeselectOption(target)
+  }
+
+  /**
+   * Handling focusout events delegation
+   * @param {Event} event
+   */
+  _focusoutHandlerDispatcher (event) {
+    const target = event.target
+    if (target === this._tagsContainer) this._handleCollapseDropdown()
+    else if (target.classList.contains('c-menu__item') && target.dataset.index) this._handleCollapseDropdown()
   }
 
   /**
@@ -114,7 +121,7 @@ class DropdownWithTags {
    * - the new focused element is not a option tag or an option
    * @param {FocusEvent} blur
    */
-  _handleCollapseDropdown (event) {
+  _handleCollapseDropdown () {
     // set timeout to wait for next element to receive focus, ref:https://www.w3.org/TR/uievents/#events-focusevent-event-order
     setTimeout(() => {
       const nextFocusElement = document.activeElement
