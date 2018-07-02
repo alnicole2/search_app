@@ -105,7 +105,7 @@ Refresh your page for the changes to take effect and your Sidebar Search applica
       value: "{{count}} result"
   - translation:
       key: "txt.apps.search_app.search.results_count.other"
-      title: "Label indicating the number of results, when there are more than 1 result."
+      title: "Label indicating the number of results, when there are more than 1 result. If your language has more than one plural, please use: results: {{count}}."
       screenshot: "https://drive.google.com/open?id=1odgg2agZetabq-1T7X02Az6NsA6J2ay6"
       value: "{{count}} results"
   - translation:
