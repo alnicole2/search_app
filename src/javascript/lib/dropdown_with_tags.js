@@ -135,7 +135,7 @@ class DropdownWithTags {
   }
 
   /**
-   * Handling the timing and logic of dropdown options collapse
+   * Handling the logic of dropdown options collapse
    * Only trigger the collapse when
    * - another element receives the focus event
    * - the new focused element is not a option tag or an option
