@@ -180,6 +180,18 @@ describe('Search App', () => {
       })
     })
 
+    it('should return the correct translation key', () => {
+      expect(app._getResultsCountKey(0)).toBe(`search.results_count.zero`)
+      expect(app._getResultsCountKey(1)).toBe(`search.results_count.one`)
+      expect(app._getResultsCountKey(2)).toBe(`search.results_count.other`)
+      expect(() => {
+        app._getResultsCountKey(-1)
+      }).toThrow()
+      expect(() => {
+        app._getResultsCountKey('')
+      }).toThrow()
+    })
+
     it('should open a new ticket when ticket result link is clicked', (done) => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
       app._doTheSearch(new CustomEvent('fake')).then(() => {

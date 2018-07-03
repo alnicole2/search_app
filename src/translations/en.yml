@@ -94,6 +94,21 @@ Refresh your page for the changes to take effect and your Sidebar Search applica
       title: "number of results the placeholder here will show something like 7 results"
       value: "{{count}} result(s):"
   - translation:
+      key: "txt.apps.search_app.search.results_count.zero"
+      title: "Label indicating the number of results, when there are 0 results."
+      screenshot: "https://drive.google.com/open?id=1XI8cFQl_LCbB1JWr72SVjv9I94Py26l1"
+      value: "{{count}} results"
+  - translation:
+      key: "txt.apps.search_app.search.results_count.one"
+      title: "Label indicating the number of results, when there is 1 result."
+      screenshot: "https://drive.google.com/open?id=1_iVdHEZzojiH9Le9Pxsgi7ZHCKDxM_zk"
+      value: "{{count}} result"
+  - translation:
+      key: "txt.apps.search_app.search.results_count.other"
+      title: "Label indicating the number of results, when there are more than 1 result."
+      screenshot: "https://drive.google.com/open?id=1odgg2agZetabq-1T7X02Az6NsA6J2ay6"
+      value: "{{count}} results"
+  - translation:
       key: "txt.apps.search_app.search.previous"
       title: "previous button"
       value: "previous"
