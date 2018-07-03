@@ -11,37 +11,37 @@
 @import '@zendeskgarden/css-callouts/dist/index.css';
 @import '@zendeskgarden/css-menus/dist/index.css';
 
-.loader{
+.loader {
   width: 50px;
 }
-.c-txt__input{
+.c-txt__input {
   align-items: center;
   padding-top: 0;
   padding-bottom: 0;
 }
-.c-chk__label--toggle{
+.c-chk__label--toggle {
   height: 20px;
 }
 .advanced-options-wrapper,
-.ticket-only{
+.ticket-only {
   display: none;
 }
-.c-menu{
+.c-menu {
   z-index: 1;
 }
-.results-wrapper{
-  table{
+.results-wrapper {
+  table {
     table-layout: auto;
-    tr{
-      .c-tooltip{
+    tr {
+      .c-tooltip {
         position: absolute;
         left: 0;
         bottom: 15px;
         z-index: 1;
         display: none;
       }
-      &:hover{
-        .c-tooltip{
+      &:hover {
+        .c-tooltip {
           display: block;
         }
       }
