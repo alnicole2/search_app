@@ -28,7 +28,8 @@ class Search {
       showTicketFields: false,
       hasMultiplebBrands: false,
       results: [],
-      isLoading: false
+      isLoading: false,
+      currentPage: 1
     }
     this._initializePromise = this._init()
   }
@@ -139,7 +140,7 @@ class Search {
     const target = event.target
     if (target.parentNode.id === 'search-submit') this._doTheSearch(event)
     else if (target.classList.contains('suggestion')) this._handleSuggestionClick(event)
-    else if (target.classList.contains('page-link') && target.dataset.url) this._doTheSearch(event, target.dataset.url)
+    else if (target.classList.contains('page-link') && target.dataset.index) this._doTheSearch(event, target.dataset.index)
     else if (target.classList.contains('ticket-link')) this._handleResultLinkClick(event)
   }
 
@@ -186,18 +187,21 @@ class Search {
   /**
    * Fire the search request
    * @param {Event} event
-   * @param {String} url if url is passed in(e.g. prev/next links), use it instead of compsing endpoint from form.
+   * @param {String} pageIndex index of the requested page
    */
-  async _doTheSearch (event, url) {
+  async _doTheSearch (event, pageIndex = 1) {
     event.preventDefault()
     if (this._keywordField.value) {
       Object.assign(this._states, {isLoading: true})
       await this._render('.results-wrapper', getResultsTemplate)
       const results = await this._client.request({
-        url: url || API.search + encodeURIComponent(this._getSearchParams()),
+        url: `${API.search + encodeURIComponent(this._getSearchParams())}&page=${pageIndex}`,
         cors: true
       }).catch(this._handleRequestFail.bind(this, '.results-wrapper'))
-      results && this._handleSearchResults(results)
+      if (results) {
+        Object.assign(this._states, {currentPage: +pageIndex || 1})
+        this._handleSearchResults(results)
+      }
     }
   }
 
@@ -265,19 +269,14 @@ class Search {
       {
         results: data.results.filter((result, index) => {
           // Format result description,
-          // !! Discard current open ticket from the results list, this causes an existing bug when results are paginated
-          if (result.result_type === 'ticket') {
-            if (result.id === this._ticket.id) return false
-            if (result.description.length > 140) {
-              result.description = result.description.substr(0, 140).concat('...')
-            }
+          if (result.result_type === 'ticket' && result.description.length > 140) {
+            result.description = result.description.substr(0, 140).concat('...')
           }
           return true
         }),
         pagination: {
-          is_paged: !!(data.next_page || data.previous_page),
-          previous_page: data.previous_page,
-          next_page: data.next_page,
+          hasMultiplePages: !!(data.next_page || data.previous_page),
+          page_count: Math.ceil(data.count / PER_PAGE),
           count: I18n.t(this._getResultsCountKey(data.count), { count: data.count })
         },
         isLoading: false,
@@ -292,7 +291,7 @@ class Search {
    * @param {Number} count Number of the search results
    */
   _getResultsCountKey (count) {
-    if(typeof count !== 'number' || count < 0){
+    if (typeof count !== 'number' || count < 0) {
       throw 'count param should be a positive integer'
     }
     let key

@@ -5,11 +5,10 @@ import {
   BRANDS_SINGLE,
   BRANDS_MULTI,
   ASSIGNEES,
-  RESULTS_MULTI_PAGE,
-  RESULTS_SINGLE_PAGE,
-  RESULTS_EMPTY,
-  RESULTS_FIRST_PAGE,
-  RESULTS_LAST_PAGE,
+  RESULTS_12,
+  RESULTS_1,
+  RESULTS_0,
+  RESULTS_200,
   CLIENT,
   APPDATA_WITH_CF,
   APPDATA_WITHOUT_CF,
@@ -102,7 +101,7 @@ describe('Search App', () => {
     })
 
     it('should trigger search when keyword field focused and press entry key', () => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       app._keywordField.dispatchEvent(new KeyboardEvent('keydown', { 'which': 13 }))
       expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
       app._keywordField.dispatchEvent(new KeyboardEvent('keydown', { 'which': 32 }))
@@ -110,7 +109,7 @@ describe('Search App', () => {
     })
 
     it('should trigger search when search button is clicked', () => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       document.querySelector('#search-submit svg').dispatchEvent(
         new MouseEvent('click', {
           view: window,
@@ -122,17 +121,35 @@ describe('Search App', () => {
     })
 
     it('should trigger search when suggestion tag is clicked', () => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       document.querySelector('.suggestion').click()
       expect(doTheSearchSpy).toHaveBeenCalled()
       expect(app._keywordField.value).toBe('TestKeyword cf_suggestion_1')
     })
 
     it('should trigger search when nav link is clicked', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
-        document.querySelector('.page-link').click()
+        const pageLinks = document.querySelectorAll('.page-link')
+        // Prev is not clickable as we are on the first page
+        pageLinks[0].click()
+        expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
+        // Page 1 is not clickable as we are on the first page
+        pageLinks[1].click()
+        expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
+        // Page 2 is clickable
+        pageLinks[2].click()
         expect(doTheSearchSpy).toHaveBeenCalledTimes(2)
+        done()
+      })
+    })
+
+    it('should handle invalid type of pageIndex passed in to _doTheSearch', (done) => {
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
+      app._doTheSearch(new CustomEvent('fake'), {}).then(() => {
+        // Prev is not clickable as we are on the first page
+        document.querySelector('.page-link').click()
+        expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
         done()
       })
     })
@@ -147,33 +164,48 @@ describe('Search App', () => {
     })
 
     it('should show paginations on first page', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_FIRST_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
-        expect(document.querySelector('.c-pagination__page--previous').dataset.url).toBe('')
-        expect(document.querySelector('.c-pagination__page--next').dataset.url).not.toBe('')
+        expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe(undefined)
+        expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe('2')
         done()
       })
     })
 
-    it('should show paginations on first page', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_LAST_PAGE))
-      app._doTheSearch(new CustomEvent('fake')).then(() => {
-        expect(document.querySelector('.c-pagination__page--previous').dataset.url).not.toBe('')
-        expect(document.querySelector('.c-pagination__page--next').dataset.url).toBe('')
+    it('should show paginations on last page', (done) => {
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
+      app._doTheSearch(new CustomEvent('fake'), 2).then(() => {
+        expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('1')
+        expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe(undefined)
+        done()
+      })
+    })
+
+    it('should show paginations on other pages', (done) => {
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_200))
+      app._doTheSearch(new CustomEvent('fake'), 4).then(() => {
+        expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('3')
+        expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe('5')
+      }).then(() => {
+        app._doTheSearch(new CustomEvent('fake'), 20).then(() => {
+          expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('19')
+          expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe(undefined)
+        })
+      }).then(() => {
         done()
       })
     })
 
     it('should not show paginations with one page results', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_SINGLE_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
-        expect(app._states.pagination.is_paged).toBe(false)
+        expect(app._states.pagination.hasMultiplePages).toBe(false)
         done()
       })
     })
 
     it('should show result message with empty results', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_EMPTY))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_0))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
         expect(document.querySelector('.results-wrapper').textContent).toBe('translation...')
         done()
@@ -193,10 +225,10 @@ describe('Search App', () => {
     })
 
     it('should open a new ticket when ticket result link is clicked', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
         document.querySelector('.ticket-link').click()
-        expect(CLIENT.invoke).toHaveBeenCalledWith('routeTo', 'ticket', '6')
+        expect(CLIENT.invoke).toHaveBeenCalledWith('routeTo', 'ticket', '1')
         done()
       })
     })
