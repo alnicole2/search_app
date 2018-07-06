@@ -40,7 +40,7 @@ module.exports = (env) => {
         {
           test: /\.css$/,
           use: ExtractTextPlugin.extract({
-            use: ['css-loader', 'postcss-loader']
+            use: [{loader: 'css-loader', options: { url: false }}, 'postcss-loader']
           })
         },
         {

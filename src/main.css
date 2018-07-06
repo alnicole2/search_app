@@ -12,24 +12,67 @@
 @import '@zendeskgarden/css-menus/dist/index.css';
 
 .loader {
-  display: block;
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 36px;
-  margin: 0 auto;
 }
-.c-txt__input {
+.search-app {
+  overflow: hidden;
+  padding: 0 3px;
+}
+#search-submit {
+  height: 30px; 
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &.is-loading {
+    svg {
+      display: none;
+    }
+    background: transparent center / contain no-repeat url("dot.gif");
+  }
+}
+div.c-txt__input {
   align-items: center;
   padding-bottom: 0;
+  padding-right: 5px;
   padding-top: 0;
 }
-.c-chk__label--toggle {
-  height: 20px;
-}
+.c-chk__input {
+  & ~ label {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  & ~ .c-chk__label__checked {
+    display: none;
+  }
+  & ~ .c-chk__label__unchecked {
+    display: inline-block;
+  }
+
+  &:checked {
+    & ~ .c-chk__label__checked {
+      display: inline-block;
+    }
+    & ~ .c-chk__label__unchecked {
+      display: none;
+    }
+  } 
+} 
 .advanced-options-wrapper,
 .ticket-only {
   display: none;
 }
-.c-menu {
-  z-index: 1;
+#ticket-status {
+  .c-menu {
+    margin-top: 4px;
+    z-index: 1;
+  }
 }
 .results-wrapper {
   table {

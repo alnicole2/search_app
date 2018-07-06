@@ -124,7 +124,7 @@ describe('Search App', () => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       document.querySelector('.suggestion').click()
       expect(doTheSearchSpy).toHaveBeenCalled()
-      expect(app._keywordField.value).toBe('TestKeyword cf_suggestion_1')
+      expect(app._keywordField.value).toBe('cf_suggestion_1')
     })
 
     it('should trigger search when nav link is clicked', (done) => {
@@ -174,8 +174,8 @@ describe('Search App', () => {
 
     it('should show paginations on last page', (done) => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
-      app._doTheSearch(new CustomEvent('fake'), 2).then(() => {
-        expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('1')
+      app._doTheSearch(new CustomEvent('fake'), 3).then(() => {
+        expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('2')
         expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe(undefined)
         done()
       })
@@ -187,8 +187,8 @@ describe('Search App', () => {
         expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('3')
         expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe('5')
       }).then(() => {
-        app._doTheSearch(new CustomEvent('fake'), 20).then(() => {
-          expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('19')
+        return app._doTheSearch(new CustomEvent('fake'), 40).then(() => {
+          expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('39')
           expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe(undefined)
         })
       }).then(() => {

@@ -11,8 +11,8 @@ const getBrandsDropdownMarkup = (args) => {
   if (args.hasMultiplebBrands) {
     return `
       <div class="advanced-option">
-        <label class="c-txt__label" for="brand-filter">${I18n.t('brand_filter.brand')}</label>
-        <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select">
+        <label class="c-txt__label c-txt__label--sm" for="brand-filter">${I18n.t('brand_filter.brand')}</label>
+        <select name="brand-filter" id="brand-filter" class="c-txt__input c-txt__input--select c-txt__input--sm">
           <option value="">${I18n.t('brand_filter.all_brands')}</option>
           ${getBrandsOptionsMarkup(args.brands)}
         </select>
@@ -32,64 +32,64 @@ export default function (args) {
   return (
     `
   <div class="search-app">
-    <div class="search-container">
-      <form action="" class="search">
+    <form action="" class="search">
+      <fieldset class="u-mb-sm">
+        <label class="c-txt__label c-txt__label--sm" for="type">${I18n.t('search.search')}</label>
+        <select name="type" id="type" class="c-txt__input c-txt__input--select c-txt__input--sm">
+          <option value="all">${I18n.t('search.type.all')}</option>
+          <option value="ticket">${I18n.t('search.type.tickets')}</option>
+          <option value="article">${I18n.t('search.type.articles')}</option>
+          <option value="user">${I18n.t('search.type.people')}</option>
+          <option value="organization">${I18n.t('search.type.organizations')}</option>
+          <option value="entry">${I18n.t('search.type.topics')}</option>
+        </select>
+      </fieldset>
+      <fieldset class="u-mb-sm">
+        <div class="c-txt__input c-txt__input--sm u-display-flex">
+          <input class="c-txt__input c-txt__input--bare c-txt__input--sm search-box" placeholder="Type search term here" type="text" autocomplete="off">
+          <button type="button" id="search-submit" class="c-btn c-btn--icon c-btn--sm c-btn--basic c-btn--muted">
+            <svg viewBox="0 0 16 16" id="zd-svg-icon-16-search-stroke" width="16" height="16"><circle cx="6" cy="6" r="5.5" fill="none" stroke="currentColor"></circle><path stroke="currentColor" stroke-linecap="round" d="M15 15l-5-5"></path></svg>
+          </button>
+        </div>
+      </fieldset>
+      <fieldset class="u-mb-sm suggestions">
+        ${I18n.t('search.suggestions')}
+        ${getSuggestionsListMarkup(args.suggestions)}
+      </fieldset>
+      <fieldset class="u-mb-sm u-ta-right c-chk">
+        <input class="c-chk__input" id="advanced-field-toggle" type="checkbox">
+        <label class="c-chk__label__unchecked" for="advanced-field-toggle">${I18n.t('search.options.advanced')}</label>
+        <label class="c-chk__label__checked" for="advanced-field-toggle">${I18n.t('search.options.basic')}</label>
+      </fieldset>
+      <div class="advanced-options-wrapper">
+        <fieldset class="u-mb-sm u-position-relative ticket-only" id="ticket-status"></fieldset>
         <fieldset class="u-mb-sm">
-          <label class="c-txt__label" for="type">${I18n.t('search.search')}</label>
-          <select name="type" id="type" class="c-txt__input c-txt__input--select">
-            <option value="all">${I18n.t('search.type.all')}</option>
-            <option value="ticket">${I18n.t('search.type.tickets')}</option>
-            <option value="article">${I18n.t('search.type.articles')}</option>
-            <option value="user">${I18n.t('search.type.people')}</option>
-            <option value="organization">${I18n.t('search.type.organizations')}</option>
-            <option value="entry">${I18n.t('search.type.topics')}</option>
+          <label class="c-txt__label c-txt__label--sm" for="range">Date Range</label>
+          <select name="range" id="range" class="c-txt__input c-txt__input--select c-txt__input--sm u-mb-sm">
+            <option value="">-</option>
+            <option value="created">${I18n.t('search.filter.created')}</option>
+            <option value="updated">${I18n.t('search.filter.updated')}</option>
           </select>
-        </fieldset>
-        <fieldset class="u-mb-sm">
-          <div class="c-txt__input u-display-flex">
-            <input class="c-txt__input c-txt__input--bare search-box" placeholder="Type search term here" type="text" autocomplete="off">
-            <button type="button" id="search-submit" class="c-btn c-btn--icon c-btn--sm c-btn--basic c-btn--muted">
-              <svg viewBox="0 0 26 26" id="zd-svg-icon-26-search" width="100%" height="100%"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="M16 16l6 6"></path></g></svg>
-            </button>
+          <div class="row">
+            <div class="col">
+              <label class="c-txt__label c-txt__label--sm" for="from">Start</label>
+              <input type="text" id="from" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD">
+            </div>
+            <div class="col">
+              <label class="c-txt__label c-txt__label--sm" for="to">End</label>
+              <input type="text" id="to" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD">
+            </div>
           </div>
         </fieldset>
-        <fieldset class="u-mb-sm suggestions">
-          ${getSuggestionsListMarkup(args.suggestions)}
+        <fieldset class="u-mb-sm ticket-only">
+          <label class="c-txt__label c-txt__label--sm" for="assignee">${I18n.t('search.user.assignee')}</label>
+          <span id="assignee" class="placeholder"></span>
         </fieldset>
-        <fieldset class="u-mb-sm u-ta-right c-chk">
-          <input class="c-chk__input" id="advanced-field-toggle" type="checkbox">
-          <label class="c-chk__label c-chk__label--toggle" for="advanced-field-toggle"><span dir="ltr">Advanced</span></label>
+        <fieldset class="u-mb-sm">
+          ${getBrandsDropdownMarkup(args)}
         </fieldset>
-        <div class="advanced-options-wrapper">
-          <fieldset class="u-mb-sm u-position-relative ticket-only" id="ticket-status"></fieldset>
-          <fieldset class="u-mb-sm">
-            <label class="c-txt__label" for="range">Date Range</label>
-            <select name="range" id="range" class="c-txt__input c-txt__input--select u-mb-sm">
-              <option value="">-</option>
-              <option value="created">${I18n.t('search.filter.created')}</option>
-              <option value="updated">${I18n.t('search.filter.updated')}</option>
-            </select>
-            <div class="row">
-              <div class="col">
-                <label class="c-txt__label" for="from">Start</label>
-                <input type="text" id="from" class="c-txt__input" placeholder="YYYY-MM-DD">
-              </div>
-              <div class="col">
-                <label class="c-txt__label" for="to">End</label>
-                <input type="text" id="to" class="c-txt__input" placeholder="YYYY-MM-DD">
-              </div>
-            </div>
-          </fieldset>
-          <fieldset class="u-mb-sm ticket-only">
-            <label class="c-txt__label" for="assignee">${I18n.t('search.user.assignee')}</label>
-            <span id="assignee" class="placeholder"></span>
-          </fieldset>
-          <fieldset class="u-mb-sm">
-            ${getBrandsDropdownMarkup(args)}
-          </fieldset>
-        </div>
-      </form>
-    </div>
+      </div>
+    </form>
     <div class="results-wrapper"></div>
   </div>
   `

@@ -9,7 +9,7 @@ import getSearchTemplate from '../../templates/search'
 import getAssigneesTemplate from '../../templates/assignees'
 import DropdownWithTags from '../lib/dropdown_with_tags'
 
-const PER_PAGE = 10
+const PER_PAGE = 5
 const MAX_HEIGHT = 1000
 const MAX_PAGE = 100
 const API = {
@@ -28,7 +28,6 @@ class Search {
       showTicketFields: false,
       hasMultiplebBrands: false,
       results: [],
-      isLoading: false,
       currentPage: 1
     }
     this._initializePromise = this._init()
@@ -62,6 +61,7 @@ class Search {
       await this._render('.loader', getSearchTemplate)
       this._appContainer = document.querySelector('.search-app')
       this._keywordField = document.querySelector('.search-box')
+      this._searchButton = document.querySelector('#search-submit')
       this._ticketStatusObj = new DropdownWithTags(
         this._states.ticketStatusOptions,
         document.querySelector('#ticket-status'),
@@ -138,7 +138,7 @@ class Search {
    */
   _clickHandlerDispatch (event) {
     const target = event.target
-    if (target.parentNode.id === 'search-submit') this._doTheSearch(event)
+    if (target === this._searchButton || target.parentNode === this._searchButton) this._doTheSearch(event)
     else if (target.classList.contains('suggestion')) this._handleSuggestionClick(event)
     else if (target.classList.contains('page-link') && target.dataset.index) this._doTheSearch(event, target.dataset.index)
     else if (target.classList.contains('ticket-link')) this._handleResultLinkClick(event)
@@ -192,7 +192,7 @@ class Search {
   async _doTheSearch (event, pageIndex = 1) {
     event.preventDefault()
     if (this._keywordField.value) {
-      Object.assign(this._states, {isLoading: true})
+      this._searchButton.classList.add('is-loading')
       await this._render('.results-wrapper', getResultsTemplate)
       const results = await this._client.request({
         url: `${API.search + encodeURIComponent(this._getSearchParams())}&page=${pageIndex}`,
@@ -210,7 +210,7 @@ class Search {
    * @param {Event} event
    */
   _handleSuggestionClick (event) {
-    this._keywordField.value = `${this._keywordField.value} ${event.target.textContent}`.trim()
+    this._keywordField.value = event.target.textContent
     this._doTheSearch(event)
   }
 
@@ -279,10 +279,10 @@ class Search {
           page_count: Math.ceil(data.count / PER_PAGE),
           count: I18n.t(this._getResultsCountKey(data.count), { count: data.count })
         },
-        isLoading: false,
         isError: false
       }
     )
+    this._searchButton.classList.remove('is-loading')
     this._render('.results-wrapper', getResultsTemplate)
   }
 
@@ -324,10 +324,10 @@ class Search {
           title: I18n.t('global.error.title'),
           message: message
         },
-        isLoading: false,
         isError: true
       }
     )
+    this._searchButton && this._searchButton.classList.remove('is-loading')
     this._render(container, getResultsTemplate)
   }
 

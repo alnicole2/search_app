@@ -148,10 +148,6 @@ const getResultMarkup = (result) => {
   }
 }
 
-const getLoaderMarkup = (args) => {
-  return `<div class="u-ta-center"><img class="loader" src="dot.gif"/>${I18n.t('global.searching')}</div>`
-}
-
 const getResultsMarkup = (args) => {
   return (
     `
@@ -168,8 +164,7 @@ const getResultsMarkup = (args) => {
 
 export default function template (args) {
   let resultsHTML = ''
-  if (args.isLoading) resultsHTML = getLoaderMarkup(args)
-  else if (args.isError) resultsHTML = getErrorMarkup(args)
+  if (args.isError) resultsHTML = getErrorMarkup(args)
   else if (!args.results.length) resultsHTML = I18n.t('global.no_results')
   else resultsHTML = getResultsMarkup(args)
   return `<div class="results-wrapper">${resultsHTML}</div>`
