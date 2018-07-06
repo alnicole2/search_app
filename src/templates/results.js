@@ -149,7 +149,7 @@ const getResultMarkup = (result) => {
 }
 
 const getLoaderMarkup = (args) => {
-  return `<div class="loader"><img src="dot.gif"/> ${I18n.t('global.searching')}</div>`
+  return `<div class="u-ta-center"><img class="loader" src="dot.gif"/>${I18n.t('global.searching')}</div>`
 }
 
 const getResultsMarkup = (args) => {
