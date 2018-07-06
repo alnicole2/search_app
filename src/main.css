@@ -12,7 +12,9 @@
 @import '@zendeskgarden/css-menus/dist/index.css';
 
 .loader {
-  width: 50px;
+  display: block;
+  width: 36px;
+  margin: 0 auto;
 }
 .c-txt__input {
   align-items: center;
