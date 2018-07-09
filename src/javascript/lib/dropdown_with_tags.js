@@ -30,7 +30,7 @@ class DropdownWithTags {
     return `
       <div class="c-txt">
         <label class="c-txt__label" for="select-label">${this._label}</label>
-        <div class="c-txt__input c-txt__input--tag c-txt__input--select" id="select-label" tabindex="0"></div>
+        <div class="c-txt__input c-txt__input--sm c-txt__input--tag c-txt__input--select" id="select-label" tabindex="0"></div>
       </div>
       <div role="menu" aria-hidden="true" class="c-menu c-menu--down">
         ${this.optionsMarkup}             
