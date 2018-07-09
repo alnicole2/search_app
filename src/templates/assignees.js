@@ -1,7 +1,7 @@
 import {templatingLoop as loop, escapeSpecialChars as escape} from '../javascript/lib/helpers.js'
 export default function (args) {
   return `
-    <select name="assignee" id="assignee" class="c-txt__input c-txt__input--select">
+    <select name="assignee" id="assignee" class="c-txt__input c-txt__input--select c-txt__input--sm">
         <option value="">-</option>
         ${loop(
     args.assignees,

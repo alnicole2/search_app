@@ -4,11 +4,9 @@ const getTicketMarkup = (o) => {
   return (
     `
     <tr class="c-table__row">
-      <td class="c-table__row__cell">
-        <div class=" u-position-relative">
-          <a href class="ticket-link" data-id="${o.id}"><b>#${o.id}</b> ${escape(o.subject)}</a>
-          <div class="c-tooltip c-tooltip--large c-arrow c-arrow--b"><small>${escape(o.description)}</small></div>
-        </div>
+      <td class="c-table__row__cell u-position-relative">
+        <a href class="ticket-link" data-id="${o.id}"><b>#${o.id}</b> ${escape(o.subject)}</a>
+        <div class="c-tooltip c-tooltip--large c-arrow c-arrow--l">${escape(o.description)}</div>
       </td>
       <td class="type c-table__row__cell u-ta-right">${I18n.t('search.result_type.ticket')}</td>
     </tr>
@@ -72,16 +70,59 @@ const getTopicMarkup = (o) => {
 }
 
 const getPaginationMarkup = (args) => {
-  return (
-    args.pagination.is_paged
-      ? `
-    <ul class="c-pagination">
-      <li class="c-pagination__page c-pagination__page--previous page-link" data-url="${args.pagination.previous_page || ''}">previous</li>
-      <li class="c-pagination__page c-pagination__page--next page-link" data-url="${args.pagination.next_page || ''}">next</li>
-    </ul>
+  let html = ''
+  if (args.pagination.hasMultiplePages) {
+    const pageCount = args.pagination.page_count
+    const current = args.currentPage
+    const prevLinkDataIndex = current > 1 ? `data-index="${current - 1}"` : ''
+    const prevLinkAriaHidden = current > 1 ? 'false' : 'true'
+    const nextLinkDataIndex = current < pageCount ? `data-index="${current + 1}"` : ''
+    const nextLinkAriaHidden = current < pageCount ? 'false' : 'true'
+    html = `
+      <ul class="c-pagination" role="navigation">
+        <li class="c-pagination__page c-pagination__page--previous page-link" ${prevLinkDataIndex} aria-hidden="${prevLinkAriaHidden}">previous</li>
+        ${getPages(current, pageCount)}
+        <li class="c-pagination__page c-pagination__page--next page-link" ${nextLinkDataIndex} aria-hidden="${nextLinkAriaHidden}">next</li>
+      </ul>
     `
-      : ''
-  )
+  }
+  return html
+}
+
+const getPages = (current, pageCount) => {
+  // In practice, 7 is the min number that works for the current design => 1,...,4,5,6,...,10
+  const maxNumberOfLinks = 7
+  // logic to make sure as many pages visible as possible(up to maxNumberOfLinks)
+  let offset = Math.max(maxNumberOfLinks - 2 - (current - 1), maxNumberOfLinks - 2 - (pageCount - current), 2)
+  let pages = ''
+  for (let i = 1; i <= pageCount; i++) {
+    // display page link if
+    // - total page count is smaller than maxNumberOfLinks
+    // - first page
+    // - last page
+    // - pages within the range of current -/+ offset
+    if (pageCount <= maxNumberOfLinks || i === 1 || i === pageCount || Math.abs(current - i) < offset) {
+      pages += getPageLinkMarkup(current, i)
+    } else {
+      let from = i
+      if (i < current) {
+        i = current - offset
+      } else {
+        i = pageCount - 1
+      }
+      if (from === i) pages += getPageLinkMarkup(current, i)
+      else pages += getGapMarkup(from, i)
+    }
+  }
+  return pages
+}
+
+const getPageLinkMarkup = (current, index) => {
+  return `<li class="c-pagination__page page-link" ${current === index ? 'aria-current="true"' : `data-index="${index}"`}>${index}</li>`
+}
+
+const getGapMarkup = (from, to) => {
+  return `<li class="c-pagination__page c-pagination__page--gap">${from}-${to}</li>`
 }
 
 const getErrorMarkup = (args) => {
@@ -107,15 +148,11 @@ const getResultMarkup = (result) => {
   }
 }
 
-const getLoaderMarkup = (args) => {
-  return `<div class="loader"><img src="dot.gif"/> ${I18n.t('global.searching')}</div>`
-}
-
 const getResultsMarkup = (args) => {
   return (
     `
       <p class="count"><strong>${args.pagination.count}</strong></p>
-      <table class="c-table">
+      <table class="c-table u-mb-sm">
         <tbody>
           ${loop(args.results, getResultMarkup)}
         </tbody>
@@ -127,8 +164,7 @@ const getResultsMarkup = (args) => {
 
 export default function template (args) {
   let resultsHTML = ''
-  if (args.isLoading) resultsHTML = getLoaderMarkup(args)
-  else if (args.isError) resultsHTML = getErrorMarkup(args)
+  if (args.isError) resultsHTML = getErrorMarkup(args)
   else if (!args.results.length) resultsHTML = I18n.t('global.no_results')
   else resultsHTML = getResultsMarkup(args)
   return `<div class="results-wrapper">${resultsHTML}</div>`

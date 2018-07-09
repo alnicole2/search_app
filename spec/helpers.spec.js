@@ -1,5 +1,5 @@
 /* eslint-env jest */
-import {resizeContainer, templatingLoop, loopingPaginatedRequest, escapeSpecialChars as escape} from '../src/javascript/lib/helpers'
+import {resizeContainer, templatingLoop, loopingPaginatedRequest, escapeSpecialChars as escape, defer} from '../src/javascript/lib/helpers'
 
 const client = {
   invoke: jest.fn()
@@ -61,6 +61,11 @@ describe('loopingPaginatedRequest', () => {
 })
 
 describe('escapeSpecialChars', () => {
+  it('should throw error if the passed in argument type is not String', function () {
+    expect(() => {
+      escape(1)
+    }).toThrow()
+  })
   it('should escape open/close html tags', () => {
     expect(escape('<script></script>')).toBe('&lt;script&gt;&lt;/script&gt;')
   })
@@ -75,5 +80,20 @@ describe('escapeSpecialChars', () => {
   })
   it('should escape unsafe tags and characters', () => {
     expect(escape('Test Ticket for Text App</a><script>javascript:alret(1);</script>')).toBe('Test Ticket for Text App&lt;/a&gt;&lt;script&gt;javascript:alret(1);&lt;/script&gt;')
+  })
+})
+
+describe('defer', () => {
+  it('should defer the function execution while all arguments still passed through, including context', (done) => {
+    const mockContext = {name: 'mock'}
+    const mockFn = jest.fn().mockImplementation(function (...args) {
+      return this.name + args.join('')
+    })
+    const deferredFn = defer(mockFn, 100)
+    const deferredFnReturn = deferredFn.call(mockContext, 1, 2, 3)
+    deferredFnReturn.then((val) => {
+      expect(val).toEqual('mock123')
+      done()
+    })
   })
 })

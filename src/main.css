@@ -9,36 +9,100 @@
 @import '@zendeskgarden/css-tooltips/dist/index.css';
 @import '@zendeskgarden/css-arrows/dist/index.css';
 @import '@zendeskgarden/css-callouts/dist/index.css';
+@import '@zendeskgarden/css-menus/dist/index.css';
 
-.loader{
-  width: 50px;
+.loader {
+  left: 50%;
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 36px;
 }
-.c-txt__input{
-  align-items: center;
-  padding-top: 0;
-  padding-bottom: 0;
-}
-.c-chk__label--toggle{
-  height: 20px;
-}
-.advanced-options-wrapper{
-  display: none;
+.search-app {
   overflow: hidden;
+  padding: 0 3px;
 }
-.results-wrapper{
-  table{
+#search-submit {
+  height: 30px; 
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &.is-loading {
+    svg {
+      display: none;
+    }
+    background: transparent center / contain no-repeat url("dot.gif");
+  }
+}
+div.c-txt__input {
+  align-items: center;
+  padding-bottom: 0;
+  padding-right: 5px;
+  padding-top: 0;
+}
+.c-chk__input {
+  & ~ label {
+    cursor: pointer;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  & ~ .c-chk__label__checked {
+    display: none;
+  }
+  & ~ .c-chk__label__unchecked {
+    display: inline-block;
+  }
+
+  &:checked {
+    & ~ .c-chk__label__checked {
+      display: inline-block;
+    }
+    & ~ .c-chk__label__unchecked {
+      display: none;
+    }
+  } 
+} 
+.advanced-options-wrapper,
+.ticket-only {
+  display: none;
+}
+#ticket-status {
+  .c-menu {
+    margin-top: 4px;
+    z-index: 1;
+  }
+}
+.results-wrapper {
+  table {
     table-layout: auto;
-    tr{
-      .c-tooltip{
-        position: absolute;
-        left: 0;
-        bottom: 15px;
-        z-index: 1;
+    tr {
+      .c-tooltip {
         display: none;
+        font-size: 12px;
+        left: 120px;
+        padding: 10px;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 200px;
+        z-index: 1;
       }
-      &:hover{
-        .c-tooltip{
+      &:hover {
+        .c-tooltip {
           display: block;
+        }
+      }
+      &:last-child {
+        .c-tooltip {
+          bottom: 0;
+          top: auto;
+          transform: none;
+          &.c-arrow--l:before, &.c-arrow--l:after {
+            bottom: 15px;
+            top: auto;
+          }
         }
       }
     }

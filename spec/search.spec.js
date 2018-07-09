@@ -1,19 +1,18 @@
 /* eslint-env jest, browser */
 import Search from '../src/javascript/modules/search'
+import {createRangePolyfill} from './polyfill'
 import {
   BRANDS_SINGLE,
   BRANDS_MULTI,
   ASSIGNEES,
-  RESULTS_MULTI_PAGE,
-  RESULTS_SINGLE_PAGE,
-  RESULTS_EMPTY,
-  RESULTS_FIRST_PAGE,
-  RESULTS_LAST_PAGE,
+  RESULTS_12,
+  RESULTS_1,
+  RESULTS_0,
+  RESULTS_200,
   CLIENT,
   APPDATA_WITH_CF,
   APPDATA_WITHOUT_CF,
-  CONFIG,
-  createRangePolyfill
+  CONFIG
 } from './mocks'
 
 jest.mock('../src/javascript/lib/i18n', () => {
@@ -81,6 +80,7 @@ describe('Search App', () => {
 
     it('should show search options and populate assignees dropdown', (done) => {
       const advancedOptionsWrapper = document.querySelector('.advanced-options-wrapper')
+      const advancedToggle = document.querySelector('#advanced-field-toggle')
       const fakeEventObject = {
         target: {
           checked: true
@@ -93,7 +93,7 @@ describe('Search App', () => {
         expect(app._states.assignees.length).toBe(1)
         expect(app._client.request).toHaveBeenCalledTimes(2)
 
-        app._advancedToggle.click()
+        advancedToggle.click()
         // Request assignee is only called once at the first time toggled
         expect(app._client.request).toHaveBeenCalledTimes(2)
         done()
@@ -101,7 +101,7 @@ describe('Search App', () => {
     })
 
     it('should trigger search when keyword field focused and press entry key', () => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       app._keywordField.dispatchEvent(new KeyboardEvent('keydown', { 'which': 13 }))
       expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
       app._keywordField.dispatchEvent(new KeyboardEvent('keydown', { 'which': 32 }))
@@ -109,7 +109,7 @@ describe('Search App', () => {
     })
 
     it('should trigger search when search button is clicked', () => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       document.querySelector('#search-submit svg').dispatchEvent(
         new MouseEvent('click', {
           view: window,
@@ -121,17 +121,35 @@ describe('Search App', () => {
     })
 
     it('should trigger search when suggestion tag is clicked', () => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       document.querySelector('.suggestion').click()
       expect(doTheSearchSpy).toHaveBeenCalled()
-      expect(app._keywordField.value).toBe('TestKeyword cf_suggestion_1')
+      expect(app._keywordField.value).toBe('cf_suggestion_1')
     })
 
     it('should trigger search when nav link is clicked', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
-        document.querySelector('.page-link').click()
+        const pageLinks = document.querySelectorAll('.page-link')
+        // Prev is not clickable as we are on the first page
+        pageLinks[0].click()
+        expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
+        // Page 1 is not clickable as we are on the first page
+        pageLinks[1].click()
+        expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
+        // Page 2 is clickable
+        pageLinks[2].click()
         expect(doTheSearchSpy).toHaveBeenCalledTimes(2)
+        done()
+      })
+    })
+
+    it('should handle invalid type of pageIndex passed in to _doTheSearch', (done) => {
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
+      app._doTheSearch(new CustomEvent('fake'), {}).then(() => {
+        // Prev is not clickable as we are on the first page
+        document.querySelector('.page-link').click()
+        expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
         done()
       })
     })
@@ -146,52 +164,81 @@ describe('Search App', () => {
     })
 
     it('should show paginations on first page', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_FIRST_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
-        expect(document.querySelector('.c-pagination__page--previous').dataset.url).toBe('')
-        expect(document.querySelector('.c-pagination__page--next').dataset.url).not.toBe('')
+        expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe(undefined)
+        expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe('2')
         done()
       })
     })
 
-    it('should show paginations on first page', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_LAST_PAGE))
-      app._doTheSearch(new CustomEvent('fake')).then(() => {
-        expect(document.querySelector('.c-pagination__page--previous').dataset.url).not.toBe('')
-        expect(document.querySelector('.c-pagination__page--next').dataset.url).toBe('')
+    it('should show paginations on last page', (done) => {
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_12))
+      app._doTheSearch(new CustomEvent('fake'), 3).then(() => {
+        expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('2')
+        expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe(undefined)
+        done()
+      })
+    })
+
+    it('should show paginations on other pages', (done) => {
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_200))
+      app._doTheSearch(new CustomEvent('fake'), 4).then(() => {
+        expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('3')
+        expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe('5')
+      }).then(() => {
+        return app._doTheSearch(new CustomEvent('fake'), 40).then(() => {
+          expect(document.querySelector('.c-pagination__page--previous').dataset.index).toBe('39')
+          expect(document.querySelector('.c-pagination__page--next').dataset.index).toBe(undefined)
+        })
+      }).then(() => {
         done()
       })
     })
 
     it('should not show paginations with one page results', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_SINGLE_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
-        expect(app._states.pagination.is_paged).toBe(false)
+        expect(app._states.pagination.hasMultiplePages).toBe(false)
         done()
       })
     })
 
     it('should show result message with empty results', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_EMPTY))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_0))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
         expect(document.querySelector('.results-wrapper').textContent).toBe('translation...')
         done()
       })
     })
 
+    it('should return the correct translation key', () => {
+      expect(app._getResultsCountKey(0)).toBe(`search.results_count.zero`)
+      expect(app._getResultsCountKey(1)).toBe(`search.results_count.one`)
+      expect(app._getResultsCountKey(2)).toBe(`search.results_count.other`)
+      expect(() => {
+        app._getResultsCountKey(-1)
+      }).toThrow()
+      expect(() => {
+        app._getResultsCountKey('')
+      }).toThrow()
+    })
+
     it('should open a new ticket when ticket result link is clicked', (done) => {
-      app._client.request.mockReturnValue(Promise.resolve(RESULTS_MULTI_PAGE))
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       app._doTheSearch(new CustomEvent('fake')).then(() => {
         document.querySelector('.ticket-link').click()
-        expect(CLIENT.invoke).toHaveBeenCalledWith('routeTo', 'ticket', '6')
+        expect(CLIENT.invoke).toHaveBeenCalledWith('routeTo', 'ticket', '1')
         done()
       })
     })
 
     it('should compose search terms from form fields', (done) => {
+      app._keywordField.value = 'TestKeyword'
       expect(app._getSearchParams()).toBe('TestKeyword')
 
       document.querySelector('#type').value = 'ticket'
+      document.querySelector('#type').dispatchEvent(new Event('change'))
       expect(app._getSearchParams()).toBe('TestKeyword type:ticket')
 
       const fakeEventObject = {
@@ -203,21 +250,23 @@ describe('Search App', () => {
       app._handleAdvancedFieldsToggle(fakeEventObject).then(() => {
         expect(app._getSearchParams()).toBe('TestKeyword type:ticket brand_id:"360000636152"')
 
-        document.querySelector('#filter').value = 'status'
-        document.querySelector('#condition').value = '>'
-        document.querySelector('#value').value = 'closed'
-        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed brand_id:"360000636152"')
+        document.querySelector('.c-menu__item').click()
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new brand_id:"360000636152"')
 
         document.querySelector('#range').value = 'created'
         document.querySelector('#from').value = '2018-06-01'
         document.querySelector('#to').value = '2018-06-07'
-        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 brand_id:"360000636152"')
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 brand_id:"360000636152"')
 
         document.querySelector('#assignee').value = 'TT'
-        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT" brand_id:"360000636152"')
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 assignee:"TT" brand_id:"360000636152"')
 
         document.querySelector('#brand-filter').value = ''
-        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status>closed created>2018-06-01 created<2018-06-07 assignee:"TT"')
+        expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 assignee:"TT"')
+
+        document.querySelector('#type').value = 'all'
+        document.querySelector('#type').dispatchEvent(new Event('change'))
+        expect(app._getSearchParams()).toBe('TestKeyword created>2018-06-01 created<2018-06-07')
         done()
       })
     })
