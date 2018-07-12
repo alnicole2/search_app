@@ -193,7 +193,6 @@ class Search {
     event.preventDefault()
     if (this._keywordField.value) {
       this._searchButton.classList.add('is-loading')
-      await this._render('.results-wrapper', getResultsTemplate)
       const results = await this._client.request({
         url: `${API.search + encodeURIComponent(this._getSearchParams())}&page=${pageIndex}`,
         cors: true
