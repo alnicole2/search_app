@@ -1,9 +1,9 @@
 {
-  "name": "development",
-  "version": "1.0.0",
-  "description": "",
-  "keywords": [],
-  "author": "",
+  "name": "Zendesk Sidebar Search App",
+  "version": "2.0.2",
+  "description": "Zendesk Sidebar Search App",
+  "keywords": ["sidebar", "search"],
+  "author": "Zendesk",
   "license": "ISC",
   "scripts": {
     "test": "jest",
