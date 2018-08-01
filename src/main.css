@@ -43,6 +43,7 @@ div.c-txt__input {
 }
 .c-chk__input {
   & ~ label {
+    color: var(--zd-color-blue-600);
     cursor: pointer;
     &:hover {
       text-decoration: underline;
@@ -81,7 +82,7 @@ div.c-txt__input {
       .c-tooltip {
         display: none;
         font-size: 12px;
-        left: 120px;
+        left: 115px;
         padding: 10px;
         position: absolute;
         top: 50%;
