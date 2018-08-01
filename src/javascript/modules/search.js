@@ -141,7 +141,7 @@ class Search {
     if (target === this._searchButton || target.parentNode === this._searchButton) this._doTheSearch(event)
     else if (target.classList.contains('suggestion')) this._handleSuggestionClick(event)
     else if (target.classList.contains('page-link') && target.dataset.index) this._doTheSearch(event, target.dataset.index)
-    else if (target.classList.contains('ticket-link')) this._handleResultLinkClick(event)
+    else if (target.classList.contains('ticket-link') || target.parentNode.classList.contains('ticket-link')) this._handleResultLinkClick(event)
   }
 
   /**
