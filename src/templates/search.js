@@ -46,7 +46,7 @@ export default function (args) {
       </fieldset>
       <fieldset class="u-mb-sm">
         <div class="c-txt__input c-txt__input--sm u-display-flex">
-          <input class="c-txt__input c-txt__input--bare c-txt__input--sm search-box" placeholder="Type search term here" type="text" autocomplete="off">
+          <input class="c-txt__input c-txt__input--bare c-txt__input--sm search-box" placeholder="${I18n.t('search.term.placeholder')}" type="text" autocomplete="off">
           <button type="button" id="search-submit" class="c-btn c-btn--icon c-btn--sm c-btn--basic c-btn--muted">
             <svg viewBox="0 0 16 16" id="zd-svg-icon-16-search-stroke" width="16" height="16"><circle cx="6" cy="6" r="5.5" fill="none" stroke="currentColor"></circle><path stroke="currentColor" stroke-linecap="round" d="M15 15l-5-5"></path></svg>
           </button>
@@ -64,7 +64,7 @@ export default function (args) {
       <div class="advanced-options-wrapper">
         <fieldset class="u-mb-sm u-position-relative ticket-only" id="ticket-status"></fieldset>
         <fieldset class="u-mb-sm">
-          <label class="c-txt__label c-txt__label--sm" for="range">Date Range</label>
+          <label class="c-txt__label c-txt__label--sm" for="range">${I18n.t('search.filter.date_range')}</label>
           <select name="range" id="range" class="c-txt__input c-txt__input--select c-txt__input--sm u-mb-sm">
             <option value="">-</option>
             <option value="created">${I18n.t('search.filter.created')}</option>
@@ -72,11 +72,11 @@ export default function (args) {
           </select>
           <div class="row">
             <div class="col">
-              <label class="c-txt__label c-txt__label--sm" for="from">Start</label>
+              <label class="c-txt__label c-txt__label--sm" for="from">${I18n.t('search.filter.date_start')}</label>
               <input type="text" id="from" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD">
             </div>
             <div class="col">
-              <label class="c-txt__label c-txt__label--sm" for="to">End</label>
+              <label class="c-txt__label c-txt__label--sm" for="to">${I18n.t('search.filter.date_end')}</label>
               <input type="text" id="to" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD">
             </div>
           </div>
