@@ -233,6 +233,15 @@ describe('Search App', () => {
       })
     })
 
+    it('should open a new ticket when ticket result ID is clicked', (done) => {
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
+      app._doTheSearch(new CustomEvent('fake')).then(() => {
+        document.querySelector('.ticket-link b').dispatchEvent(new CustomEvent('click', {bubbles: true}))
+        expect(CLIENT.invoke).toHaveBeenCalledWith('routeTo', 'ticket', '1')
+        done()
+      })
+    })
+
     it('should compose search terms from form fields', (done) => {
       app._keywordField.value = 'TestKeyword'
       expect(app._getSearchParams()).toBe('TestKeyword')
