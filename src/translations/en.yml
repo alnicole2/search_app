@@ -173,6 +173,11 @@ Refresh your page for the changes to take effect and your Sidebar Search applica
       title: "Dropdown option"
       value: "topics"
   - translation:
+      key: "txt.apps.search_app.search.term.placeholder"
+      title: "Placeholder text for the search term input field"
+      screenshot: "https://drive.google.com/open?id=1rkUBw1XOystAEUl2OLkOU7EF2X4jZKOB"
+      value: "Type search term here"
+  - translation:
       key: "txt.apps.search_app.search.result_type.ticket"
       title: "Dropdown option"
       value: "Ticket"
@@ -205,6 +210,11 @@ Refresh your page for the changes to take effect and your Sidebar Search applica
       title: "Dropdown option"
       value: "Status"
   - translation:
+      key: "txt.apps.search_app.search.filter.date_range"
+      title: "Label for the search form date range filter"
+      screenshot: "https://drive.google.com/open?id=1rkUBw1XOystAEUl2OLkOU7EF2X4jZKOB"
+      value: "Date Range"
+  - translation:
       key: "txt.apps.search_app.search.filter.created"
       title: "Dropdown option"
       value: "Created"
@@ -212,6 +222,16 @@ Refresh your page for the changes to take effect and your Sidebar Search applica
       key: "txt.apps.search_app.search.filter.updated"
       title: "Dropdown option"
       value: "Updated"
+  - translation:
+      key: "txt.apps.search_app.search.filter.date_start"
+      title: "Label for the search form start date input field"
+      screenshot: "https://drive.google.com/open?id=1rkUBw1XOystAEUl2OLkOU7EF2X4jZKOB"
+      value: "Start"
+  - translation:
+      key: "txt.apps.search_app.search.filter.date_end"
+      title: "Label for the search form end date input field"
+      screenshot: "https://drive.google.com/open?id=1rkUBw1XOystAEUl2OLkOU7EF2X4jZKOB"
+      value: "End"
   - translation:
       key: "txt.apps.search_app.search.condition.equal"
       title: "equal sign should remain the same"
