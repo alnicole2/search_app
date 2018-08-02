@@ -226,9 +226,20 @@ describe('Search App', () => {
 
     it('should open a new ticket when ticket result link is clicked', (done) => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
+      app._client.invoke = jest.fn()
       app._doTheSearch(new CustomEvent('fake')).then(() => {
         document.querySelector('.ticket-link').click()
-        expect(CLIENT.invoke).toHaveBeenCalledWith('routeTo', 'ticket', '1')
+        expect(app._client.invoke).toHaveBeenCalledWith('routeTo', 'ticket', '1')
+        done()
+      })
+    })
+
+    it('should open a new ticket when ticket result ID is clicked', (done) => {
+      app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
+      app._client.invoke = jest.fn()
+      app._doTheSearch(new CustomEvent('fake')).then(() => {
+        document.querySelector('.ticket-link b').click()
+        expect(app._client.invoke).toHaveBeenCalledWith('routeTo', 'ticket', '1')
         done()
       })
     })
