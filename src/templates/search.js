@@ -73,11 +73,11 @@ export default function (args) {
           <div class="row date-range--fields">
             <div class="col">
               <label class="c-txt__label c-txt__label--sm" for="from">${I18n.t('search.filter.date_start')}</label>
-              <input type="text" id="from" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+              <input type="date" id="from" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
             </div>
             <div class="col">
               <label class="c-txt__label c-txt__label--sm" for="to">${I18n.t('search.filter.date_end')}</label>
-              <input type="text" id="to" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+              <input type="date" id="to" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
             </div>
           </div>
           <small class="c-txt__message c-txt__message--error date-range--error u-mv-sm">${I18n.t('search.filter.date_error')}</small>

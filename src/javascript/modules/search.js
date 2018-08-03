@@ -173,7 +173,7 @@ class Search {
       this._hideLoadingButton()
     }
     Object.assign(this._states, {showAdvancedOptions: event.target.checked})
-    event.target.checked ? this._toggleDateFieldsStatus(false) : this._toggleDateFieldsStatus(true)
+    if(!event.target.checked) this._resetDateFields()
     this._searchAdvancedOptions.classList.toggle('u-display-block')
     return resizeContainer(this._client, MAX_HEIGHT)
   }
@@ -198,10 +198,9 @@ class Search {
   async _handleDateRangeChange (event) {
     if (event.target.value) {
       this._searchDateRange.classList.add('show-fields')
-      this._toggleDateFieldsStatus(false)
     } else {
       this._searchDateRange.classList.remove('show-fields')
-      this._toggleDateFieldsStatus(true)
+      this._resetDateFields()
     }
     return this._hideInvalidDateError()
   }
@@ -352,12 +351,12 @@ class Search {
   }
 
   /**
-   * Toggle Date fields(Start/End) status
-   * @param {Boolean} isDisabled
+   * Reset Date fields
    */
-  _toggleDateFieldsStatus (isDisabled) {
-    this._searchDateRangeFrom.disabled = isDisabled
-    this._searchDateRangeTo.disabled = isDisabled
+  _resetDateFields () {
+    this._searchDateRangeFrom.value = ''
+    this._searchDateRangeTo.value = ''
+    this._hideInvalidDateError()
   }
 
   /**
