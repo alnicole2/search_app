@@ -22,6 +22,10 @@
   overflow: hidden;
   padding: 0 3px;
 }
+input[type="text"]:invalid,
+input[type="date"]:invalid {
+  border-color: var(--zd-color-red-400);
+}
 #search-submit {
   height: 30px; 
   width: 30px;
@@ -68,6 +72,27 @@ div.c-txt__input {
 .advanced-options-wrapper,
 .ticket-only {
   display: none;
+}
+.date-range {
+  border-bottom: 1px solid var(--zd-color-grey-300);
+  .date-range--error,
+  .date-range--fields {
+    display: none;
+  }
+  &.show-fields {
+    .date-range--fields {
+      display: flex;
+    }
+  }
+  &.show-error {
+    .date-range--error {
+      display: block;
+    }
+  }
+  .col{
+    width: calc(50% - 20px)
+  }
+
 }
 #ticket-status {
   .c-menu {

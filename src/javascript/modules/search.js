@@ -60,18 +60,31 @@ class Search {
       // render application markup
       await this._render('.loader', getSearchTemplate)
       this._appContainer = document.querySelector('.search-app')
-      this._keywordField = document.querySelector('.search-box')
-      this._searchButton = document.querySelector('#search-submit')
+      this._searchForm = this._appContainer.querySelector('.search')
+      this._keywordField = this._searchForm.querySelector('.search-box')
+      this._searchTypeDropdown = this._searchForm.querySelector('#type')
+      this._searchButton = this._searchForm.querySelector('#search-submit')
+      this._searchDateRange = this._searchForm.querySelector('.date-range')
+      this._searchDateRangeDropdown = this._searchForm.querySelector('#range')
+      this._searchDateRangeFrom = this._searchForm.querySelector('#from')
+      this._searchDateRangeTo = this._searchForm.querySelector('#to')
+      this._searchAdvancedOptionsToggle = this._searchForm.querySelector('#advanced-field-toggle')
+      this._searchAdvancedOptions = this._searchForm.querySelector('.advanced-options-wrapper')
+      this._searchBrandFilter = this._searchForm.querySelector('#brand-filter')
+      this._searchTicketOnlySections = this._searchForm.querySelectorAll('.ticket-only')
       this._ticketStatusObj = new DropdownWithTags(
         this._states.ticketStatusOptions,
-        document.querySelector('#ticket-status'),
+        this._searchForm.querySelector('#ticket-status'),
         'Ticket Status'
       )
       // events binding
       this._appContainer.addEventListener('click', this._clickHandlerDispatch.bind(this))
-      this._keywordField.addEventListener('keydown', this._handleKeydown.bind(this))
-      document.querySelector('#advanced-field-toggle').addEventListener('change', this._handleAdvancedFieldsToggle.bind(this))
-      document.querySelector('#type').addEventListener('change', this._handleFilterChange.bind(this))
+      this._searchForm.addEventListener('submit', this._doTheSearch.bind(this))
+      this._searchTypeDropdown.addEventListener('change', this._handleFilterChange.bind(this))
+      this._searchDateRangeDropdown.addEventListener('change', this._handleDateRangeChange.bind(this))
+      this._searchAdvancedOptionsToggle.addEventListener('change', this._handleAdvancedFieldsToggle.bind(this))
+      this._searchDateRangeFrom.addEventListener('invalid', this._showInvalidDateError.bind(this))
+      this._searchDateRangeTo.addEventListener('invalid', this._showInvalidDateError.bind(this))
     }
   }
 
@@ -138,18 +151,9 @@ class Search {
    */
   _clickHandlerDispatch (event) {
     const target = event.target
-    if (target === this._searchButton || target.parentNode === this._searchButton) this._doTheSearch(event)
-    else if (target.classList.contains('suggestion')) this._handleSuggestionClick(event)
+    if (target.classList.contains('suggestion')) this._handleSuggestionClick(event)
     else if (target.classList.contains('page-link') && target.dataset.index) this._doTheSearch(event, target.dataset.index)
     else if (target.classList.contains('ticket-link') || target.parentNode.classList.contains('ticket-link')) this._handleResultLinkClick(event)
-  }
-
-  /**
-   * Keyword field keydown handler, search when press enter key
-   * @param {Event} event
-   */
-  _handleKeydown (event) {
-    if (event.which === 13) this._doTheSearch(event)
   }
 
   /**
@@ -158,6 +162,7 @@ class Search {
    */
   async _handleAdvancedFieldsToggle (event) {
     if (!this._states.assignees) {
+      this._showLoadingButton()
       Object.assign(
         this._states,
         {
@@ -165,9 +170,11 @@ class Search {
         }
       )
       await this._render('#assignee', getAssigneesTemplate)
+      this._hideLoadingButton()
     }
     Object.assign(this._states, {showAdvancedOptions: event.target.checked})
-    this._appContainer.querySelector('.advanced-options-wrapper').classList.toggle('u-display-block')
+    event.target.checked ? this._toggleDateFieldsStatus(false) : this._toggleDateFieldsStatus(true)
+    this._searchAdvancedOptions.classList.toggle('u-display-block')
     return resizeContainer(this._client, MAX_HEIGHT)
   }
 
@@ -178,10 +185,25 @@ class Search {
   async _handleFilterChange (event) {
     const isTicketSelected = event.target.value === 'ticket'
     Object.assign(this._states, {showTicketFields: isTicketSelected})
-    Array.prototype.forEach.call(this._appContainer.querySelectorAll('.ticket-only'), (field) => {
+    Array.prototype.forEach.call(this._searchTicketOnlySections, (field) => {
       field.classList[isTicketSelected ? 'add' : 'remove']('u-display-block')
     })
     return resizeContainer(this._client, MAX_HEIGHT)
+  }
+
+  /**
+   * Date Range change handler
+   * @param {Event} event
+   */
+  async _handleDateRangeChange (event) {
+    if (event.target.value) {
+      this._searchDateRange.classList.add('show-fields')
+      this._toggleDateFieldsStatus(false)
+    } else {
+      this._searchDateRange.classList.remove('show-fields')
+      this._toggleDateFieldsStatus(true)
+    }
+    return this._hideInvalidDateError()
   }
 
   /**
@@ -191,8 +213,9 @@ class Search {
    */
   async _doTheSearch (event, pageIndex = 1) {
     event.preventDefault()
-    if (this._keywordField.value) {
-      this._searchButton.classList.add('is-loading')
+    if (this._searchForm.checkValidity()) {
+      this._hideInvalidDateError()
+      this._showLoadingButton()
       const results = await this._client.request({
         url: `${API.search + encodeURIComponent(this._getSearchParams())}&page=${pageIndex}`,
         cors: true
@@ -228,8 +251,7 @@ class Search {
    */
   _getSearchParams () {
     const params = []
-    const $search = this._appContainer.querySelector('.search')
-    const searchType = $search.querySelector('#type').value
+    const searchType = this._searchTypeDropdown.value
     const searchTerm = this._keywordField.value
     if (searchType !== 'all') {
       params.push(`type:${searchType}`)
@@ -242,17 +264,16 @@ class Search {
         })
       }
       // Created
-      const range = $search.querySelector('#range').value
-      const from = $search.querySelector('#from').value
-      const to = $search.querySelector('#to').value
+      const range = this._searchDateRangeDropdown.value
+      const from = this._searchDateRangeFrom.value
+      const to = this._searchDateRangeTo.value
       if (range && from) params.push(`${range}>${from}`)
       if (range && to) params.push(`${range}<${to}`)
       // Assignee
-      const assignee = $search.querySelector('#assignee').value
+      const assignee = this._searchForm.querySelector('#assignee').value
       if (this._states.showTicketFields && assignee) params.push(`assignee:"${assignee}"`)
       // Brand
-      const brand = $search.querySelector('#brand-filter')
-      if (this._states.hasMultiplebBrands) brand.value && params.push(`brand_id:"${brand.value}"`)
+      if (this._states.hasMultiplebBrands && this._searchBrandFilter.value) params.push(`brand_id:"${this._searchBrandFilter.value}"`)
     }
     if (params.length) return `${searchTerm} ${params.join(' ')}`
     return searchTerm
@@ -281,7 +302,7 @@ class Search {
         isError: false
       }
     )
-    this._searchButton.classList.remove('is-loading')
+    this._hideLoadingButton()
     this._render('.results-wrapper', getResultsTemplate)
   }
 
@@ -291,7 +312,7 @@ class Search {
    */
   _getResultsCountKey (count) {
     if (typeof count !== 'number' || count < 0) {
-      throw 'count param should be a positive integer'
+      throw new Error('count param should be a positive integer')
     }
     let key
     switch (count) {
@@ -326,8 +347,49 @@ class Search {
         isError: true
       }
     )
-    this._searchButton && this._searchButton.classList.remove('is-loading')
+    this._searchButton && this._hideLoadingButton()
     this._render(container, getResultsTemplate)
+  }
+
+  /**
+   * Toggle Date fields(Start/End) status
+   * @param {Boolean} isDisabled
+   */
+  _toggleDateFieldsStatus (isDisabled) {
+    this._searchDateRangeFrom.disabled = isDisabled
+    this._searchDateRangeTo.disabled = isDisabled
+  }
+
+  /**
+   * Show error message when date field value is invalid
+   * @return {Promise} will resolved after resize
+   */
+  _showInvalidDateError (event) {
+    this._searchDateRange.classList.add('show-error')
+    return resizeContainer(this._client, MAX_HEIGHT)
+  }
+
+  /**
+   * Hide error message when date field value is valid
+   * @return {Promise} will resolved after resize
+   */
+  _hideInvalidDateError () {
+    this._searchDateRange.classList.remove('show-error')
+    return resizeContainer(this._client, MAX_HEIGHT)
+  }
+
+  /**
+   * Set search button to be loading status
+   */
+  _showLoadingButton () {
+    this._searchButton.classList.add('is-loading')
+  }
+
+  /**
+   * Reset search button to be normal status
+   */
+  _hideLoadingButton () {
+    this._searchButton.classList.remove('is-loading')
   }
 
   /**
