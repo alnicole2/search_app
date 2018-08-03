@@ -215,6 +215,11 @@ Refresh your page for the changes to take effect and your Sidebar Search applica
       screenshot: "https://drive.google.com/open?id=1rkUBw1XOystAEUl2OLkOU7EF2X4jZKOB"
       value: "Date Range"
   - translation:
+      key: "txt.apps.search_app.search.filter.none"
+      title: "Dropdown option"
+      screenshot: "https://drive.google.com/open?id=1LkAragdcxgcy2SmJmms5IqRm4iOYk2Ps"
+      value: "None"
+  - translation:
       key: "txt.apps.search_app.search.filter.created"
       title: "Dropdown option"
       value: "Created"
@@ -232,6 +237,11 @@ Refresh your page for the changes to take effect and your Sidebar Search applica
       title: "Label for the search form end date input field"
       screenshot: "https://drive.google.com/open?id=1rkUBw1XOystAEUl2OLkOU7EF2X4jZKOB"
       value: "End"
+  - translation:
+      key: "txt.apps.search_app.search.filter.date_error"
+      title: "Error message for the search form date fields"
+      screenshot: "https://drive.google.com/open?id=1LkAragdcxgcy2SmJmms5IqRm4iOYk2Ps"
+      value: "Please select a valid date range"
   - translation:
       key: "txt.apps.search_app.search.condition.equal"
       title: "equal sign should remain the same"
