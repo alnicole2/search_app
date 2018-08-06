@@ -165,7 +165,7 @@ describe('Search App', () => {
       })
     })
 
-    it('should toggle date fields status when advanced dropdown changes', () => {
+    it('should show date fields when date range dropdown is set, hide and reset date fields when date range dropdown is reset', () => {
       app._searchDateRangeDropdown.value = 'created'
       app._searchDateRangeDropdown.dispatchEvent(new Event('change'))
       expect(app._searchDateRange.classList.contains('show-fields')).toBe(true)
