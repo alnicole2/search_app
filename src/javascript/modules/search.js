@@ -8,6 +8,7 @@ import getResultsTemplate from '../../templates/results'
 import getSearchTemplate from '../../templates/search'
 import getAssigneesTemplate from '../../templates/assignees'
 import DropdownWithTags from '../lib/dropdown_with_tags'
+import closest from 'closest'
 
 const PER_PAGE = 5
 const MAX_HEIGHT = 1000
@@ -151,9 +152,9 @@ class Search {
    */
   _clickHandlerDispatch (event) {
     const target = event.target
-    if (target.classList.contains('suggestion')) this._handleSuggestionClick(event)
-    else if (target.classList.contains('page-link') && target.dataset.index) this._doTheSearch(event, target.dataset.index)
-    else if (target.classList.contains('ticket-link') || target.parentNode.classList.contains('ticket-link')) this._handleResultLinkClick(event)
+    if (closest(target, '.suggestion', true)) this._handleSuggestionClick(event)
+    else if (target.dataset.index && closest(target, '.page-link', true)) this._doTheSearch(event, target.dataset.index)
+    else if (closest(target, '.ticket-link', true)) this._handleResultLinkClick(event)
   }
 
   /**
@@ -361,6 +362,8 @@ class Search {
 
   /**
    * Show error message when date field value is invalid
+   * !! Temporary skip integration testing for this because form constraint validation is not well supported in jsdom as for now
+   * https://github.com/jsdom/jsdom/issues/544
    * @return {Promise} will resolved after resize
    */
   _showInvalidDateError (event) {

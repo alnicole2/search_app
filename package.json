@@ -2,7 +2,10 @@
   "name": "sidebarsearch",
   "version": "2.0.3",
   "description": "Zendesk Sidebar Search App",
-  "keywords": ["sidebar", "search"],
+  "keywords": [
+    "sidebar",
+    "search"
+  ],
   "author": "Zendesk",
   "license": "ISC",
   "scripts": {
@@ -37,6 +40,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "clean-webpack-plugin": "^0.1.18",
+    "closest": "0.0.1",
     "copy-webpack-plugin": "^4.4.1",
     "cross-env": "^5.1.6",
     "css-loader": "^0.28.9",
