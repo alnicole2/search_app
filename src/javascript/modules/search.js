@@ -152,9 +152,12 @@ class Search {
    */
   _clickHandlerDispatch (event) {
     const target = event.target
+    let closestTicketLink
     if (closest(target, '.suggestion', true)) this._handleSuggestionClick(event)
     else if (target.dataset.index && closest(target, '.page-link', true)) this._doTheSearch(event, target.dataset.index)
-    else if (closest(target, '.ticket-link', true)) this._handleResultLinkClick(event)
+    // add an extra property dispatchTarget to click event to store the target element,
+    // click event may be triggered by child elements of our target element
+    else if (closestTicketLink = closest(target, '.ticket-link', true)) this._handleResultLinkClick(Object.assign(event, {dispatchTarget: closestTicketLink}))
   }
 
   /**
@@ -242,7 +245,7 @@ class Search {
    */
   _handleResultLinkClick (event) {
     event.preventDefault()
-    this._client.invoke('routeTo', 'ticket', event.target.dataset.id)
+    this._client.invoke('routeTo', 'ticket', event.dispatchTarget.dataset.id)
   }
 
   /**
