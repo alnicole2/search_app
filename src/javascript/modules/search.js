@@ -177,7 +177,7 @@ class Search {
       this._hideLoadingButton()
     }
     Object.assign(this._states, {showAdvancedOptions: event.target.checked})
-    if(!event.target.checked) this._resetDateFields()
+    if (!event.target.checked) this._resetDateFields()
     this._searchAdvancedOptions.classList.toggle('u-display-block')
     return resizeContainer(this._client, MAX_HEIGHT)
   }
