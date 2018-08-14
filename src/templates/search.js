@@ -46,8 +46,8 @@ export default function (args) {
       </fieldset>
       <fieldset class="u-mb-sm">
         <div class="c-txt__input c-txt__input--sm u-display-flex">
-          <input class="c-txt__input c-txt__input--bare c-txt__input--sm search-box" placeholder="${I18n.t('search.term.placeholder')}" type="text" autocomplete="off" required>
-          <button type="submit" id="search-submit" class="c-btn c-btn--icon c-btn--sm c-btn--basic c-btn--muted">
+          <input class="c-txt__input c-txt__input--bare c-txt__input--sm search-box" name="keyword" placeholder="${I18n.t('search.term.placeholder')}" type="text" autocomplete="off" required>
+          <button type="submit" id="search-submit" name="search-submit" class="c-btn c-btn--icon c-btn--sm c-btn--basic c-btn--muted">
             <svg viewBox="0 0 16 16" id="zd-svg-icon-16-search-stroke" width="16" height="16"><circle cx="6" cy="6" r="5.5" fill="none" stroke="currentColor"></circle><path stroke="currentColor" stroke-linecap="round" d="M15 15l-5-5"></path></svg>
           </button>
         </div>
@@ -57,7 +57,7 @@ export default function (args) {
         ${getSuggestionsListMarkup(args.suggestions)}
       </fieldset>
       <fieldset class="u-mb-sm u-ta-right c-chk">
-        <input class="c-chk__input" id="advanced-field-toggle" type="checkbox">
+        <input class="c-chk__input" id="advanced-field-toggle" name="advanced-field-toggle" type="checkbox">
         <label class="c-chk__label__unchecked" for="advanced-field-toggle">${I18n.t('search.options.advanced')}</label>
         <label class="c-chk__label__checked" for="advanced-field-toggle">${I18n.t('search.options.basic')}</label>
       </fieldset>
@@ -73,11 +73,11 @@ export default function (args) {
           <div class="row date-range--fields">
             <div class="col">
               <label class="c-txt__label c-txt__label--sm" for="from">${I18n.t('search.filter.date_start')}</label>
-              <input type="date" id="from" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+              <input type="date" id="from" name="from" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
             </div>
             <div class="col">
               <label class="c-txt__label c-txt__label--sm" for="to">${I18n.t('search.filter.date_end')}</label>
-              <input type="date" id="to" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
+              <input type="date" id="to" name="to" class="c-txt__input c-txt__input--sm" placeholder="YYYY-MM-DD" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}">
             </div>
           </div>
           <small class="c-txt__message c-txt__message--error date-range--error u-mv-sm">${I18n.t('search.filter.date_error')}</small>

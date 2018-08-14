@@ -62,17 +62,18 @@ class Search {
       await this._render('.loader', getSearchTemplate)
       this._appContainer = document.querySelector('.search-app')
       this._searchForm = this._appContainer.querySelector('.search')
-      this._keywordField = this._searchForm.querySelector('.search-box')
-      this._searchTypeDropdown = this._searchForm.querySelector('#type')
-      this._searchButton = this._searchForm.querySelector('#search-submit')
       this._searchDateRange = this._searchForm.querySelector('.date-range')
-      this._searchDateRangeDropdown = this._searchForm.querySelector('#range')
-      this._searchDateRangeFrom = this._searchForm.querySelector('#from')
-      this._searchDateRangeTo = this._searchForm.querySelector('#to')
-      this._searchAdvancedOptionsToggle = this._searchForm.querySelector('#advanced-field-toggle')
       this._searchAdvancedOptions = this._searchForm.querySelector('.advanced-options-wrapper')
-      this._searchBrandFilter = this._searchForm.querySelector('#brand-filter')
       this._searchTicketOnlySections = this._searchForm.querySelectorAll('.ticket-only')
+      this._keywordField = this._searchForm.elements['keyword']
+      this._searchTypeDropdown = this._searchForm.elements['type']
+      this._searchButton = this._searchForm.elements['search-submit']
+      this._searchDateRangeDropdown = this._searchForm.elements['range']
+      this._searchDateRangeFrom = this._searchForm.elements['from']
+      this._searchDateRangeTo = this._searchForm.elements['to']
+      this._searchAdvancedOptionsToggle = this._searchForm.elements['advanced-field-toggle']
+      this._searchBrandFilter = this._searchForm.elements['brand-filter']
+
       this._ticketStatusObj = new DropdownWithTags(
         this._states.ticketStatusOptions,
         this._searchForm.querySelector('#ticket-status'),
@@ -273,7 +274,7 @@ class Search {
       if (range && from) params.push(`${range}>${from}`)
       if (range && to) params.push(`${range}<${to}`)
       // Assignee
-      const assignee = this._searchForm.querySelector('#assignee').value
+      const assignee = this._searchForm.elements['assignee'].value
       if (this._states.showTicketFields && assignee) params.push(`assignee:"${assignee}"`)
       // Brand
       if (this._states.hasMultiplebBrands && this._searchBrandFilter.value) params.push(`brand_id:"${this._searchBrandFilter.value}"`)
