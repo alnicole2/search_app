@@ -54,7 +54,7 @@ describe('Search App', () => {
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
       doTheSearchSpy = jest.spyOn(app, '_doTheSearch')
       app._initializePromise.then(() => {
-        app._keywordField.value = 'TestKeyword'
+        app.$keywordField.value = 'TestKeyword'
         done()
       })
     })
@@ -102,7 +102,7 @@ describe('Search App', () => {
 
     it('should trigger search when search form is submitted', () => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
-      app._searchForm.dispatchEvent(new Event('submit'))
+      app.$searchForm.dispatchEvent(new Event('submit'))
       expect(doTheSearchSpy).toHaveBeenCalledTimes(1)
     })
 
@@ -110,7 +110,7 @@ describe('Search App', () => {
       app._client.request.mockReturnValue(Promise.resolve(RESULTS_1))
       document.querySelector('.suggestion').click()
       expect(doTheSearchSpy).toHaveBeenCalled()
-      expect(app._keywordField.value).toBe('cf_suggestion_1')
+      expect(app.$keywordField.value).toBe('cf_suggestion_1')
     })
 
     it('should trigger search when nav link is clicked', (done) => {
@@ -142,7 +142,7 @@ describe('Search App', () => {
 
     it('should not trigger search if search term is empty', (done) => {
       app._client.request = jest.fn()
-      app._keywordField.value = ''
+      app.$keywordField.value = ''
       app._doTheSearch(new CustomEvent('submit')).then(() => {
         expect(app._client.request).not.toHaveBeenCalled()
         done()
@@ -156,27 +156,27 @@ describe('Search App', () => {
         }
       }
       app._client.request.mockReturnValueOnce(Promise.resolve(ASSIGNEES))
-      app._searchDateRangeFrom.value = '2018-01-01'
-      app._searchDateRangeTo.value = '2018-01-31'
+      app.$searchDateRangeFrom.value = '2018-01-01'
+      app.$searchDateRangeTo.value = '2018-01-31'
       app._handleAdvancedFieldsToggle(fakeEventObject).then(() => {
-        expect(app._searchDateRangeFrom.value).toBe('')
-        expect(app._searchDateRangeTo.value).toBe('')
+        expect(app.$searchDateRangeFrom.value).toBe('')
+        expect(app.$searchDateRangeTo.value).toBe('')
         done()
       })
     })
 
     it('should show date fields when date range dropdown is set, hide and reset date fields when date range dropdown is reset', () => {
-      app._searchDateRangeDropdown.value = 'created'
-      app._searchDateRangeDropdown.dispatchEvent(new Event('change'))
-      expect(app._searchDateRange.classList.contains('show-fields')).toBe(true)
+      app.$searchDateRangeDropdown.value = 'created'
+      app.$searchDateRangeDropdown.dispatchEvent(new Event('change'))
+      expect(app.$searchDateRange.classList.contains('show-fields')).toBe(true)
 
-      app._searchDateRangeDropdown.value = ''
-      app._searchDateRangeFrom.value = '2018-01-01'
-      app._searchDateRangeTo.value = '2018-01-31'
-      app._searchDateRangeDropdown.dispatchEvent(new Event('change'))
-      expect(app._searchDateRange.classList.contains('show-fields')).toBe(false)
-      expect(app._searchDateRangeFrom.value).toBe('')
-      expect(app._searchDateRangeTo.value).toBe('')
+      app.$searchDateRangeDropdown.value = ''
+      app.$searchDateRangeFrom.value = '2018-01-01'
+      app.$searchDateRangeTo.value = '2018-01-31'
+      app.$searchDateRangeDropdown.dispatchEvent(new Event('change'))
+      expect(app.$searchDateRange.classList.contains('show-fields')).toBe(false)
+      expect(app.$searchDateRangeFrom.value).toBe('')
+      expect(app.$searchDateRangeTo.value).toBe('')
     })
 
     it('should show paginations on first page', (done) => {
@@ -261,7 +261,7 @@ describe('Search App', () => {
     })
 
     it('should compose search terms from form fields', (done) => {
-      app._keywordField.value = 'TestKeyword'
+      app.$keywordField.value = 'TestKeyword'
       expect(app._getSearchParams()).toBe('TestKeyword')
 
       document.querySelector('#type').value = 'ticket'
@@ -280,19 +280,19 @@ describe('Search App', () => {
         document.querySelector('.c-menu__item').click()
         expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new brand_id:"360000636152"')
 
-        document.querySelector('#range').value = 'created'
-        document.querySelector('#from').value = '2018-06-01'
-        document.querySelector('#to').value = '2018-06-07'
+        app.$searchDateRangeDropdown.value = 'created'
+        app.$searchDateRangeFrom.value = '2018-06-01'
+        app.$searchDateRangeTo.value = '2018-06-07'
         expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 brand_id:"360000636152"')
 
-        document.querySelector('#assignee').value = 'TT'
+        app.$searchForm.elements['assignee'].value = 'TT'
         expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 assignee:"TT" brand_id:"360000636152"')
 
-        document.querySelector('#brand-filter').value = ''
+        app.$searchBrandFilter.value = ''
         expect(app._getSearchParams()).toBe('TestKeyword type:ticket status:new created>2018-06-01 created<2018-06-07 assignee:"TT"')
 
-        document.querySelector('#type').value = 'all'
-        document.querySelector('#type').dispatchEvent(new Event('change'))
+        app.$searchTypeDropdown.value = 'all'
+        app.$searchTypeDropdown.dispatchEvent(new Event('change'))
         expect(app._getSearchParams()).toBe('TestKeyword created>2018-06-01 created<2018-06-07')
         done()
       })
@@ -334,8 +334,8 @@ describe('Search App', () => {
         .mockReturnValueOnce(Promise.resolve(BRANDS_SINGLE))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
       app._initializePromise.then(() => {
+        app.$keywordField.value = 'TestKeyword'
         done()
-        app._keywordField.value = 'TestKeyword'
       })
     })
 
