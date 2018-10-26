@@ -30,7 +30,7 @@ describe('Search App', () => {
   describe('Initialization Failure', () => {
     let app
     beforeEach((done) => {
-      document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
+      document.body.innerHTML = '<section data-main><img class="loader" src="spinner.gif"/></section>'
       CLIENT.request = jest.fn()
         .mockReturnValueOnce(Promise.reject({responseText: '{"description": "fake error"}'}))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
@@ -48,7 +48,7 @@ describe('Search App', () => {
   describe('Multi Brands, Custom Fields = set, Related tickets = true', () => {
     let doTheSearchSpy, app
     beforeEach((done) => {
-      document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
+      document.body.innerHTML = '<section data-main><img class="loader" src="spinner.gif"/></section>'
       CLIENT.request = jest.fn()
         .mockReturnValueOnce(Promise.resolve(BRANDS_MULTI))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
@@ -329,7 +329,7 @@ describe('Search App', () => {
   describe('Single Brand, Custom Fields = set, Related tickets = true', () => {
     let app
     beforeEach((done) => {
-      document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
+      document.body.innerHTML = '<section data-main><img class="loader" src="spinner.gif"/></section>'
       CLIENT.request = jest.fn()
         .mockReturnValueOnce(Promise.resolve(BRANDS_SINGLE))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
@@ -360,7 +360,7 @@ describe('Search App', () => {
   describe('Single Brand, no Custom Fields, Related tickets = false', () => {
     let app
     beforeEach((done) => {
-      document.body.innerHTML = '<section data-main><img class="loader" src="dot.gif"/></section>'
+      document.body.innerHTML = '<section data-main><img class="loader" src="spinner.gif"/></section>'
       CLIENT.request = jest.fn()
         .mockReturnValueOnce(Promise.resolve(BRANDS_SINGLE))
       app = new Search(CLIENT, APPDATA_WITHOUT_CF, CONFIG)

@@ -1,6 +1,6 @@
 {
-  "name": "sidebarsearch",
-  "version": "2.0.4",
+  "name": "sidebar_search",
+  "version": "2.0.5",
   "description": "Zendesk Sidebar Search App",
   "keywords": [
     "sidebar",

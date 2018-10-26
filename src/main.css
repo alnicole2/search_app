@@ -16,7 +16,7 @@
   position: absolute;
   top: 50%;
   transform: translate(-50%, -50%);
-  width: 36px;
+  width: 40px;
 }
 .search-app {
   overflow: hidden;
@@ -27,7 +27,7 @@ input[type="date"]:invalid {
   border-color: var(--zd-color-red-400);
 }
 #search-submit {
-  height: 30px; 
+  height: 30px;
   width: 30px;
   display: flex;
   align-items: center;
@@ -67,8 +67,8 @@ div.c-txt__input {
     & ~ .c-chk__label__unchecked {
       display: none;
     }
-  } 
-} 
+  }
+}
 .advanced-options-wrapper,
 .ticket-only {
   display: none;
