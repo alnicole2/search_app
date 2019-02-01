@@ -32,7 +32,7 @@ describe('Search App', () => {
     beforeEach((done) => {
       document.body.innerHTML = '<section data-main><img class="loader" src="spinner.gif"/></section>'
       CLIENT.request = jest.fn()
-        .mockReturnValueOnce(Promise.reject(new Error('fake error')))
+        .mockReturnValueOnce(Promise.reject({responseText: '{"description": "fake error"}'}))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
       app._initializePromise.then(() => {
         done()
@@ -299,7 +299,7 @@ describe('Search App', () => {
     })
 
     it('should handle search request failure with error description', (done) => {
-      app._client.request.mockReturnValueOnce(Promise.reject(new Error('fake error')))
+      app._client.request.mockReturnValueOnce(Promise.reject({responseText: '{"description": "fake error"}'}))
       app._doTheSearch(new CustomEvent('submit')).then(() => {
         expect(app._states.isError).toBe(true)
         expect(app._states.error.message).toBe('fake error')
@@ -308,7 +308,7 @@ describe('Search App', () => {
     })
 
     it('should handle search request failure with error code', (done) => {
-      CLIENT.request.mockReturnValueOnce(Promise.reject(new Error('fakeerrorcode')))
+      CLIENT.request.mockReturnValueOnce(Promise.reject({responseText: '{"error": "fakeerrorcode"}'}))
       app._doTheSearch(new CustomEvent('submit')).then(() => {
         expect(app._states.isError).toBe(true)
         expect(app._states.error.message).toBe('translation...')
@@ -317,7 +317,7 @@ describe('Search App', () => {
     })
 
     it('should handle search request failure with global error message', (done) => {
-      CLIENT.request.mockReturnValueOnce(Promise.reject(new Error('')))
+      CLIENT.request.mockReturnValueOnce(Promise.reject({responseText: '{}'}))
       app._doTheSearch(new CustomEvent('submit')).then(() => {
         expect(app._states.isError).toBe(true)
         expect(app._states.error.message).toBe('translation...')
