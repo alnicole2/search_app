@@ -13,9 +13,9 @@ const mocktranslationObject = {
   'three.one.one': 'the {{name}} for {{name}} should be {{name}}',
   'object': {}
 }
-jest.mock('../src/translations/en.json', () => {
+I18n.tryRequire = function () {
   return mocktranslationObject
-})
+}
 
 const t = I18n.t
 let mockTryRequire

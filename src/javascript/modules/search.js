@@ -155,17 +155,15 @@ class Search {
     const target = event.target
     if (closest(target, '.suggestion', true)) {
       this._handleSuggestionClick(event)
-    }
-    else if (closest(target, '.page-link', true)) {
+    } else if (closest(target, '.page-link', true)) {
       const closestPageLink = closest(target, '.page-link', true)
       const pageIndex = closestPageLink.dataset.index
       if (pageIndex) {
         this._doTheSearch(event, pageIndex)
       }
-    }
     // add an extra property dispatchTarget to click event to store the target element,
     // click event may be triggered by child elements of our target element
-    else if (closest(target, '.ticket-link', true)) {
+    } else if (closest(target, '.ticket-link', true)) {
       const closestTicketLink = closest(target, '.ticket-link', true)
       event.dispatchTarget = closestTicketLink
       this._handleResultLinkClick(event)

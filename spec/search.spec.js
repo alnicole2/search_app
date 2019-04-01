@@ -31,8 +31,10 @@ describe('Search App', () => {
     let app
     beforeEach((done) => {
       document.body.innerHTML = '<section data-main><img class="loader" src="spinner.gif"/></section>'
+      const error = new Error('fake error')
+      error.responseText = '{"description": "fake error"}'
       CLIENT.request = jest.fn()
-        .mockReturnValueOnce(Promise.reject({responseText: '{"description": "fake error"}'}))
+        .mockReturnValueOnce(Promise.reject(error))
       app = new Search(CLIENT, APPDATA_WITH_CF, CONFIG)
       app._initializePromise.then(() => {
         done()
@@ -299,7 +301,9 @@ describe('Search App', () => {
     })
 
     it('should handle search request failure with error description', (done) => {
-      app._client.request.mockReturnValueOnce(Promise.reject({responseText: '{"description": "fake error"}'}))
+      const error = new Error('fake error')
+      error.responseText = '{"description": "fake error"}'
+      app._client.request.mockReturnValueOnce(Promise.reject(error))
       app._doTheSearch(new CustomEvent('submit')).then(() => {
         expect(app._states.isError).toBe(true)
         expect(app._states.error.message).toBe('fake error')
@@ -308,7 +312,9 @@ describe('Search App', () => {
     })
 
     it('should handle search request failure with error code', (done) => {
-      CLIENT.request.mockReturnValueOnce(Promise.reject({responseText: '{"error": "fakeerrorcode"}'}))
+      const error = new Error('fake error')
+      error.responseText = '{"error": "error"}'
+      CLIENT.request.mockReturnValueOnce(Promise.reject(error))
       app._doTheSearch(new CustomEvent('submit')).then(() => {
         expect(app._states.isError).toBe(true)
         expect(app._states.error.message).toBe('translation...')
@@ -317,7 +323,9 @@ describe('Search App', () => {
     })
 
     it('should handle search request failure with global error message', (done) => {
-      CLIENT.request.mockReturnValueOnce(Promise.reject({responseText: '{}'}))
+      const error = new Error('fake error')
+      error.responseText = '{"error": "error"}'
+      CLIENT.request.mockReturnValueOnce(Promise.reject(error))
       app._doTheSearch(new CustomEvent('submit')).then(() => {
         expect(app._states.isError).toBe(true)
         expect(app._states.error.message).toBe('translation...')
