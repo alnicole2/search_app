@@ -77,7 +77,7 @@ class Search {
       this._ticketStatusObj = new DropdownWithTags(
         this._states.ticketStatusOptions,
         this.$searchForm.querySelector('#ticket-status'),
-        'Ticket Status'
+        I18n.t('search.filter.ticket_status')
       )
       // events binding
       this.$appContainer.addEventListener('click', this._clickHandlerDispatch.bind(this))

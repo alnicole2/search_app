@@ -206,6 +206,11 @@ Refresh your page for the changes to take effect and your Sidebar Search applica
       title: "Dropdown option"
       value: "Topic"
   - translation:
+      key: "txt.apps.search_app.search.filter.ticket_status"
+      title: "Label for ticket status filter"
+      screenshot: "https://drive.google.com/open?id=1H13B-AtUzTumfRuLP_vZ1f5vBnkXT7lW"
+      value: "Ticket status"
+  - translation:
       key: "txt.apps.search_app.search.filter.status"
       title: "Dropdown option"
       value: "Status"
